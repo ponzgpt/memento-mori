@@ -1,5 +1,5 @@
 services:
-  preview:
+  memento-mori:
     build: .
     ports:
       - "8080:80"
