@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en" data-skin="system-light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Memento Mori widget</title>
+    <link rel="stylesheet" href="./styles.css?v=1.8.0">
+    <script type="module" src="./main.js?v=1.8.0"></script>
+  </head>
+  <body>
+    <header class="system-bar" aria-label="Preview harness bar">
+      <span>Memento Mori widget</span>
+      <span class="system-bar__window">component preview harness</span>
+      <span data-now>--:--</span>
+    </header>
+
+    <main class="workbench">
+      <section class="component-section" aria-labelledby="title">
+        <div class="title-row">
+          <div>
+            <h1 id="title">Memento Mori widget</h1>
+            <p class="subtitle">Live component previews for tray states, contextual menus, app panels, and widgets.</p>
+          </div>
+          <span class="memento-mark large" aria-hidden="true" data-mark="hourglass">
+            <svg viewBox="0 0 64 64" role="img">
+              <path class="bone" d="M17 9c3-3 7-3 10 0h10c3-3 7-3 10 0"></path>
+              <path class="bone" d="M17 55c3 3 7 3 10 0h10c3 3 7 3 10 0"></path>
+              <path d="M22 13c0 13 20 13 20 0M22 51c0-13 20-13 20 0M24 15l16 34M40 15 24 49"></path>
+              <path d="M32 26v12M27 34h10"></path>
+            </svg>
+          </span>
+        </div>
+      </section>
+
+      <section class="component-section" aria-labelledby="bars-title">
+        <h2 id="bars-title">minimized to tray/bar</h2>
+        <div class="platform-grid" aria-label="Minimized tray and bar previews">
+          <article class="component-card platform-card" data-os="linux">
+            <h3>Linux system tray</h3>
+            <div class="os-preview linux-preview">
+              <div class="mock-bar linux-bar">
+                <div class="tray-cluster">
+                  <button class="memento-widget calm" data-widget-shell type="button">
+                    <span data-widget-text>MM --</span>
+                    <span class="widget-progress" data-widget-progress></span>
+                  </button>
+                  <span class="tray-clock" data-now>--:--</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="component-card platform-card" data-os="macos">
+            <h3>macOS status menu bar</h3>
+            <div class="os-preview mac-preview">
+              <div class="mock-bar mac-bar">
+                <div class="tray-cluster">
+                  <button class="memento-widget calm" data-widget-shell type="button">
+                    <span data-widget-text>MM --</span>
+                    <span class="widget-progress" data-widget-progress></span>
+                  </button>
+                  <span class="tray-clock" data-now>--:--</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="component-card platform-card" data-os="windows">
+            <h3>W11 system tray</h3>
+            <div class="os-preview windows-preview">
+              <div class="mock-bar windows-bar">
+                <div class="tray-cluster">
+                  <button class="memento-widget calm" data-widget-shell type="button">
+                    <span data-widget-text>MM --</span>
+                    <span class="widget-progress" data-widget-progress></span>
+                  </button>
+                  <span class="tray-clock" data-now>--:--</span>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="component-section" aria-labelledby="menus-title">
+        <h2 id="menus-title">Contextual right-click menus</h2>
+        <div class="menu-grid" aria-label="Context menu previews">
+          <article class="component-card menu-card" data-os="linux">
+            <h3>Linux context menu</h3>
+            <div class="context-menu-preview linux-menu" data-menu-demo>
+              <button class="palette-toggle" data-action="toggle-skin" type="button" aria-label="Toggle palette">
+                <span class="palette-choice bone-choice">
+                  <span class="palette-icon" aria-hidden="true" data-icon="skull">
+                    <svg viewBox="0 0 32 32"><path d="M9 14c0-5 3-9 7-9s7 4 7 9c0 3-1 5-4 7v4H13v-4c-3-2-4-4-4-7Z"></path><path d="M13 15h1M18 15h1M15 20h2M13 25v3M19 25v3"></path></svg>
+                  </span>
+                  <span>bone and ash</span>
+                </span>
+                <span class="palette-choice onyx-choice">
+                  <span class="palette-icon" aria-hidden="true" data-icon="candle">
+                    <svg viewBox="0 0 32 32"><path d="M16 3c3 4-1 5 0 8 2-2 4-1 4 2 0 3-2 5-4 5s-4-2-4-5c0-3 2-5 4-10Z"></path><path d="M11 18h10v10H11zM9 28h14"></path></svg>
+                  </span>
+                  <span>onyx</span>
+                </span>
+              </button>
+            </div>
+          </article>
+
+          <article class="component-card menu-card" data-os="macos">
+            <h3>macOS context menu</h3>
+            <div class="context-menu-preview mac-menu" data-menu-demo>
+              <button class="palette-toggle" data-action="toggle-skin" type="button" aria-label="Toggle palette">
+                <span class="palette-choice bone-choice">
+                  <span class="palette-icon" aria-hidden="true" data-icon="skull">
+                    <svg viewBox="0 0 32 32"><path d="M9 14c0-5 3-9 7-9s7 4 7 9c0 3-1 5-4 7v4H13v-4c-3-2-4-4-4-7Z"></path><path d="M13 15h1M18 15h1M15 20h2M13 25v3M19 25v3"></path></svg>
+                  </span>
+                  <span>bone and ash</span>
+                </span>
+                <span class="palette-choice onyx-choice">
+                  <span class="palette-icon" aria-hidden="true" data-icon="candle">
+                    <svg viewBox="0 0 32 32"><path d="M16 3c3 4-1 5 0 8 2-2 4-1 4 2 0 3-2 5-4 5s-4-2-4-5c0-3 2-5 4-10Z"></path><path d="M11 18h10v10H11zM9 28h14"></path></svg>
+                  </span>
+                  <span>onyx</span>
+                </span>
+              </button>
+            </div>
+          </article>
+
+          <article class="component-card menu-card" data-os="windows">
+            <h3>W11 context menu</h3>
+            <div class="context-menu-preview windows-menu" data-menu-demo>
+              <button class="palette-toggle" data-action="toggle-skin" type="button" aria-label="Toggle palette">
+                <span class="palette-choice bone-choice">
+                  <span class="palette-icon" aria-hidden="true" data-icon="skull">
+                    <svg viewBox="0 0 32 32"><path d="M9 14c0-5 3-9 7-9s7 4 7 9c0 3-1 5-4 7v4H13v-4c-3-2-4-4-4-7Z"></path><path d="M13 15h1M18 15h1M15 20h2M13 25v3M19 25v3"></path></svg>
+                  </span>
+                  <span>bone and ash</span>
+                </span>
+                <span class="palette-choice onyx-choice">
+                  <span class="palette-icon" aria-hidden="true" data-icon="candle">
+                    <svg viewBox="0 0 32 32"><path d="M16 3c3 4-1 5 0 8 2-2 4-1 4 2 0 3-2 5-4 5s-4-2-4-5c0-3 2-5 4-10Z"></path><path d="M11 18h10v10H11zM9 28h14"></path></svg>
+                  </span>
+                  <span>onyx</span>
+                </span>
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="component-section" aria-labelledby="panel-title">
+        <h2 id="panel-title">Widget Panel</h2>
+        <div class="panel-stage">
+          <button class="memento-widget panel-dock calm" data-panel-dock-widget data-widget-shell type="button" hidden>
+            <span data-widget-text>MM --</span>
+            <span class="widget-progress" data-widget-progress></span>
+          </button>
+
+          <article class="component-card app-panel-card" data-app-panel aria-label="Memento Mori app panel">
+            <div class="panel-titlebar">
+              <span class="memento-mark" aria-hidden="true" data-mark="hourglass">
+                <svg viewBox="0 0 64 64" role="img">
+                  <path class="bone" d="M17 9c3-3 7-3 10 0h10c3-3 7-3 10 0"></path>
+                  <path class="bone" d="M17 55c3 3 7 3 10 0h10c3 3 7 3 10 0"></path>
+                  <path d="M22 13c0 13 20 13 20 0M22 51c0-13 20-13 20 0M24 15l16 34M40 15 24 49"></path>
+                  <path d="M32 26v12M27 34h10"></path>
+                </svg>
+              </span>
+              <strong>Memento Mori widget</strong>
+              <button data-action="toggle-panel" type="button">Minimize</button>
+            </div>
+
+            <div class="panel-body">
+              <div class="panel-readout">
+                <div class="readout">
+                  <div class="clock-art" aria-hidden="true">
+                    <svg class="art-bones" viewBox="0 0 180 42">
+                      <path d="M8 22c8-10 18-10 27 0 8 9 18 9 27 0s18-9 27 0 18 9 27 0 18-10 27 0 18 10 29 0"></path>
+                      <path d="M18 12c4-4 9-4 13 0M18 32c4 4 9 4 13 0M149 12c4-4 9-4 13 0M149 32c4 4 9 4 13 0"></path>
+                    </svg>
+                    <svg class="art-candle" viewBox="0 0 42 64">
+                      <path d="M21 5c5 7-2 9 1 15 3-4 8-1 8 5 0 7-4 11-9 11s-9-4-9-11c0-6 4-11 9-20Z"></path>
+                      <path d="M11 36h20v21H11zM8 57h26"></path>
+                    </svg>
+                  </div>
+                  <strong data-countdown>--</strong>
+                  <span data-progress>0% elapsed</span>
+                </div>
+
+                <dl class="stats-grid">
+                  <div>
+                    <dt>Death date</dt>
+                    <dd data-death-date>Unknown</dd>
+                  </div>
+                  <div>
+                    <dt>Model age</dt>
+                    <dd data-life-years>--</dd>
+                  </div>
+                  <div>
+                    <dt>Place model</dt>
+                    <dd data-baseline>--</dd>
+                  </div>
+                  <div>
+                    <dt>Live model</dt>
+                    <dd data-delta>updates instantly</dd>
+                  </div>
+                </dl>
+              </div>
+
+              <form id="setup" class="section-block" aria-label="Live settings panel">
+                <div class="form-grid">
+                  <label>
+                    Birth date
+                    <input name="birthDate" type="date" value="1992-06-19">
+                  </label>
+                  <label>
+                    Birth country
+                    <select id="birthCountry" name="birthCountry"></select>
+                  </label>
+                  <label>
+                    Living in country
+                    <select id="currentCountry" name="currentCountry"></select>
+                  </label>
+                  <label>
+                    Since age
+                    <input name="moveAge" type="number" min="0" max="110" step="1" value="0">
+                  </label>
+                </div>
+
+                <div class="checklist custom-grid" aria-label="Custom settings">
+                  <div class="check-row" data-check-row="sex">
+                    <span>Sex</span>
+                    <label><input type="checkbox" data-factor="sex" value="male"> Male</label>
+                    <label><input type="checkbox" data-factor="sex" value="female"> Female</label>
+                  </div>
+                  <div class="check-row" data-check-row="sleep">
+                    <span>Sleep</span>
+                    <label><input type="checkbox" data-factor="sleep" value="stable"> Stable</label>
+                    <label><input type="checkbox" data-factor="sleep" value="irregular"> Irregular</label>
+                  </div>
+                  <div class="check-row" data-check-row="exercise">
+                    <span>Exercise</span>
+                    <label><input type="checkbox" data-factor="exercise" value="regular"> Regular</label>
+                    <label><input type="checkbox" data-factor="exercise" value="low"> Low</label>
+                  </div>
+                  <div class="check-row" data-check-row="drinking">
+                    <span>Drinking</span>
+                    <label><input type="checkbox" data-factor="drinking" value="low"> Low</label>
+                    <label><input type="checkbox" data-factor="drinking" value="high"> High</label>
+                  </div>
+                  <div class="check-row" data-check-row="smoking">
+                    <span>Smoking</span>
+                    <label><input type="checkbox" data-factor="smoking" value="none"> None</label>
+                    <label><input type="checkbox" data-factor="smoking" value="former"> Former</label>
+                    <label><input type="checkbox" data-factor="smoking" value="current"> Current</label>
+                  </div>
+                  <div class="check-row" data-check-row="health">
+                    <span>Health conditions?</span>
+                    <label><input type="checkbox" data-factor="health" value="none"> No known major condition</label>
+                    <label><input type="checkbox" data-factor="health" value="managed"> Managed condition</label>
+                    <label><input type="checkbox" data-factor="health" value="serious"> Serious current condition</label>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="component-section" aria-labelledby="apps-title">
+        <h2 id="apps-title">Apps and widgets</h2>
+        <div class="apps-grid">
+          <article class="component-card app-shell linux-app-frame">
+            <h3>Linux desktop app</h3>
+            <div class="desktop-app-body">
+              <span class="memento-mark" aria-hidden="true" data-mark="hourglass">
+                <svg viewBox="0 0 64 64" role="img">
+                  <path class="bone" d="M17 9c3-3 7-3 10 0h10c3-3 7-3 10 0"></path>
+                  <path class="bone" d="M17 55c3 3 7 3 10 0h10c3 3 7 3 10 0"></path>
+                  <path d="M22 13c0 13 20 13 20 0M22 51c0-13 20-13 20 0M24 15l16 34M40 15 24 49"></path>
+                  <path d="M32 26v12M27 34h10"></path>
+                </svg>
+              </span>
+              <strong>Linux settings panel</strong>
+              <button class="memento-widget calm" data-widget-shell type="button">
+                <span data-widget-text>MM --</span>
+                <span class="widget-progress" data-widget-progress></span>
+              </button>
+            </div>
+          </article>
+
+          <article class="component-card app-shell windows-app-frame">
+            <h3>W11 desktop app</h3>
+            <div class="desktop-app-body">
+              <span class="memento-mark" aria-hidden="true" data-mark="hourglass">
+                <svg viewBox="0 0 64 64" role="img">
+                  <path class="bone" d="M17 9c3-3 7-3 10 0h10c3-3 7-3 10 0"></path>
+                  <path class="bone" d="M17 55c3 3 7 3 10 0h10c3 3 7 3 10 0"></path>
+                  <path d="M22 13c0 13 20 13 20 0M22 51c0-13 20-13 20 0M24 15l16 34M40 15 24 49"></path>
+                  <path d="M32 26v12M27 34h10"></path>
+                </svg>
+              </span>
+              <strong>Windows tray app</strong>
+              <button class="memento-widget calm" data-widget-shell type="button">
+                <span data-widget-text>MM --</span>
+                <span class="widget-progress" data-widget-progress></span>
+              </button>
+            </div>
+          </article>
+
+          <article class="component-card app-shell mac-app-frame">
+            <h3>macOS app</h3>
+            <div class="mac-window-bar">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="desktop-app-body">
+              <span class="memento-mark" aria-hidden="true" data-mark="hourglass">
+                <svg viewBox="0 0 64 64" role="img">
+                  <path class="bone" d="M17 9c3-3 7-3 10 0h10c3-3 7-3 10 0"></path>
+                  <path class="bone" d="M17 55c3 3 7 3 10 0h10c3 3 7 3 10 0"></path>
+                  <path d="M22 13c0 13 20 13 20 0M22 51c0-13 20-13 20 0M24 15l16 34M40 15 24 49"></path>
+                  <path d="M32 26v12M27 34h10"></path>
+                </svg>
+              </span>
+              <strong>Memento Mori widget</strong>
+              <p data-reflection-text>Make the next hour something you would not be embarrassed to lose.</p>
+              <button class="memento-widget calm" data-widget-shell type="button">
+                <span data-widget-text>MM --</span>
+                <span class="widget-progress" data-widget-progress></span>
+              </button>
+            </div>
+          </article>
+
+          <article class="component-card ios-device">
+            <h3>iOS app icon and widgets</h3>
+            <div class="ios-screen">
+              <div class="ios-status">
+                <span data-now>--:--</span>
+                <span>100%</span>
+              </div>
+              <div class="ios-icon" aria-label="iOS app icon preview">
+                <span class="memento-mark" aria-hidden="true" data-mark="hourglass">
+                  <svg viewBox="0 0 64 64" role="img">
+                    <path class="bone" d="M17 9c3-3 7-3 10 0h10c3-3 7-3 10 0"></path>
+                    <path class="bone" d="M17 55c3 3 7 3 10 0h10c3 3 7 3 10 0"></path>
+                    <path d="M22 13c0 13 20 13 20 0M22 51c0-13 20-13 20 0M24 15l16 34M40 15 24 49"></path>
+                    <path d="M32 26v12M27 34h10"></path>
+                  </svg>
+                </span>
+              </div>
+              <div class="ios-widget large">
+                <span class="memento-mark" aria-hidden="true" data-mark="hourglass">
+                  <svg viewBox="0 0 64 64" role="img">
+                    <path class="bone" d="M17 9c3-3 7-3 10 0h10c3-3 7-3 10 0"></path>
+                    <path class="bone" d="M17 55c3 3 7 3 10 0h10c3 3 7 3 10 0"></path>
+                    <path d="M22 13c0 13 20 13 20 0M22 51c0-13 20-13 20 0M24 15l16 34M40 15 24 49"></path>
+                    <path d="M32 26v12M27 34h10"></path>
+                  </svg>
+                </span>
+                <strong data-widget-text>MM --</strong>
+                <small data-progress>0% elapsed</small>
+              </div>
+              <div class="ios-widget small">
+                <strong>MM</strong>
+                <span data-widget-text="plain">--</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="component-section" aria-labelledby="reflection-title">
+        <h2 id="reflection-title">Reflection Popup</h2>
+        <article class="component-card reflection-card" data-reflection-card>
+          <p data-reflection-text>Make the next hour something you would not be embarrassed to lose.</p>
+        </article>
+      </section>
+
+      <p class="disclaimer" data-disclaimer>
+        Approximation only. Not medical, legal, actuarial, insurance, or mental-health advice.
+      </p>
+
+      <div class="context-menu" data-context-menu data-os="linux" hidden>
+        <button class="palette-toggle" data-action="toggle-skin" type="button" aria-label="Toggle palette">
+          <span class="palette-choice bone-choice">
+            <span class="palette-icon" aria-hidden="true" data-icon="skull">
+              <svg viewBox="0 0 32 32"><path d="M9 14c0-5 3-9 7-9s7 4 7 9c0 3-1 5-4 7v4H13v-4c-3-2-4-4-4-7Z"></path><path d="M13 15h1M18 15h1M15 20h2M13 25v3M19 25v3"></path></svg>
+            </span>
+            <span>bone and ash</span>
+          </span>
+          <span class="palette-choice onyx-choice">
+            <span class="palette-icon" aria-hidden="true" data-icon="candle">
+              <svg viewBox="0 0 32 32"><path d="M16 3c3 4-1 5 0 8 2-2 4-1 4 2 0 3-2 5-4 5s-4-2-4-5c0-3 2-5 4-10Z"></path><path d="M11 18h10v10H11zM9 28h14"></path></svg>
+            </span>
+            <span>onyx</span>
+          </span>
+        </button>
+      </div>
+
+      <div class="reflection-toast" data-reflection-toast hidden>
+        <p data-toast-text>Make the next hour count.</p>
+      </div>
+    </main>
+  </body>
+</html>

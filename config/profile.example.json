@@ -1,0 +1,12 @@
+{
+  "schema": "memento-mori.profile.v1",
+  "birth_date": "1992-06-19",
+  "country": "WLD",
+  "birth_country": "WLD",
+  "current_country": "WLD",
+  "move_age": 0,
+  "life_expectancy_years": 73.4804,
+  "skin": "system-light",
+  "disclaimer": "Approximation only. Not medical, legal, actuarial, or insurance advice.",
+  "source": "World Bank WDI SP.DYN.LE00.IN, 2024 values, API last updated 2026-04-08."
+}

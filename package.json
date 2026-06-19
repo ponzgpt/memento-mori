@@ -1,0 +1,14 @@
+{
+  "name": "memento-mori-widget",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "MVP mockup for a Waybar-style Memento Mori countdown widget.",
+  "scripts": {
+    "audit": "node tests/audit.mjs",
+    "lint": "node tests/lint.mjs",
+    "test": "node tests/memento-core.test.mjs && python3 -m unittest tests.test_waybar",
+    "serve": "python3 -m http.server 4173 --directory app"
+  },
+  "license": "Apache-2.0"
+}

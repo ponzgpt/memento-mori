@@ -1,0 +1,23 @@
+/* ~/.config/waybar/style.css */
+#custom-memento-mori {
+  padding: 0 10px;
+  border-radius: 6px;
+  border-bottom: 2px solid alpha(currentColor, 0.35);
+  font-variant-numeric: tabular-nums;
+}
+
+#custom-memento-mori.skin-system-light {
+  color: #191713;
+  background: #ece6d8;
+}
+
+#custom-memento-mori.skin-system-dark {
+  color: #f6f0e4;
+  background: #211d18;
+}
+
+#custom-memento-mori.near,
+#custom-memento-mori.borrowed {
+  color: #fff8f2;
+  background: #9f2f2f;
+}

@@ -1,0 +1,20 @@
+// ~/.config/waybar/config.jsonc
+// Add "custom/memento-mori" to modules-left, modules-center, or modules-right.
+{
+  "modules-right": [
+    "custom/memento-mori",
+    "pulseaudio",
+    "network",
+    "battery",
+    "clock"
+  ],
+
+  "custom/memento-mori": {
+    "exec": "python3 ~/.local/bin/memento-mori-waybar --config ~/.config/memento-mori/config.json",
+    "interval": 1,
+    "return-type": "json",
+    "format": "MM {}",
+    "tooltip": true,
+    "on-click": "xdg-open ~/.config/memento-mori/config.json"
+  }
+}
