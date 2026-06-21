@@ -10,6 +10,7 @@ const required = [
   "app/index.html",
   "app/main.js",
   "app/memento-core.js",
+  "docs/feature-status.csv",
   "scripts/serve.mjs",
   "waybar/memento.py",
   "waybar/config.example.jsonc",
@@ -35,7 +36,8 @@ assert.equal("display" in profile, false);
 assert.equal("mode" in profile, false);
 assert.equal(profile.birth_country, "WLD");
 assert.equal(profile.current_country, "WLD");
-assert.match(profile.disclaimer, /Not medical, legal, actuarial, or insurance advice/);
+assert.match(profile.disclaimer, /Not medical, legal, actuarial, insurance, or mental-health advice/);
+assert.match(profile.disclaimer, /mental-health advice/);
 
 const waybarConfig = readFileSync(join(root, "waybar/config.example.jsonc"), "utf8");
 assert.match(waybarConfig, /"return-type": "json"/);
@@ -52,6 +54,13 @@ assert.match(readme, /Production Beta/);
 assert.match(readme, /Philosophy/);
 assert.match(readme, /docs\/install\.md/);
 assert.match(readme, /docs\/philosophy\.md/);
+
+const featureStatus = readFileSync(join(root, "docs/feature-status.csv"), "utf8");
+assert.match(featureStatus, /MM-US-001/);
+assert.match(featureStatus, /MM-US-014/);
+assert.match(featureStatus, /user_story/);
+assert.match(featureStatus, /expected_behavior/);
+assert.match(featureStatus, /latest_result/);
 
 const install = readFileSync(join(root, "docs/install.md"), "utf8");
 assert.match(install, /Beta executable or installer/);

@@ -234,7 +234,7 @@ export function buildWaybarPayload(estimate, options = {}) {
         `Memento Mori: ${formatDuration(estimate.remainingMs, "full")} remaining`,
         `Death date: ${formatDate(estimate.deathDate)}`,
         `Model: ${estimate.baseline.label} ${estimate.baseline.year}`,
-        "Approximation only. Not medical, legal, or actuarial advice."
+        "Approximation only. Not medical, legal, actuarial, insurance, or mental-health advice."
       ].join("\n")
     : "Open setup and enter a birth date.";
 
@@ -256,7 +256,7 @@ export function serializeProfileConfig(profile, estimate = calculateEstimate(pro
     country: profile.country,
     life_expectancy_years: Number(estimate.lifeExpectancyYears.toFixed(4)),
     skin: profile.skin || "system-light",
-    disclaimer: "Approximation only. Not medical, legal, actuarial, or insurance advice.",
+    disclaimer: "Approximation only. Not medical, legal, actuarial, insurance, or mental-health advice.",
     source: estimate.sourceNote,
     custom_offsets: estimate.customOffset.details
   };

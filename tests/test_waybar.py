@@ -31,6 +31,7 @@ class WaybarEmitterTest(unittest.TestCase):
         self.assertIn("skin-system-dark", payload["class"])
         self.assertIsInstance(payload["percentage"], int)
         self.assertIn("Death date:", payload["tooltip"])
+        self.assertIn("mental-health advice", payload["tooltip"])
 
     def test_sample_config_is_current_shape(self):
         sample = memento.sample_config()
@@ -39,6 +40,7 @@ class WaybarEmitterTest(unittest.TestCase):
         self.assertNotIn("mode", sample)
         self.assertNotIn("display", sample)
         self.assertEqual(sample["skin"], "system-light")
+        self.assertIn("mental-health advice", sample["disclaimer"])
 
     def test_cli_sample_config_is_valid_json(self):
         sample_json = json.dumps(memento.sample_config())

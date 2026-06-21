@@ -36,7 +36,7 @@ def sample_config() -> dict:
         "birth_date": "1992-06-19",
         "life_expectancy_years": DEFAULT_LIFE_EXPECTANCY_YEARS,
         "skin": "system-light",
-        "disclaimer": "Approximation only. Not medical, legal, actuarial, or insurance advice.",
+        "disclaimer": "Approximation only. Not medical, legal, actuarial, insurance, or mental-health advice.",
     }
 
 
@@ -97,7 +97,7 @@ def payload(config: dict, countdown: Countdown) -> dict:
         [
             f"Memento Mori: {format_duration(countdown.remaining_seconds)} remaining",
             f"Death date: {countdown.target.date().isoformat()}",
-            "Approximation only. Not medical, legal, actuarial, or insurance advice.",
+            "Approximation only. Not medical, legal, actuarial, insurance, or mental-health advice.",
         ]
     )
     return {

@@ -7,6 +7,6 @@
   "move_age": 0,
   "life_expectancy_years": 73.4804,
   "skin": "system-light",
-  "disclaimer": "Approximation only. Not medical, legal, actuarial, or insurance advice.",
+  "disclaimer": "Approximation only. Not medical, legal, actuarial, insurance, or mental-health advice.",
   "source": "World Bank WDI SP.DYN.LE00.IN, 2024 values, API last updated 2026-04-08."
 }
