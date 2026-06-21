@@ -4,6 +4,12 @@ Memento Mori is a v1.8 MVP/mockup for a system-tray/status-bar countdown widget.
 
 This is not medical, legal, actuarial, insurance, or mental-health advice. It is a reflective UI prototype.
 
+## Philosophy
+
+Memento Mori puts a finite clock next to the system clock. The goal is not gloom; it is attention. The widget should feel useful, quiet, and slightly rude in the way a correct calendar reminder is rude.
+
+The design language uses classical memento mori motifs without turning the app into a costume party: bone, ash, onyx, candlelight, hourglass geometry, and restrained sarcasm. See [docs/philosophy.md](docs/philosophy.md).
+
 ## Production Beta
 
 The current production-testable surface is the Linux status/tray module for bars that support custom JSON modules, with Waybar as the reference implementation. macOS, Windows, and iOS are documented as beta targets, but native installers are not shipped yet.

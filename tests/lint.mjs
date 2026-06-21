@@ -62,6 +62,7 @@ assert.equal(html.includes("<details"), false, "setup should remain one visible 
 assert.equal(html.includes("<summary"), false, "setup should not have collapsible subsections");
 assert.equal(html.includes("webpage"), false, "component workbench should not present itself as a webpage");
 assert.match(html, /<title>Memento Mori widget<\/title>/);
+assert.match(html, /A quiet little deadline/);
 assert.match(html, /minimized to tray\/bar/);
 assert.match(html, /Linux system tray/);
 assert.match(html, /macOS status menu bar/);
@@ -105,5 +106,12 @@ assert.match(html, /art-bones/);
 assert.match(html, /art-candle/);
 assert.equal(html.includes("data-reflection-title"), false, "reflection popup should not have a title");
 assert.equal(html.includes("data-toast-title"), false, "toast should not have a title");
+assert.match(main, /postponing your life/);
+assert.match(main, /teeth remain a bold option/);
+
+const styles = readFileSync(join(root, "app/styles.css"), "utf8");
+assert.match(styles, /Fraunces/);
+assert.match(styles, /Geist/);
+assert.match(styles, /font-variation-settings/);
 
 console.log("lint checks passed");

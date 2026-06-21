@@ -16,6 +16,7 @@ const required = [
   "config/profile.example.json",
   "docs/research.md",
   "docs/install.md",
+  "docs/philosophy.md",
   "docs/commercial-model.md",
   "docs/apple-platform-plan.md",
   "docs/stack-decisions.md",
@@ -47,7 +48,9 @@ assert.match(readme, /Component Workbench/);
 assert.match(readme, /Apple Platform/);
 assert.match(readme, /Stack rationale/);
 assert.match(readme, /Production Beta/);
+assert.match(readme, /Philosophy/);
 assert.match(readme, /docs\/install\.md/);
+assert.match(readme, /docs\/philosophy\.md/);
 
 const install = readFileSync(join(root, "docs/install.md"), "utf8");
 assert.match(install, /Beta executable or installer/);
@@ -58,6 +61,13 @@ assert.match(install, /Windows 11 system tray/);
 assert.match(install, /iOS widgets/);
 assert.match(install, /GitHub Releases/);
 assert.match(install, /provided as-is/i);
+
+const philosophy = readFileSync(join(root, "docs/philosophy.md"), "utf8");
+assert.match(philosophy, /time is the one budget nobody gets to refinance/);
+assert.match(philosophy, /dry, not cruel/);
+assert.match(philosophy, /Fraunces/);
+assert.match(philosophy, /Geist/);
+assert.match(philosophy, /SIL Open Font License/);
 
 const commercial = readFileSync(join(root, "docs/commercial-model.md"), "utf8");
 assert.match(commercial, /Source code stays on GitHub under Apache-2\.0/);

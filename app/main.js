@@ -174,22 +174,22 @@ function reflectionFor(now) {
   const hour = now.getHours();
   const pool = [
     {
-      text: "Unless your grand strategy is to regret not doing it later."
+      text: "Unless the plan is to become excellent at postponing your life."
     },
     {
-      text: "Stand up straight, tame the sheets, and pretend civilization depends on it."
+      text: "Make the bed. Tiny empire, low taxes, immediate regime change."
     },
     {
-      text: "You are not owed a calmer season. Choose the work anyway."
+      text: "You are not owed a calmer season. Adorable theory, though."
     },
     {
-      text: "The obstacle is probably your inbox. Pay it before it compounds."
+      text: "The obstacle is probably not fate. Check the task you are avoiding."
     },
     {
-      text: "If it is late enough to doomscroll, it is late enough for basic hygiene."
+      text: "If it is late enough to doomscroll, teeth remain a bold option."
     },
     {
-      text: "Tomorrow's self has filed several complaints about your current management."
+      text: "Tomorrow's self has reviewed your leadership and left notes."
     }
   ];
 

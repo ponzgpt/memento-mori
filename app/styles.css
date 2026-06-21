@@ -1,47 +1,53 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..800,0..100,0..1&family=Geist:wght@300..800&display=swap");
+
 :root,
 :root[data-skin="system-light"] {
   color-scheme: light;
-  --page: #f4f1e9;
-  --panel: #fffdf8;
-  --text: #191713;
-  --muted: #69645a;
-  --line: #d2c8b8;
-  --ornament: #7f7a70;
-  --mark: #6d665c;
-  --accent: #6d6a63;
+  --page: #f1eee6;
+  --panel: #fffaf0;
+  --text: #171410;
+  --muted: #625d54;
+  --line: #cfc5b4;
+  --ornament: #747066;
+  --mark: #5f5a50;
+  --accent: #626057;
   --danger: #833232;
   --bar-bg: rgba(255, 253, 248, 0.88);
-  --widget-bg: #ece6d8;
+  --widget-bg: #e9e2d4;
   --widget-fg: #191713;
-  --os-bar: #ece8df;
+  --os-bar: #e9e4da;
   --os-panel: rgba(255, 253, 248, 0.96);
   --os-text: #191713;
   --os-line: #d6ccbc;
   --tray-widget-width: 190px;
-  --shadow: 0 18px 50px rgba(36, 31, 21, 0.12);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --shadow: 0 24px 70px rgba(36, 31, 21, 0.14);
+  --inner-glow: inset 0 1px rgba(255, 255, 255, 0.78), inset 0 -1px rgba(95, 90, 80, 0.08);
+  --font-ui: Geist, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: Fraunces, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-family: var(--font-ui);
 }
 
 :root[data-skin="system-dark"] {
   color-scheme: dark;
-  --page: #0c0b0a;
-  --panel: #151311;
-  --text: #f6f0e4;
+  --page: #090807;
+  --panel: #171310;
+  --text: #f7f0e4;
   --muted: #b9ae9d;
-  --line: #373129;
+  --line: #42382e;
   --ornament: #d2ad63;
   --mark: #c9c0b2;
   --accent: #d2ad63;
   --danger: #9f2f2f;
   --bar-bg: rgba(13, 12, 11, 0.94);
-  --widget-bg: #211d18;
+  --widget-bg: #241f19;
   --widget-fg: #f6f0e4;
-  --os-bar: #181613;
-  --os-panel: rgba(25, 22, 18, 0.96);
+  --os-bar: #1a1713;
+  --os-panel: rgba(25, 21, 17, 0.97);
   --os-text: #f6f0e4;
-  --os-line: #40382e;
+  --os-line: #493e31;
   --tray-widget-width: 190px;
-  --shadow: 0 18px 50px rgba(0, 0, 0, 0.34);
+  --shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+  --inner-glow: inset 0 1px rgba(255, 242, 218, 0.08), inset 0 -1px rgba(0, 0, 0, 0.25);
 }
 
 * {
@@ -51,7 +57,10 @@
 html {
   min-height: 100%;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent 38%),
+    radial-gradient(circle at 14% 10%, color-mix(in srgb, var(--ornament) 12%, transparent), transparent 24%),
+    radial-gradient(circle at 88% 8%, color-mix(in srgb, var(--mark) 11%, transparent), transparent 28%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 38%),
+    repeating-linear-gradient(115deg, color-mix(in srgb, var(--line) 10%, transparent) 0 1px, transparent 1px 18px),
     var(--page);
   color: var(--text);
   scroll-behavior: smooth;
@@ -125,8 +134,10 @@ button[aria-pressed="true"] {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 14px;
-  background: color-mix(in srgb, var(--panel) 96%, transparent);
-  box-shadow: var(--shadow);
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--panel) 98%, transparent), color-mix(in srgb, var(--panel) 82%, var(--page))),
+    var(--panel);
+  box-shadow: var(--shadow), var(--inner-glow);
 }
 
 .platform-grid,
@@ -170,22 +181,25 @@ p {
 
 h1 {
   color: var(--text);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-display);
   font-size: clamp(34px, 5vw, 58px);
-  font-weight: 600;
+  font-weight: 620;
   letter-spacing: 0;
+  font-variation-settings: "SOFT" 58, "WONK" 0.34;
 }
 
 h2 {
   color: var(--text);
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 760;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 h3 {
   color: var(--muted);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 720;
 }
 
 .subtitle,
@@ -214,7 +228,10 @@ dt,
   height: 54px;
   border: 1px solid var(--line);
   border-radius: 50%;
-  background: var(--bar-bg);
+  background:
+    radial-gradient(circle at 50% 34%, color-mix(in srgb, var(--ornament) 14%, transparent), transparent 58%),
+    var(--bar-bg);
+  box-shadow: var(--inner-glow);
 }
 
 .memento-mark svg,
@@ -248,6 +265,7 @@ dt,
   border: 1px solid var(--os-line);
   border-radius: 8px;
   background:
+    linear-gradient(135deg, color-mix(in srgb, var(--os-line) 14%, transparent) 0 1px, transparent 1px 100%),
     radial-gradient(circle at 22% 22%, color-mix(in srgb, var(--os-panel) 62%, transparent), transparent 34%),
     color-mix(in srgb, var(--page) 86%, var(--panel));
 }
@@ -310,8 +328,13 @@ dt,
   min-width: 0;
   overflow: hidden;
   color: var(--widget-fg);
-  background: var(--widget-bg);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--widget-bg) 92%, var(--panel)), var(--widget-bg));
   border-color: color-mix(in srgb, var(--ornament) 55%, var(--line));
+  box-shadow: var(--inner-glow);
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 620;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -326,7 +349,7 @@ dt,
   inset: auto 0 0 0;
   width: 0;
   height: 2px;
-  background: var(--ornament);
+  background: linear-gradient(90deg, var(--ornament), color-mix(in srgb, var(--ornament) 42%, var(--mark)));
   transition: width 180ms ease;
 }
 
@@ -450,7 +473,8 @@ dt,
   flex: 1;
   min-width: 0;
   color: var(--text);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 52, "WONK" 0.24;
 }
 
 .panel-titlebar button {
@@ -475,19 +499,24 @@ dt,
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 18px;
+  padding: 20px;
   background:
-    radial-gradient(circle at 88% 18%, color-mix(in srgb, var(--mark) 13%, transparent), transparent 28%),
+    radial-gradient(circle at 86% 12%, color-mix(in srgb, var(--ornament) 15%, transparent), transparent 26%),
+    radial-gradient(circle at 12% 86%, color-mix(in srgb, var(--mark) 11%, transparent), transparent 30%),
     color-mix(in srgb, var(--panel) 90%, var(--page));
+  box-shadow: var(--inner-glow);
 }
 
 .readout strong {
   position: relative;
   z-index: 1;
   color: var(--text);
-  font-size: clamp(28px, 4vw, 44px);
-  line-height: 1;
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 58px);
+  font-weight: 720;
+  line-height: 0.95;
   overflow-wrap: anywhere;
+  font-variation-settings: "SOFT" 42, "WONK" 0.58;
   font-variant-numeric: tabular-nums;
 }
 
@@ -502,7 +531,7 @@ dt,
   inset: 0;
   z-index: 0;
   color: var(--mark);
-  opacity: 0.26;
+  opacity: 0.32;
   pointer-events: none;
 }
 
@@ -549,7 +578,7 @@ dd {
   margin: 3px 0 0;
   color: var(--text);
   overflow-wrap: anywhere;
-  font-weight: 700;
+  font-weight: 760;
 }
 
 [data-delta][data-positive="true"] {
@@ -594,7 +623,10 @@ select {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 12px;
-  background: color-mix(in srgb, var(--panel) 90%, var(--page));
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--panel) 94%, transparent), color-mix(in srgb, var(--page) 35%, var(--panel))),
+    var(--panel);
+  box-shadow: var(--inner-glow);
 }
 
 .checklist {
@@ -626,7 +658,7 @@ select {
   border-radius: 7px;
   padding: 0 8px;
   color: var(--text);
-  background: var(--panel);
+  background: color-mix(in srgb, var(--panel) 92%, var(--page));
 }
 
 .check-row input {
@@ -651,12 +683,15 @@ select {
   border-radius: 8px;
   padding: 18px;
   color: var(--text);
-  background: color-mix(in srgb, var(--panel) 88%, var(--page));
+  background:
+    radial-gradient(circle at 86% 18%, color-mix(in srgb, var(--ornament) 13%, transparent), transparent 28%),
+    color-mix(in srgb, var(--panel) 88%, var(--page));
 }
 
 .desktop-app-body strong {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 24px;
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-variation-settings: "SOFT" 48, "WONK" 0.22;
 }
 
 .desktop-app-body p {
@@ -712,8 +747,9 @@ select {
   padding: 18px;
   color: var(--text);
   background:
+    radial-gradient(circle at 72% 32%, color-mix(in srgb, var(--ornament) 18%, transparent), transparent 28%),
     radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--panel) 92%, transparent), transparent 34%),
-    linear-gradient(145deg, var(--page), color-mix(in srgb, var(--panel) 70%, var(--ornament)));
+    linear-gradient(145deg, var(--page), color-mix(in srgb, var(--panel) 78%, var(--ornament)));
 }
 
 .ios-status {
@@ -764,7 +800,9 @@ select {
 }
 
 .ios-widget.large strong {
+  font-family: var(--font-display);
   font-size: 24px;
+  font-variation-settings: "SOFT" 44, "WONK" 0.35;
   font-variant-numeric: tabular-nums;
 }
 
