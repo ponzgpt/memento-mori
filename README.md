@@ -4,6 +4,23 @@ Memento Mori is a v1.8 MVP/mockup for a system-tray/status-bar countdown widget.
 
 This is not medical, legal, actuarial, insurance, or mental-health advice. It is a reflective UI prototype.
 
+## Production Beta
+
+The current production-testable surface is the Linux status/tray module for bars that support custom JSON modules, with Waybar as the reference implementation. macOS, Windows, and iOS are documented as beta targets, but native installers are not shipped yet.
+
+Use [docs/install.md](docs/install.md) as the canonical GitHub install guide. It documents both tracks for every OS:
+
+- beta executable/installer track: free GitHub Release artifacts during beta, later sold as convenience installers through Stripe
+- source track: Apache-2.0 source code that technical users can inspect, build, fork, and run themselves
+
+For your own machines today, start with the Linux source install:
+
+```sh
+git clone https://github.com/ponzgpt/memento-mori.git
+cd memento-mori
+./install.sh
+```
+
 ## Component Workbench
 
 ```sh
@@ -18,7 +35,7 @@ The workbench has no package dependencies. It can also be opened directly from `
 
 Stack rationale is tracked in [docs/stack-decisions.md](docs/stack-decisions.md).
 
-## Waybar MVP
+## Linux Status/Tray MVP
 
 One-command install from a checked-out repository:
 
@@ -42,6 +59,8 @@ chmod +x ~/.local/bin/memento-mori-waybar
 ```
 
 Add the module from `waybar/config.example.jsonc` to `~/.config/waybar/config.jsonc`, then copy the relevant styles from `waybar/style.example.css` into `~/.config/waybar/style.css`.
+
+For full per-OS instructions, see [docs/install.md](docs/install.md).
 
 ## Calculation
 
@@ -99,4 +118,4 @@ Apache-2.0.
 
 ## Commercial Model
 
-The intended commercial approach is free source on GitHub plus a cheap paid installer for convenience. Technical users can self-install from source; non-technical users pay through Stripe for signed builds and setup polish. The software is provided as-is, community PRs are welcome, and anyone can fork it. See [docs/commercial-model.md](docs/commercial-model.md).
+The intended commercial approach is free source on GitHub plus cheap paid installers for convenience. During beta, installer artifacts are planned to be free on GitHub Releases so they can be tested on real machines. Later, non-technical users pay through Stripe for signed builds and setup polish. The software is provided as-is, community PRs are welcome, and anyone can fork it. See [docs/commercial-model.md](docs/commercial-model.md).

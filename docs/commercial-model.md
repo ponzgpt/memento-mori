@@ -6,7 +6,8 @@ Memento Mori should use a source-available commercial convenience model:
 
 - Source code stays on GitHub under Apache-2.0.
 - Technical users get a one-command install path from the repository.
-- Non-technical users can buy a cheap signed installer/executable for convenience and automatic setup.
+- Beta users get free GitHub Release installers while the product is being tested on real machines.
+- Non-technical users can later buy a cheap signed installer/executable for convenience and automatic setup.
 
 This keeps the product credible with the Arch/Linux audience while still creating a simple paid offer for users who do not want to build, clone, configure Waybar, or manage platform quirks.
 
@@ -32,6 +33,7 @@ curl -fsSL https://example.com/memento-mori/install.sh | sh
 - Target price: low impulse purchase, roughly USD 5-15.
 - Payment processor: Stripe.
 - Sales channels: personal website and beehiiv newsletter.
+- Beta phase: installer artifacts are free on GitHub Releases until the install flow is proven.
 - Signed builds where practical:
   - Linux AppImage or native packages later.
   - macOS `.dmg` or `.pkg` later.
@@ -44,8 +46,8 @@ curl -fsSL https://example.com/memento-mori/install.sh | sh
 
 1. Keep the current Waybar script and static setup UI as the free technical MVP.
 2. Add a Tauri shell for cross-platform desktop packaging.
-3. Publish GitHub releases with source archives and technical artifacts.
-4. Sell signed convenience installers through Stripe Checkout on the personal website.
+3. Publish GitHub releases with source archives and free beta installer artifacts.
+4. After beta, sell signed convenience installers through Stripe Checkout on the personal website.
 5. Promote releases through the beehiiv newsletter.
 6. Keep the paid value focused on convenience and trust, not hidden features.
 

@@ -15,6 +15,7 @@ const required = [
   "waybar/style.example.css",
   "config/profile.example.json",
   "docs/research.md",
+  "docs/install.md",
   "docs/commercial-model.md",
   "docs/apple-platform-plan.md",
   "docs/stack-decisions.md",
@@ -45,11 +46,24 @@ assert.match(readme, /Commercial Model/);
 assert.match(readme, /Component Workbench/);
 assert.match(readme, /Apple Platform/);
 assert.match(readme, /Stack rationale/);
+assert.match(readme, /Production Beta/);
+assert.match(readme, /docs\/install\.md/);
+
+const install = readFileSync(join(root, "docs/install.md"), "utf8");
+assert.match(install, /Beta executable or installer/);
+assert.match(install, /Source install/);
+assert.match(install, /Linux status\/tray/);
+assert.match(install, /macOS menu bar/);
+assert.match(install, /Windows 11 system tray/);
+assert.match(install, /iOS widgets/);
+assert.match(install, /GitHub Releases/);
+assert.match(install, /provided as-is/i);
 
 const commercial = readFileSync(join(root, "docs/commercial-model.md"), "utf8");
 assert.match(commercial, /Source code stays on GitHub under Apache-2\.0/);
 assert.match(commercial, /one-command install/i);
 assert.match(commercial, /cheap signed installer/i);
+assert.match(commercial, /free GitHub Release installers/);
 assert.match(commercial, /Stripe/);
 assert.match(commercial, /beehiiv/);
 assert.match(commercial, /No support entitlement/);
