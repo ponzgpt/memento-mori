@@ -10,6 +10,7 @@ const required = [
   "app/index.html",
   "app/main.js",
   "app/memento-core.js",
+  "scripts/serve.mjs",
   "waybar/memento.py",
   "waybar/config.example.jsonc",
   "waybar/style.example.css",

@@ -114,4 +114,9 @@ assert.match(styles, /Fraunces/);
 assert.match(styles, /Geist/);
 assert.match(styles, /font-variation-settings/);
 
+const serve = readFileSync(join(root, "scripts/serve.mjs"), "utf8");
+assert.match(serve, /__health/);
+assert.match(serve, /no-store/);
+assert.match(serve, /127\.0\.0\.1/);
+
 console.log("lint checks passed");
