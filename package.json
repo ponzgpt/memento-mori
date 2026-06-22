@@ -13,7 +13,7 @@
     "lint": "node tests/lint.mjs",
     "package": "node scripts/package-release.mjs",
     "release:notes": "node scripts/release-notes.mjs",
-    "test": "node tests/memento-core.test.mjs && node tests/feature-stories.mjs && python3 -m unittest tests.test_waybar",
+    "test": "node tests/memento-core.test.mjs && node tests/feature-stories.mjs && node scripts/test-waybar.mjs",
     "serve": "node scripts/serve.mjs",
     "verify": "node scripts/verify-release.mjs"
   },

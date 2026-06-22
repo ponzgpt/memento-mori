@@ -8,6 +8,27 @@ const root = new URL("..", import.meta.url).pathname;
 const dist = join(root, "dist");
 const npm = process.platform === "win32" ? "npm.cmd" : "npm";
 
+function findPython() {
+  const candidates = [
+    { command: "python3", args: [] },
+    { command: "python", args: [] },
+    { command: "py", args: ["-3"] }
+  ];
+
+  for (const candidate of candidates) {
+    const result = spawnSync(candidate.command, [...candidate.args, "--version"], {
+      encoding: "utf8"
+    });
+    if (result.status === 0) {
+      return candidate;
+    }
+  }
+
+  throw new Error("Python 3 is required for release verification");
+}
+
+const python = findPython();
+
 const commands = [
   [npm, ["run", "audit"]],
   [npm, ["run", "check:installers"]],
@@ -18,8 +39,8 @@ const commands = [
   [npm, ["test"]],
   [npm, ["run", "release:notes"]],
   [npm, ["run", "package"]],
-  ["python3", ["-m", "py_compile", "waybar/memento.py"]],
-  ["python3", ["waybar/memento.py", "--config", "config/profile.example.json"]],
+  [python.command, [...python.args, "-m", "py_compile", "waybar/memento.py"]],
+  [python.command, [...python.args, "waybar/memento.py", "--config", "config/profile.example.json"]],
   ["git", ["diff", "--check"]]
 ];
 

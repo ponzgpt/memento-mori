@@ -17,6 +17,8 @@ Every release must pass:
 npm run verify
 ```
 
+Continuous integration runs that gate on Linux, macOS, and Windows. iOS remains a documented Apple-platform target until SwiftUI/WidgetKit source exists.
+
 The canonical gate runs:
 
 ```sh

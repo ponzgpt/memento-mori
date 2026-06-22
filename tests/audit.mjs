@@ -21,6 +21,7 @@ const required = [
   "scripts/check-version.mjs",
   "scripts/check-web.mjs",
   "scripts/release-notes.mjs",
+  "scripts/test-waybar.mjs",
   "scripts/verify-release.mjs",
   "installers/macos/install.sh",
   "installers/macos/uninstall.sh",
@@ -71,6 +72,7 @@ assert.match(agents, /npm run verify/);
 assert.match(agents, /npm run check:installers/);
 assert.match(agents, /npm run check:version/);
 assert.match(agents, /npm run release:notes/);
+assert.match(agents, /Linux, macOS, and Windows/);
 assert.match(agents, /python3 waybar\/memento\.py --config config\/profile\.example\.json/);
 assert.match(agents, /Do not install system packages on the host/);
 assert.match(agents, /source installers as signed installers/);
@@ -81,6 +83,7 @@ assert.match(readme, /not medical, legal, actuarial, insurance/i);
 assert.match(readme, /What It Does/);
 assert.match(readme, /Platform Surfaces/);
 assert.match(readme, /Quality Gates/);
+assert.match(readme, /CI runs it on Linux, macOS, and Windows/);
 assert.match(readme, /installers\/macos\/install\.sh/);
 assert.match(readme, /installers\\windows\\install\.ps1/);
 assert.match(readme, /docs\/support-matrix\.md/);
@@ -198,6 +201,7 @@ assert.match(supportMatrix, /macOS/);
 assert.match(supportMatrix, /Windows 11/);
 assert.match(supportMatrix, /iOS/);
 assert.match(supportMatrix, /source-installable/);
+assert.match(supportMatrix, /Continuous integration runs that gate on Linux, macOS, and Windows/);
 
 const readiness = JSON.parse(readFileSync(join(root, "release-readiness.json"), "utf8"));
 assert.equal(readiness.release_gate, "source-installable");
@@ -216,10 +220,12 @@ assert.match(packageScript, /installers\/windows\/install\.ps1/);
 assert.match(packageScript, /release-readiness\.json/);
 assert.match(packageScript, /docs\/support-matrix\.md/);
 assert.match(packageScript, /scripts\/release-notes\.mjs/);
+assert.match(packageScript, /scripts\/test-waybar\.mjs/);
 assert.match(packageScript, /SHA256SUMS/);
 
 const installerScript = readFileSync(join(root, "scripts/check-installers.mjs"), "utf8");
 assert.match(installerScript, /installer checks passed/);
+assert.match(installerScript, /available\("sh"/);
 assert.match(installerScript, /installers\/macos\/install\.sh/);
 assert.match(installerScript, /installers\/windows\/install\.ps1/);
 assert.match(installerScript, /PowerShell/);
@@ -249,8 +255,15 @@ assert.match(notesScript, /CHANGELOG\.md/);
 assert.match(notesScript, /Platform Readiness/);
 assert.match(notesScript, /process\.stdout\.write/);
 
+const testWaybarScript = readFileSync(join(root, "scripts/test-waybar.mjs"), "utf8");
+assert.match(testWaybarScript, /findPython/);
+assert.match(testWaybarScript, /tests\.test_waybar/);
+assert.match(testWaybarScript, /Python 3 is required for Waybar tests/);
+
 const verifyScript = readFileSync(join(root, "scripts/verify-release.mjs"), "utf8");
 assert.match(verifyScript, /release verification passed/);
+assert.match(verifyScript, /findPython/);
+assert.match(verifyScript, /Python 3 is required/);
 assert.match(verifyScript, /check:version/);
 assert.match(verifyScript, /release:notes/);
 assert.match(verifyScript, /git.*diff.*--check/s);
@@ -258,10 +271,15 @@ assert.match(verifyScript, /SHA256SUMS/);
 
 const ci = readFileSync(join(root, ".github/workflows/ci.yml"), "utf8");
 assert.match(ci, /npm run verify/);
+assert.match(ci, /ubuntu-latest/);
+assert.match(ci, /macos-latest/);
+assert.match(ci, /windows-latest/);
+assert.match(ci, /actions\/setup-python@v5/);
 assert.match(ci, /actions\/upload-artifact@v4/);
 
 const releaseWorkflow = readFileSync(join(root, ".github/workflows/release.yml"), "utf8");
 assert.match(releaseWorkflow, /npm run verify/);
+assert.match(releaseWorkflow, /actions\/setup-python@v5/);
 assert.match(releaseWorkflow, /scripts\/release-notes\.mjs > dist\/RELEASE_NOTES\.md/);
 assert.match(releaseWorkflow, /gh release create/);
 assert.match(releaseWorkflow, /--notes-file dist\/RELEASE_NOTES\.md/);

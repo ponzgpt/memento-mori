@@ -238,6 +238,7 @@ assert.equal(new Set(stories.map((item) => item.id)).size, stories.length, "stor
   assert.equal(packageJson.scripts["check:version"], "node scripts/check-version.mjs");
   assert.equal(packageJson.scripts["check:web"], "node scripts/check-web.mjs");
   assert.equal(packageJson.scripts["release:notes"], "node scripts/release-notes.mjs");
+  assert.match(packageJson.scripts.test, /node scripts\/test-waybar\.mjs/);
   assert.equal(packageJson.scripts.verify, "node scripts/verify-release.mjs");
   assert.match(releaseDocs, /SHA256SUMS/);
   assert.match(supportMatrixDocs, /source-installable/);

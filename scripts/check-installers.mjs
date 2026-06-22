@@ -22,6 +22,10 @@ function run(command, args) {
   );
 }
 
+function available(command, args = ["--version"]) {
+  return spawnSync(command, args, { encoding: "utf8" }).status === 0;
+}
+
 function maybePowerShell() {
   for (const command of ["pwsh", "powershell"]) {
     const result = spawnSync(command, ["-NoProfile", "-Command", "$PSVersionTable.PSVersion"], {
@@ -44,8 +48,10 @@ for (const file of [
   assert.equal(existsSync(join(root, file)), true, `${file} is missing`);
 }
 
-run("sh", ["-n", "installers/macos/install.sh"]);
-run("sh", ["-n", "installers/macos/uninstall.sh"]);
+if (available("sh", ["-c", "exit 0"])) {
+  run("sh", ["-n", "installers/macos/install.sh"]);
+  run("sh", ["-n", "installers/macos/uninstall.sh"]);
+}
 
 const pkg = JSON.parse(read("package.json"));
 const macInstall = read("installers/macos/install.sh");

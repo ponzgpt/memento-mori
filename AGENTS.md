@@ -19,6 +19,8 @@ Use the canonical gate before handing off code:
 npm run verify
 ```
 
+GitHub Actions runs the gate on Linux, macOS, and Windows.
+
 For narrower loops, the gate is composed from:
 
 ```sh

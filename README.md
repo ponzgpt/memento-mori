@@ -132,7 +132,7 @@ The philosophy and tone rules are in [docs/philosophy.md](docs/philosophy.md).
 npm run verify
 ```
 
-The full command runs the release gates, packages artifacts, checks Waybar output, and verifies checksums. The individual checks are:
+The full command runs the release gates, packages artifacts, checks Waybar output, and verifies checksums. CI runs it on Linux, macOS, and Windows. The individual checks are:
 
 ```sh
 npm run audit
