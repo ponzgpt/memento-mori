@@ -36,6 +36,8 @@ powershell -ExecutionPolicy Bypass -File installers\windows\install.ps1
 
 Release artifacts, when published, are available from GitHub Releases. The source remains Apache-2.0; paid installers are convenience packaging for users who prefer a signed executable and a quieter setup path. Full platform notes are in [docs/install.md](docs/install.md).
 
+Current release readiness is tracked in [docs/support-matrix.md](docs/support-matrix.md) and `release-readiness.json`.
+
 ## What It Does
 
 - Shows a compact `MM` countdown in a tray/status-bar shape.
@@ -119,6 +121,7 @@ The philosophy and tone rules are in [docs/philosophy.md](docs/philosophy.md).
 - [docs/commercial-model.md](docs/commercial-model.md): open source plus paid installer posture.
 - [docs/stack-decisions.md](docs/stack-decisions.md): technical choices and rejected weight.
 - [docs/apple-platform-plan.md](docs/apple-platform-plan.md): macOS/iOS direction.
+- [docs/support-matrix.md](docs/support-matrix.md): platform readiness and release gate.
 - [docs/release.md](docs/release.md): release checklist and artifact rules.
 - [docs/feature-status.csv](docs/feature-status.csv): canonical feature and user-story status sheet.
 
@@ -128,6 +131,7 @@ The philosophy and tone rules are in [docs/philosophy.md](docs/philosophy.md).
 npm run audit
 npm run lint
 npm run check:installers
+npm run check:release
 npm test
 npm run package
 python3 -m py_compile waybar/memento.py

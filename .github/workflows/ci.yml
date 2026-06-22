@@ -33,6 +33,9 @@ jobs:
       - name: Check installers
         run: npm run check:installers
 
+      - name: Check release readiness
+        run: npm run check:release
+
       - name: Test
         run: npm test
 

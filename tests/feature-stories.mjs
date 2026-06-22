@@ -24,6 +24,7 @@ const commercialDocs = readFileSync(join(root, "docs/commercial-model.md"), "utf
 const philosophyDocs = readFileSync(join(root, "docs/philosophy.md"), "utf8");
 const modelDocs = readFileSync(join(root, "docs/model.md"), "utf8");
 const releaseDocs = readFileSync(join(root, "docs/release.md"), "utf8");
+const supportMatrixDocs = readFileSync(join(root, "docs/support-matrix.md"), "utf8");
 const readme = readFileSync(join(root, "README.md"), "utf8");
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const serve = readFileSync(join(root, "scripts/serve.mjs"), "utf8");
@@ -233,7 +234,9 @@ assert.equal(new Set(stories.map((item) => item.id)).size, stories.length, "stor
   assert.match(commercialDocs, /GitHub Releases/);
   assert.match(commercialDocs, /Stripe/);
   assert.equal(packageJson.scripts.package, "node scripts/package-release.mjs");
+  assert.equal(packageJson.scripts["check:release"], "node scripts/check-release-readiness.mjs");
   assert.match(releaseDocs, /SHA256SUMS/);
+  assert.match(supportMatrixDocs, /source-installable/);
 }
 
 {

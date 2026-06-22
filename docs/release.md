@@ -14,6 +14,7 @@ Use this checklist before publishing a GitHub Release or paid convenience instal
 npm run audit
 npm run lint
 npm run check:installers
+npm run check:release
 npm test
 npm run package
 python3 -m py_compile waybar/memento.py
@@ -28,6 +29,12 @@ python3 waybar/memento.py --config config/profile.example.json
 - Windows: signed `.exe` or `.msi`.
 - iOS: TestFlight or App Store build through Apple tooling.
 - Checksums: `SHA256SUMS`.
+
+## Readiness Gate
+
+The current release gate is `source-installable`, tracked in `release-readiness.json` and [support-matrix.md](support-matrix.md).
+
+Do not describe macOS or Windows artifacts as signed installers until signing, notarization, and installer QA are complete.
 
 ## Notes
 

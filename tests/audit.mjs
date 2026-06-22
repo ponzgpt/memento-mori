@@ -10,9 +10,12 @@ const required = [
   "app/index.html",
   "app/main.js",
   "app/memento-core.js",
+  "release-readiness.json",
   "docs/feature-status.csv",
+  "docs/support-matrix.md",
   "scripts/serve.mjs",
   "scripts/package-release.mjs",
+  "scripts/check-release-readiness.mjs",
   "installers/macos/install.sh",
   "installers/macos/uninstall.sh",
   "installers/windows/install.ps1",
@@ -65,6 +68,8 @@ assert.match(readme, /Platform Surfaces/);
 assert.match(readme, /Quality Gates/);
 assert.match(readme, /installers\/macos\/install\.sh/);
 assert.match(readme, /installers\\windows\\install\.ps1/);
+assert.match(readme, /docs\/support-matrix\.md/);
+assert.match(readme, /release-readiness\.json/);
 assert.match(readme, /philosophy/i);
 assert.match(readme, /docs\/install\.md/);
 assert.match(readme, /docs\/philosophy\.md/);
@@ -152,16 +157,38 @@ assert.match(release, /Release Checklist/);
 assert.match(release, /SemVer/);
 assert.match(release, /Apache-2\.0/);
 assert.match(release, /SHA256SUMS/);
+assert.match(release, /source-installable/);
+
+const supportMatrix = readFileSync(join(root, "docs/support-matrix.md"), "utf8");
+assert.match(supportMatrix, /Linux/);
+assert.match(supportMatrix, /macOS/);
+assert.match(supportMatrix, /Windows 11/);
+assert.match(supportMatrix, /iOS/);
+assert.match(supportMatrix, /source-installable/);
+
+const readiness = JSON.parse(readFileSync(join(root, "release-readiness.json"), "utf8"));
+assert.equal(readiness.release_gate, "source-installable");
+assert.equal(readiness.platforms.linux.status, "ready");
+assert.equal(readiness.platforms.macos.status, "source-installable");
+assert.equal(readiness.platforms.windows.status, "source-installable");
+assert.equal(readiness.platforms.ios.status, "documented");
 
 const packageScript = readFileSync(join(root, "scripts/package-release.mjs"), "utf8");
 assert.match(packageScript, /memento-mori-linux-waybar/);
 assert.match(packageScript, /memento-mori-local-app/);
 assert.match(packageScript, /installers\/macos\/install\.sh/);
 assert.match(packageScript, /installers\/windows\/install\.ps1/);
+assert.match(packageScript, /release-readiness\.json/);
+assert.match(packageScript, /docs\/support-matrix\.md/);
 assert.match(packageScript, /SHA256SUMS/);
+
+const readinessScript = readFileSync(join(root, "scripts/check-release-readiness.mjs"), "utf8");
+assert.match(readinessScript, /release-readiness\.json/);
+assert.match(readinessScript, /source-installable/);
 
 const ci = readFileSync(join(root, ".github/workflows/ci.yml"), "utf8");
 assert.match(ci, /npm run audit/);
+assert.match(ci, /npm run check:release/);
 assert.match(ci, /npm run package/);
 assert.match(ci, /actions\/upload-artifact@v4/);
 
@@ -191,7 +218,10 @@ const publicDocs = [
   support,
   security,
   release,
+  supportMatrix,
+  JSON.stringify(readiness),
   packageScript,
+  readinessScript,
   ci,
   releaseWorkflow,
   macInstaller,

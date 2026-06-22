@@ -13,6 +13,7 @@ const artifacts = [
     files: [
       "LICENSE",
       "README.md",
+      "release-readiness.json",
       "CONTRIBUTING.md",
       "SUPPORT.md",
       "SECURITY.md",
@@ -24,6 +25,7 @@ const artifacts = [
       "docs/install.md",
       "docs/model.md",
       "docs/philosophy.md",
+      "docs/support-matrix.md",
       "docs/release.md"
     ]
   },
@@ -32,6 +34,7 @@ const artifacts = [
     files: [
       "LICENSE",
       "README.md",
+      "release-readiness.json",
       "CONTRIBUTING.md",
       "SUPPORT.md",
       "SECURITY.md",
@@ -45,12 +48,14 @@ const artifacts = [
       "installers/windows/install.ps1",
       "installers/windows/uninstall.ps1",
       "scripts/serve.mjs",
+      "scripts/check-release-readiness.mjs",
       "docs/install.md",
       "docs/model.md",
       "docs/philosophy.md",
       "docs/apple-platform-plan.md",
       "docs/commercial-model.md",
       "docs/stack-decisions.md",
+      "docs/support-matrix.md",
       "docs/release.md"
     ]
   }

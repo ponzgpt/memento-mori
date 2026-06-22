@@ -7,6 +7,7 @@
   "scripts": {
     "audit": "node tests/audit.mjs",
     "check:installers": "sh -n installers/macos/install.sh && sh -n installers/macos/uninstall.sh",
+    "check:release": "node scripts/check-release-readiness.mjs",
     "lint": "node tests/lint.mjs",
     "package": "node scripts/package-release.mjs",
     "test": "node tests/memento-core.test.mjs && node tests/feature-stories.mjs && python3 -m unittest tests.test_waybar",
