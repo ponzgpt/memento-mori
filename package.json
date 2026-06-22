@@ -8,6 +8,7 @@
     "audit": "node tests/audit.mjs",
     "check:installers": "sh -n installers/macos/install.sh && sh -n installers/macos/uninstall.sh",
     "check:release": "node scripts/check-release-readiness.mjs",
+    "check:version": "node scripts/check-version.mjs",
     "check:web": "node scripts/check-web.mjs",
     "lint": "node tests/lint.mjs",
     "package": "node scripts/package-release.mjs",

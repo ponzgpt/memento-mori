@@ -16,6 +16,7 @@ const required = [
   "scripts/serve.mjs",
   "scripts/package-release.mjs",
   "scripts/check-release-readiness.mjs",
+  "scripts/check-version.mjs",
   "scripts/check-web.mjs",
   "scripts/verify-release.mjs",
   "installers/macos/install.sh",
@@ -144,6 +145,7 @@ assert.match(stack, /Tauri/);
 
 const contributing = readFileSync(join(root, "CONTRIBUTING.md"), "utf8");
 assert.match(contributing, /npm run audit/);
+assert.match(contributing, /npm run check:version/);
 assert.match(contributing, /Keep profile data local/);
 
 const support = readFileSync(join(root, "SUPPORT.md"), "utf8");
@@ -160,6 +162,7 @@ assert.match(release, /SemVer/);
 assert.match(release, /Apache-2\.0/);
 assert.match(release, /SHA256SUMS/);
 assert.match(release, /source-installable/);
+assert.match(release, /npm run check:version/);
 
 const supportMatrix = readFileSync(join(root, "docs/support-matrix.md"), "utf8");
 assert.match(supportMatrix, /Linux/);
@@ -178,6 +181,7 @@ assert.equal(readiness.platforms.ios.status, "documented");
 const packageScript = readFileSync(join(root, "scripts/package-release.mjs"), "utf8");
 assert.match(packageScript, /memento-mori-linux-waybar/);
 assert.match(packageScript, /memento-mori-local-app/);
+assert.match(packageScript, /pkg\.version/);
 assert.match(packageScript, /installers\/macos\/install\.sh/);
 assert.match(packageScript, /installers\/windows\/install\.ps1/);
 assert.match(packageScript, /release-readiness\.json/);
@@ -187,14 +191,23 @@ assert.match(packageScript, /SHA256SUMS/);
 const readinessScript = readFileSync(join(root, "scripts/check-release-readiness.mjs"), "utf8");
 assert.match(readinessScript, /release-readiness\.json/);
 assert.match(readinessScript, /source-installable/);
+assert.match(readinessScript, /npm run check:version/);
+
+const versionScript = readFileSync(join(root, "scripts/check-version.mjs"), "utf8");
+assert.match(versionScript, /version checks passed/);
+assert.match(versionScript, /app\/index\.html/);
+assert.match(versionScript, /docs\/support-matrix\.md/);
+assert.match(versionScript, /release-readiness\.json/);
 
 const webScript = readFileSync(join(root, "scripts/check-web.mjs"), "utf8");
 assert.match(webScript, /web smoke checks passed/);
 assert.match(webScript, /__health/);
 assert.match(webScript, /no-store/);
+assert.match(webScript, /pkg\.version/);
 
 const verifyScript = readFileSync(join(root, "scripts/verify-release.mjs"), "utf8");
 assert.match(verifyScript, /release verification passed/);
+assert.match(verifyScript, /check:version/);
 assert.match(verifyScript, /git.*diff.*--check/s);
 assert.match(verifyScript, /SHA256SUMS/);
 

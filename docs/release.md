@@ -6,6 +6,7 @@ Use this checklist before publishing a GitHub Release or paid convenience instal
 
 - Update `package.json`.
 - Update asset cache query strings in `app/index.html` when web assets change.
+- Run `npm run check:version` before tagging.
 - Tag the release with SemVer, for example `v1.0.0`.
 
 ## Checks
@@ -21,6 +22,7 @@ npm run audit
 npm run lint
 npm run check:installers
 npm run check:release
+npm run check:version
 npm run check:web
 npm test
 npm run package

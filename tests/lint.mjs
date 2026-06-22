@@ -125,6 +125,7 @@ assert.doesNotMatch(packageJson, /MVP|mockup|prototype/i);
 assert.match(packageJson, /"package": "node scripts\/package-release\.mjs"/);
 assert.match(packageJson, /"check:installers": "sh -n installers\/macos\/install\.sh && sh -n installers\/macos\/uninstall\.sh"/);
 assert.match(packageJson, /"check:release": "node scripts\/check-release-readiness\.mjs"/);
+assert.match(packageJson, /"check:version": "node scripts\/check-version\.mjs"/);
 assert.match(packageJson, /"check:web": "node scripts\/check-web\.mjs"/);
 assert.match(packageJson, /"verify": "node scripts\/verify-release\.mjs"/);
 

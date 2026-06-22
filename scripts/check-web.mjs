@@ -4,8 +4,10 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const root = new URL("..", import.meta.url).pathname;
+const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const port = Number.parseInt(process.env.SMOKE_PORT || "4183", 10);
 const baseUrl = `http://127.0.0.1:${port}`;
+const assetVersion = pkg.version.replaceAll(".", "\\.");
 const forbiddenTerms = [
   ["M", "V", "P"].join(""),
   ["mock", "up"].join(""),
@@ -69,11 +71,11 @@ try {
   assert.match(index.contentType, /text\/html/);
   assert.match(index.cache, /no-store/);
   assert.match(index.text, /Memento Mori widget/);
-  assert.match(index.text, /main\.js\?v=1\.0\.0/);
-  assert.match(index.text, /styles\.css\?v=1\.0\.0/);
+  assert.match(index.text, new RegExp(`main\\.js\\?v=${assetVersion}`));
+  assert.match(index.text, new RegExp(`styles\\.css\\?v=${assetVersion}`));
   assert.doesNotMatch(index.text, forbiddenCopy);
 
-  const cssResponse = await fetchWithRetry("/styles.css?v=1.0.0");
+  const cssResponse = await fetchWithRetry(`/styles.css?v=${pkg.version}`);
   assert.equal(cssResponse.status, 200);
   const css = await read(cssResponse);
   assert.match(css.contentType, /text\/css/);
@@ -81,7 +83,7 @@ try {
   assert.match(css.text, /Geist/);
   assert.doesNotMatch(css.text, forbiddenCopy);
 
-  const jsResponse = await fetchWithRetry("/main.js?v=1.0.0");
+  const jsResponse = await fetchWithRetry(`/main.js?v=${pkg.version}`);
   assert.equal(jsResponse.status, 200);
   const js = await read(jsResponse);
   assert.match(js.contentType, /text\/javascript/);

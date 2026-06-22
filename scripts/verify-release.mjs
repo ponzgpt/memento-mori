@@ -12,6 +12,7 @@ const commands = [
   [npm, ["run", "audit"]],
   [npm, ["run", "check:installers"]],
   [npm, ["run", "check:release"]],
+  [npm, ["run", "check:version"]],
   [npm, ["run", "check:web"]],
   [npm, ["run", "lint"]],
   [npm, ["test"]],
