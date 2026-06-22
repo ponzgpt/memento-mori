@@ -109,6 +109,7 @@ The philosophy and tone rules are in [docs/philosophy.md](docs/philosophy.md).
 - [docs/commercial-model.md](docs/commercial-model.md): open source plus paid installer posture.
 - [docs/stack-decisions.md](docs/stack-decisions.md): technical choices and rejected weight.
 - [docs/apple-platform-plan.md](docs/apple-platform-plan.md): macOS/iOS direction.
+- [docs/release.md](docs/release.md): release checklist and artifact rules.
 - [docs/feature-status.csv](docs/feature-status.csv): canonical feature and user-story status sheet.
 
 ## Quality Gates
@@ -117,6 +118,7 @@ The philosophy and tone rules are in [docs/philosophy.md](docs/philosophy.md).
 npm run audit
 npm run lint
 npm test
+npm run package
 python3 -m py_compile waybar/memento.py
 python3 waybar/memento.py --config config/profile.example.json
 ```

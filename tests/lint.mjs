@@ -122,5 +122,6 @@ assert.match(serve, /127\.0\.0\.1/);
 
 const packageJson = readFileSync(join(root, "package.json"), "utf8");
 assert.doesNotMatch(packageJson, /MVP|mockup|prototype/i);
+assert.match(packageJson, /"package": "node scripts\/package-release\.mjs"/);
 
 console.log("lint checks passed");

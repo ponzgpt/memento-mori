@@ -48,7 +48,7 @@ Expected output is one JSON object with `text`, `tooltip`, `class`, and `percent
 
 Linux release artifacts should be attached to GitHub Releases:
 
-- `memento-mori-linux-*.tar.gz` for the Waybar script, example config, and styles.
+- `memento-mori-linux-waybar-*.tar.gz` for the Waybar script, example config, and styles.
 - Optional AppImage or native package when a desktop shell is published.
 
 The one-command source install remains the reference path for technical users.
@@ -73,6 +73,10 @@ Open `http://127.0.0.1:4173`.
 
 This runs the local desktop component app for visual and behavioral inspection. The native macOS shell should use SwiftUI/AppKit or a small Tauri wrapper while preserving the same calculation model and copy.
 
+The source release artifact for the local component app is:
+
+- `memento-mori-local-app-*.tar.gz`
+
 ## Windows 11
 
 ### Release Artifact
@@ -92,6 +96,10 @@ npm run serve
 Open `http://127.0.0.1:4173`.
 
 This runs the local desktop component app. The native Windows shell should keep the tray surface compact: `MM`, countdown, integrated progress, and a single context-menu palette toggle.
+
+The source release artifact for the local component app is:
+
+- `memento-mori-local-app-*.tar.gz`
 
 ## iOS
 

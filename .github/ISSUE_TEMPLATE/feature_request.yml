@@ -1,0 +1,35 @@
+name: Feature request
+description: Suggest a small, local, status-widget improvement.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Keep requests aligned with a quiet local widget. Accounts, analytics, cloud sync, and clinical scoring are outside the product shape.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What real user problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Keep it compact and platform-aware.
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - iOS
+        - Cross-platform
+    validations:
+      required: true

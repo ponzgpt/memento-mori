@@ -1,0 +1,46 @@
+name: Bug report
+description: Report a reproducible problem with Memento Mori.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include private medical details, diagnoses, documents, or secrets.
+  - type: input
+    id: platform
+    attributes:
+      label: Platform
+      description: OS, version, and bar or shell.
+      placeholder: Arch Linux + Waybar, macOS 15, Windows 11
+    validations:
+      required: true
+  - type: dropdown
+    id: install-path
+    attributes:
+      label: Install path
+      options:
+        - Source install
+        - GitHub Release artifact
+        - Paid convenience installer
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Smoke test output
+      description: Paste terminal output if relevant.
+      render: shell

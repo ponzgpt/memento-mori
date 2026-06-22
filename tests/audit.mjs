@@ -12,6 +12,7 @@ const required = [
   "app/memento-core.js",
   "docs/feature-status.csv",
   "scripts/serve.mjs",
+  "scripts/package-release.mjs",
   "waybar/memento.py",
   "waybar/config.example.jsonc",
   "waybar/style.example.css",
@@ -26,6 +27,11 @@ const required = [
   "docs/apple-platform-plan.md",
   "docs/stack-decisions.md",
   "docs/release.md",
+  ".github/workflows/ci.yml",
+  ".github/workflows/release.yml",
+  ".github/ISSUE_TEMPLATE/bug_report.yml",
+  ".github/ISSUE_TEMPLATE/feature_request.yml",
+  ".github/pull_request_template.md",
   "install.sh"
 ];
 
@@ -69,6 +75,8 @@ assert.match(featureStatus, /latest_result/);
 const install = readFileSync(join(root, "docs/install.md"), "utf8");
 assert.match(install, /Source Install/);
 assert.match(install, /Release Artifact/);
+assert.match(install, /memento-mori-linux-waybar-\*/);
+assert.match(install, /memento-mori-local-app-\*/);
 assert.match(install, /Linux/);
 assert.match(install, /macOS/);
 assert.match(install, /Windows 11/);
@@ -135,6 +143,21 @@ const release = readFileSync(join(root, "docs/release.md"), "utf8");
 assert.match(release, /Release Checklist/);
 assert.match(release, /SemVer/);
 assert.match(release, /Apache-2\.0/);
+assert.match(release, /SHA256SUMS/);
+
+const packageScript = readFileSync(join(root, "scripts/package-release.mjs"), "utf8");
+assert.match(packageScript, /memento-mori-linux-waybar/);
+assert.match(packageScript, /memento-mori-local-app/);
+assert.match(packageScript, /SHA256SUMS/);
+
+const ci = readFileSync(join(root, ".github/workflows/ci.yml"), "utf8");
+assert.match(ci, /npm run audit/);
+assert.match(ci, /npm run package/);
+assert.match(ci, /actions\/upload-artifact@v4/);
+
+const releaseWorkflow = readFileSync(join(root, ".github/workflows/release.yml"), "utf8");
+assert.match(releaseWorkflow, /gh release create/);
+assert.match(releaseWorkflow, /contents: write/);
 
 const publicDocs = [
   readme,
@@ -147,7 +170,10 @@ const publicDocs = [
   contributing,
   support,
   security,
-  release
+  release,
+  packageScript,
+  ci,
+  releaseWorkflow
 ].join("\n");
 assert.doesNotMatch(publicDocs, /MVP|mockup|prototype|prototipo|Codex|Javier|co-development|preview harness|Production Beta/i);
 

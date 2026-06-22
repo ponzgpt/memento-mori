@@ -14,16 +14,19 @@ Use this checklist before publishing a GitHub Release or paid convenience instal
 npm run audit
 npm run lint
 npm test
+npm run package
 python3 -m py_compile waybar/memento.py
 python3 waybar/memento.py --config config/profile.example.json
 ```
 
 ## Artifacts
 
-- Linux: archive, AppImage, or native package.
+- Linux: `memento-mori-linux-waybar-*.tar.gz`, AppImage, or native package.
+- Local desktop app: `memento-mori-local-app-*.tar.gz`.
 - macOS: signed and notarized `.dmg` or `.pkg`.
 - Windows: signed `.exe` or `.msi`.
 - iOS: TestFlight or App Store build through Apple tooling.
+- Checksums: `SHA256SUMS`.
 
 ## Notes
 
