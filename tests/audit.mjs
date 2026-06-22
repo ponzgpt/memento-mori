@@ -15,6 +15,7 @@ const required = [
   "docs/support-matrix.md",
   "scripts/serve.mjs",
   "scripts/package-release.mjs",
+  "scripts/check-installers.mjs",
   "scripts/check-release-readiness.mjs",
   "scripts/check-version.mjs",
   "scripts/check-web.mjs",
@@ -188,6 +189,13 @@ assert.match(packageScript, /release-readiness\.json/);
 assert.match(packageScript, /docs\/support-matrix\.md/);
 assert.match(packageScript, /SHA256SUMS/);
 
+const installerScript = readFileSync(join(root, "scripts/check-installers.mjs"), "utf8");
+assert.match(installerScript, /installer checks passed/);
+assert.match(installerScript, /installers\/macos\/install\.sh/);
+assert.match(installerScript, /installers\/windows\/install\.ps1/);
+assert.match(installerScript, /PowerShell/);
+assert.match(installerScript, /CFBundleShortVersionString/);
+
 const readinessScript = readFileSync(join(root, "scripts/check-release-readiness.mjs"), "utf8");
 assert.match(readinessScript, /release-readiness\.json/);
 assert.match(readinessScript, /source-installable/);
@@ -197,6 +205,7 @@ const versionScript = readFileSync(join(root, "scripts/check-version.mjs"), "utf
 assert.match(versionScript, /version checks passed/);
 assert.match(versionScript, /app\/index\.html/);
 assert.match(versionScript, /docs\/support-matrix\.md/);
+assert.match(versionScript, /installers\/macos\/install\.sh/);
 assert.match(versionScript, /release-readiness\.json/);
 
 const webScript = readFileSync(join(root, "scripts/check-web.mjs"), "utf8");
@@ -223,6 +232,7 @@ assert.match(releaseWorkflow, /contents: write/);
 const macInstaller = readFileSync(join(root, "installers/macos/install.sh"), "utf8");
 assert.match(macInstaller, /APP_BUNDLE=.*\.app/);
 assert.match(macInstaller, /CFBundleName/);
+assert.match(macInstaller, /APP_VERSION=\$\(node -e/);
 assert.match(macInstaller, /node scripts\/serve\.mjs/);
 
 const winInstaller = readFileSync(join(root, "installers/windows/install.ps1"), "utf8");

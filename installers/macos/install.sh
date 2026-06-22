@@ -15,6 +15,8 @@ command -v node >/dev/null 2>&1 || {
   exit 1
 }
 
+APP_VERSION=$(node -e 'process.stdout.write(require(process.argv[1]).version)' "${ROOT_DIR}/package.json")
+
 mkdir -p "${APP_SUPPORT}" "${MACOS}" "${CONTENTS}/Resources" "${HOME}/Applications"
 rm -rf "${APP_SUPPORT}/app" "${APP_SUPPORT}/scripts" "${APP_SUPPORT}/docs"
 
@@ -25,7 +27,7 @@ cp "${ROOT_DIR}/README.md" "${APP_SUPPORT}/README.md"
 cp "${ROOT_DIR}/LICENSE" "${APP_SUPPORT}/LICENSE"
 cp "${ROOT_DIR}/package.json" "${APP_SUPPORT}/package.json"
 
-cat > "${CONTENTS}/Info.plist" <<'PLIST'
+cat > "${CONTENTS}/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -39,7 +41,7 @@ cat > "${CONTENTS}/Info.plist" <<'PLIST'
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleShortVersionString</key>
-  <string>1.0.0</string>
+  <string>${APP_VERSION}</string>
 </dict>
 </plist>
 PLIST

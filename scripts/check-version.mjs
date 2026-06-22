@@ -43,6 +43,11 @@ assert.doesNotMatch(packageScript, /memento-mori-(linux-waybar|local-app)-\d+\.\
 const webScript = read("scripts/check-web.mjs");
 assert.match(webScript, /pkg\.version/);
 
+const macInstaller = read("installers/macos/install.sh");
+assert.match(macInstaller, /APP_VERSION=\$\(node -e/);
+assert.match(macInstaller, /<string>\$\{APP_VERSION\}<\/string>/);
+assert.doesNotMatch(macInstaller, new RegExp(`<string>${version.replaceAll(".", "\\.")}<\\/string>`));
+
 for (const command of ["npm run check:version", "npm run verify"]) {
   assert.ok(manifest.required_common_checks.includes(command), `missing common check: ${command}`);
 }

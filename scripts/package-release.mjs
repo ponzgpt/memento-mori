@@ -48,6 +48,7 @@ const artifacts = [
       "installers/windows/install.ps1",
       "installers/windows/uninstall.ps1",
       "scripts/serve.mjs",
+      "scripts/check-installers.mjs",
       "scripts/check-release-readiness.mjs",
       "scripts/check-version.mjs",
       "scripts/check-web.mjs",

@@ -6,7 +6,7 @@
   "description": "Local Memento Mori countdown widget for status bars, tray surfaces, and platform widgets.",
   "scripts": {
     "audit": "node tests/audit.mjs",
-    "check:installers": "sh -n installers/macos/install.sh && sh -n installers/macos/uninstall.sh",
+    "check:installers": "node scripts/check-installers.mjs",
     "check:release": "node scripts/check-release-readiness.mjs",
     "check:version": "node scripts/check-version.mjs",
     "check:web": "node scripts/check-web.mjs",
