@@ -13,6 +13,7 @@ const required = [
   "app/index.html",
   "app/main.js",
   "app/memento-core.js",
+  "native/macos/MementoMoriMenuBar.swift",
   "release-readiness.json",
   "docs/feature-status.csv",
   "docs/support-matrix.md",
@@ -405,8 +406,16 @@ assert.match(pullRequestTemplate, /Does not describe source-installable artifact
 const macInstaller = readFileSync(join(root, "installers/macos/install.sh"), "utf8");
 assert.match(macInstaller, /APP_BUNDLE=.*\.app/);
 assert.match(macInstaller, /CFBundleName/);
-assert.match(macInstaller, /APP_VERSION=\$\(node -e/);
-assert.match(macInstaller, /node scripts\/serve\.mjs/);
+assert.match(macInstaller, /APP_VERSION=\$\(awk -F/);
+assert.match(macInstaller, /swiftc/);
+assert.match(macInstaller, /MementoMoriMenuBar\.swift/);
+assert.match(macInstaller, /LSUIElement/);
+assert.doesNotMatch(macInstaller, /node scripts\/serve\.mjs/);
+
+const macNativeSource = readFileSync(join(root, "native/macos/MementoMoriMenuBar.swift"), "utf8");
+assert.match(macNativeSource, /NSStatusBar\.system\.statusItem/);
+assert.match(macNativeSource, /UserDefaults/);
+assert.match(macNativeSource, /Settings/);
 
 const winInstaller = readFileSync(join(root, "installers/windows/install.ps1"), "utf8");
 assert.match(winInstaller, /MementoMori/);
@@ -443,6 +452,7 @@ const publicDocs = [
   releaseWorkflow,
   pullRequestTemplate,
   macInstaller,
+  macNativeSource,
   winInstaller
 ].join("\n");
 assert.doesNotMatch(publicDocs, /MVP|mockup|prototype|prototipo|Codex|Javier|co-development|preview harness|Production Beta/i);

@@ -26,7 +26,7 @@ Required before calling it signed/native:
 - Countdown works without a runtime network dependency.
 - Privacy boundaries match `PRIVACY.md`.
 
-The current macOS source installer creates a user-local app bundle. That is useful, but it is not a notarized installer.
+The current macOS source installer compiles a native Swift menu-bar app into a user-local app bundle. That is useful for testing the actual menu-bar behavior, but it is not a signed or notarized installer.
 
 ## Windows 11
 

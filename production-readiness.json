@@ -61,7 +61,7 @@
       "id": "PR-010",
       "name": "balanced functional and visual surface",
       "status": "met",
-      "evidence": ["app/index.html", "app/styles.css", "tests/feature-stories.mjs"]
+      "evidence": ["app/index.html", "app/styles.css", "native/macos/MementoMoriMenuBar.swift", "tests/feature-stories.mjs"]
     },
     {
       "id": "PR-011",

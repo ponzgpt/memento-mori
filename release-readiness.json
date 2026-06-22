@@ -15,7 +15,7 @@
     },
     "macos": {
       "status": "source-installable",
-      "surface": "user-local app bundle backed by the local component app",
+      "surface": "native menu-bar app built from Swift source",
       "source_install": "sh installers/macos/install.sh",
       "release_artifact": "memento-mori-local-app-1.0.0.tar.gz",
       "signed_installer": false,

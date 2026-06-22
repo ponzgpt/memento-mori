@@ -78,7 +78,7 @@ sh installers/macos/install.sh
 
 Open `~/Applications/Memento Mori Widget.app`.
 
-The source installer creates a user-local app bundle backed by the local component app. It requires Node.js. Remove it with:
+The source installer compiles `native/macos/MementoMoriMenuBar.swift` into a user-local app bundle. It runs as a native menu-bar item, stores settings in local user defaults, and does not open the browser workbench. It requires the Swift compiler. Remove it with:
 
 ```sh
 sh installers/macos/uninstall.sh

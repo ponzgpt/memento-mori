@@ -61,21 +61,31 @@ const winUninstall = read("installers/windows/uninstall.ps1");
 
 assert.match(macInstall, /^#!\/usr\/bin\/env sh/);
 assert.match(macInstall, /set -eu/);
-assert.match(macInstall, /command -v node/);
-assert.match(macInstall, /APP_VERSION=\$\(node -e/);
+assert.match(macInstall, /command -v swiftc/);
+assert.match(macInstall, /APP_VERSION=\$\(awk -F/);
 assert.match(macInstall, /CFBundleShortVersionString/);
 assert.match(macInstall, /<string>\$\{APP_VERSION\}<\/string>/);
+assert.match(macInstall, /LSUIElement/);
+assert.match(macInstall, /memento-mori-menubar/);
 assert.doesNotMatch(macInstall, new RegExp(`<string>${pkg.version.replaceAll(".", "\\.")}<\\/string>`));
 assert.match(macInstall, /Library\/Application Support\/Memento Mori/);
 assert.match(macInstall, /APP_NAME="Memento Mori Widget"/);
 assert.match(macInstall, /APP_BUNDLE="\$\{HOME\}\/Applications\/\$\{APP_NAME\}\.app"/);
-assert.match(macInstall, /cp -R "\$\{ROOT_DIR\}\/app"/);
-assert.match(macInstall, /cp -R "\$\{ROOT_DIR\}\/scripts"/);
+assert.match(macInstall, /cp -R "\$\{ROOT_DIR\}\/native"/);
 assert.match(macInstall, /cp -R "\$\{ROOT_DIR\}\/docs"/);
-assert.match(macInstall, /node scripts\/serve\.mjs/);
-assert.match(macInstall, /open "http:\/\/127\.0\.0\.1:\$\{PORT\}\/"/);
-assert.match(macInstall, /trap cleanup EXIT INT TERM/);
+assert.match(macInstall, /swiftc "\$\{ROOT_DIR\}\/native\/macos\/MementoMoriMenuBar\.swift"/);
+assert.doesNotMatch(macInstall, /node scripts\/serve\.mjs/);
+assert.doesNotMatch(macInstall, /open "http:\/\/127\.0\.0\.1/);
 assert.doesNotMatch(macInstall, /curl|wget|Invoke-WebRequest|analytics|telemetry/i);
+
+const macSource = read("native/macos/MementoMoriMenuBar.swift");
+assert.match(macSource, /NSStatusBar\.system\.statusItem/);
+assert.match(macSource, /NSMenu/);
+assert.match(macSource, /Settings/);
+assert.match(macSource, /UserDefaults/);
+if (available("swiftc", ["--version"])) {
+  run("swiftc", ["native/macos/MementoMoriMenuBar.swift", "-o", "/tmp/memento-mori-menubar-check"]);
+}
 
 assert.match(macUninstall, /rm -rf "\$\{APP_BUNDLE\}" "\$\{APP_SUPPORT\}"/);
 assert.match(macUninstall, /Memento Mori removed from macOS user paths/);

@@ -1,6 +1,6 @@
 # Production Readiness
 
-Memento Mori is ready to publish as a source-installable release: the Linux Waybar module, local desktop component app, source installers, documentation, checksums, and release gates are all versioned and auditable.
+Memento Mori is ready to publish as a source-installable release: the Linux Waybar module, native macOS menu-bar app, local desktop component app for Windows testing, source installers, documentation, checksums, and release gates are all versioned and auditable.
 
 It is not yet a signed native-installer release for macOS or Windows, and it is not yet an App Store/TestFlight iOS release. That distinction matters. A death clock should not need marketing fog.
 
@@ -10,7 +10,7 @@ It is not yet a signed native-installer release for macOS or Windows, and it is 
 | --- | --- | --- |
 | Functional summary | Ready | `README.md` opens with what it is, how it works, and install paths. |
 | Linux | Ready | Waybar-compatible JSON module, `./install.sh`, packaged Linux artifact. |
-| macOS | Source-installable | Local app bundle installer exists; signed/notarized installer requirements are documented. |
+| macOS | Source-installable | Native Swift menu-bar app installer exists; signed/notarized installer requirements are documented. |
 | Windows 11 | Source-installable | Start Menu launcher installer exists; signed executable/MSI requirements are documented. |
 | iOS | Documented direction | SwiftUI and WidgetKit direction is documented; native source is not present. |
 | Privacy | Ready | Profile data remains local; payment and runtime data are separate. |

@@ -15,7 +15,8 @@ Initial source-installable release.
 - Auditable model-data document listing exact baseline and offset values.
 - Apache-2.0 source distribution with no accounts, analytics, cloud sync, or runtime countdown API.
 - Privacy policy documenting local profile data, runtime network boundaries, and deletion paths.
-- Source installers for macOS and Windows backed by the local component app.
+- Source installers for native macOS menu-bar testing and Windows local component app testing.
+- Native Swift/AppKit macOS menu-bar source app for testing the actual status-item surface.
 - iOS and Apple-platform direction for a future SwiftUI and WidgetKit implementation.
 - GitHub Actions verification and release workflows.
 - Release artifacts for the Linux Waybar module and local desktop component app.

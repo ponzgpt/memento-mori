@@ -46,7 +46,7 @@ const webScript = read("scripts/check-web.mjs");
 assert.match(webScript, /pkg\.version/);
 
 const macInstaller = read("installers/macos/install.sh");
-assert.match(macInstaller, /APP_VERSION=\$\(node -e/);
+assert.match(macInstaller, /APP_VERSION=\$\(awk -F/);
 assert.match(macInstaller, /<string>\$\{APP_VERSION\}<\/string>/);
 assert.doesNotMatch(macInstaller, new RegExp(`<string>${version.replaceAll(".", "\\.")}<\\/string>`));
 

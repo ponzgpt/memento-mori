@@ -6,7 +6,7 @@ Date checked: 2026-06-19.
 
 Apple surfaces should feel native, quiet, and glanceable:
 
-- macOS menu-bar app
+- macOS menu-bar app: source-installable through the Swift/AppKit app in `native/macos/`
 - iOS app
 - iOS Lock Screen and Home Screen widgets
 - Apple silicon Mac availability where the iOS app behaves well
@@ -27,7 +27,7 @@ The Apple version should follow the same product discipline as the Linux widget:
 2. Build the iOS app in SwiftUI.
 3. Add WidgetKit countdown widgets.
 4. Make the iOS app available on Apple silicon Macs where it works well.
-5. Add a dedicated macOS menu-bar shell if the iOS-on-Mac path cannot deliver the right controls.
+5. Keep the dedicated macOS menu-bar shell aligned with the iOS widgets if the iOS-on-Mac path cannot deliver the right controls.
 
 ## Design Rules
 

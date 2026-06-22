@@ -5,7 +5,7 @@ This matrix describes what is actually release-ready in the repository.
 | Platform | Status | User-facing surface | Source install | Release artifact |
 | --- | --- | --- | --- | --- |
 | Linux | Ready | Waybar-compatible custom JSON module | `./install.sh` | `memento-mori-linux-waybar-1.0.0.tar.gz` |
-| macOS | source-installable | user-local app bundle backed by the local component app | `sh installers/macos/install.sh` | `memento-mori-local-app-1.0.0.tar.gz` |
+| macOS | source-installable | native menu-bar app built from Swift source | `sh installers/macos/install.sh` | `memento-mori-local-app-1.0.0.tar.gz` |
 | Windows 11 | source-installable | Start Menu launcher backed by the local component app | `powershell -ExecutionPolicy Bypass -File installers\windows\install.ps1` | `memento-mori-local-app-1.0.0.tar.gz` |
 | iOS | Documented | SwiftUI and WidgetKit direction | not available | not available |
 

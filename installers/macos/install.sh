@@ -6,26 +6,29 @@ APP_SUPPORT="${HOME}/Library/Application Support/Memento Mori"
 APP_BUNDLE="${HOME}/Applications/${APP_NAME}.app"
 CONTENTS="${APP_BUNDLE}/Contents"
 MACOS="${CONTENTS}/MacOS"
+EXECUTABLE="${MACOS}/memento-mori-menubar"
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 ROOT_DIR=$(CDPATH= cd -- "${SCRIPT_DIR}/../.." && pwd)
 
-command -v node >/dev/null 2>&1 || {
-  printf '%s\n' "Node.js is required for the source install." >&2
+command -v swiftc >/dev/null 2>&1 || {
+  printf '%s\n' "Swift compiler is required for the macOS menu-bar source install." >&2
   exit 1
 }
 
-APP_VERSION=$(node -e 'process.stdout.write(require(process.argv[1]).version)' "${ROOT_DIR}/package.json")
+APP_VERSION=$(awk -F'"' '/"version":/ { print $4; exit }' "${ROOT_DIR}/package.json")
 
 mkdir -p "${APP_SUPPORT}" "${MACOS}" "${CONTENTS}/Resources" "${HOME}/Applications"
-rm -rf "${APP_SUPPORT}/app" "${APP_SUPPORT}/scripts" "${APP_SUPPORT}/docs"
+rm -rf "${APP_SUPPORT}/app" "${APP_SUPPORT}/scripts" "${APP_SUPPORT}/docs" "${APP_SUPPORT}/native"
+rm -f "${MACOS}/memento-mori"
 
-cp -R "${ROOT_DIR}/app" "${APP_SUPPORT}/app"
-cp -R "${ROOT_DIR}/scripts" "${APP_SUPPORT}/scripts"
 cp -R "${ROOT_DIR}/docs" "${APP_SUPPORT}/docs"
+cp -R "${ROOT_DIR}/native" "${APP_SUPPORT}/native"
 cp "${ROOT_DIR}/README.md" "${APP_SUPPORT}/README.md"
 cp "${ROOT_DIR}/LICENSE" "${APP_SUPPORT}/LICENSE"
 cp "${ROOT_DIR}/package.json" "${APP_SUPPORT}/package.json"
+
+swiftc "${ROOT_DIR}/native/macos/MementoMoriMenuBar.swift" -o "${EXECUTABLE}"
 
 cat > "${CONTENTS}/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
@@ -33,7 +36,7 @@ cat > "${CONTENTS}/Info.plist" <<PLIST
 <plist version="1.0">
 <dict>
   <key>CFBundleExecutable</key>
-  <string>memento-mori</string>
+  <string>memento-mori-menubar</string>
   <key>CFBundleIdentifier</key>
   <string>com.ponzgpt.mementomori</string>
   <key>CFBundleName</key>
@@ -42,32 +45,12 @@ cat > "${CONTENTS}/Info.plist" <<PLIST
   <string>APPL</string>
   <key>CFBundleShortVersionString</key>
   <string>${APP_VERSION}</string>
+  <key>LSUIElement</key>
+  <true/>
 </dict>
 </plist>
 PLIST
-
-cat > "${MACOS}/memento-mori" <<'APP'
-#!/usr/bin/env sh
-set -eu
-
-APP_SUPPORT="${HOME}/Library/Application Support/Memento Mori"
-PORT="${PORT:-4173}"
-
-cd "${APP_SUPPORT}"
-node scripts/serve.mjs "${PORT}" &
-SERVER_PID=$!
-
-cleanup() {
-  kill "${SERVER_PID}" >/dev/null 2>&1 || true
-}
-trap cleanup EXIT INT TERM
-
-sleep 1
-open "http://127.0.0.1:${PORT}/"
-wait "${SERVER_PID}"
-APP
-
-chmod +x "${MACOS}/memento-mori"
+chmod +x "${EXECUTABLE}"
 
 cat <<EOF
 Memento Mori installed for macOS.

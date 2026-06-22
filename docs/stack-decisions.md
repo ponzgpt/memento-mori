@@ -6,6 +6,7 @@ Decision timestamp: 2026-06-19T21:32:53+0100.
 
 - Static HTML, CSS, and JavaScript power the local desktop component app. The surface is small, dependency-free, inspectable, and easy to package later.
 - A small Python emitter powers the Linux Waybar integration. Python is commonly available on target systems, emits Waybar JSON cleanly, and avoids a resident desktop process.
+- A small Swift/AppKit source app powers the macOS menu-bar install. It gives macOS users the actual status item behavior without Electron, a browser shell, or a local web server.
 - A shell installer copies one executable script and creates one config file. That matches the Unix expectation of explicit files in user-owned paths.
 
 ## Native Packaging Direction

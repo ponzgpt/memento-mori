@@ -55,6 +55,7 @@ const artifacts = [
       "app/main.js",
       "app/memento-core.js",
       "app/styles.css",
+      "native/macos/MementoMoriMenuBar.swift",
       "installers/macos/install.sh",
       "installers/macos/uninstall.sh",
       "installers/windows/install.ps1",

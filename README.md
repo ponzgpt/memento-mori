@@ -1,6 +1,6 @@
 # Memento Mori Widget
 
-Memento Mori is a local status-bar widget that places an approximate life countdown next to the system clock. It uses a birth date, country context, and a few coarse lifestyle rows to render years, days, hours, minutes, and seconds remaining. Linux users can install the Waybar module from source with `./install.sh`; macOS and Windows users can run the desktop component app from source; paid convenience installers are distributed through release artifacts when available.
+Memento Mori is a local status-bar widget that places an approximate life countdown next to the system clock. It uses a birth date, country context, and a few coarse lifestyle rows to render years, days, hours, minutes, and seconds remaining. Linux users can install the Waybar module from source with `./install.sh`; macOS users can install a native menu-bar app from source; Windows users can run the desktop component app from source; paid convenience installers are distributed through release artifacts when available.
 
 This is a reflective interface, not a prophecy. It is not medical, legal, actuarial, insurance, or mental-health advice.
 
@@ -14,7 +14,7 @@ cd memento-mori
 ./install.sh
 ```
 
-Run the local desktop component app on Linux, macOS, or Windows:
+Run the local desktop component app on Linux or Windows:
 
 ```sh
 git clone https://github.com/ponzgpt/memento-mori.git
@@ -24,7 +24,7 @@ npm run serve
 
 Open `http://127.0.0.1:4173`.
 
-macOS and Windows also include source installers:
+macOS and Windows also include source installers. On macOS this builds a native menu-bar app:
 
 ```sh
 sh installers/macos/install.sh
@@ -55,7 +55,7 @@ Production scope is tracked in [docs/production-readiness.md](docs/production-re
 | Platform | Primary path | Source path |
 | --- | --- | --- |
 | Linux | Waybar-compatible custom JSON module | `./install.sh` |
-| macOS | Menu-bar/widget packaging from release artifacts | `npm run serve` for the desktop component app |
+| macOS | Native menu-bar app | `sh installers/macos/install.sh` |
 | Windows 11 | Tray-app packaging from release artifacts | `npm run serve` for the desktop component app |
 | iOS | WidgetKit app distribution through Apple tooling | SwiftUI/WidgetKit plan in [docs/apple-platform-plan.md](docs/apple-platform-plan.md) |
 
