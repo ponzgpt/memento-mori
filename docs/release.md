@@ -40,7 +40,7 @@ python3 waybar/memento.py --config config/profile.example.json
 - Windows: signed `.exe` or `.msi`.
 - iOS: TestFlight or App Store build through Apple tooling.
 - Checksums: `SHA256SUMS`.
-- Machine-readable artifact manifest: `release-manifest.json`.
+- Machine-readable artifact manifest: `release-manifest.json`, including artifact checksums, platform readiness, production state, native-installer state, and production requirement statuses.
 
 ## Readiness Gate
 

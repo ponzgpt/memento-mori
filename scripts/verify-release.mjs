@@ -81,9 +81,20 @@ const sums = readFileSync(sumsPath, "utf8")
 
 assert.ok(sums.length >= 2, "expected at least two release artifacts");
 
+const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+const production = JSON.parse(readFileSync(join(root, "production-readiness.json"), "utf8"));
 const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
-assert.equal(manifest.version, JSON.parse(readFileSync(join(root, "package.json"), "utf8")).version);
+assert.equal(manifest.version, pkg.version);
 assert.equal(manifest.release_gate, "source-installable");
+assert.equal(manifest.production_state, production.release_state);
+assert.equal(manifest.native_installer_state, production.native_installer_state);
+assert.equal(Array.isArray(manifest.production_requirements), true);
+assert.equal(manifest.production_requirements.length, production.requirements.length);
+for (const requirement of production.requirements) {
+  const manifestRequirement = manifest.production_requirements.find((item) => item.id === requirement.id);
+  assert.ok(manifestRequirement, `${requirement.id} is missing from release-manifest.json`);
+  assert.equal(manifestRequirement.status, requirement.status, `${requirement.id} status mismatch`);
+}
 assert.match(manifest.disclaimer, /mental-health advice/);
 assert.equal(Array.isArray(manifest.artifacts), true);
 assert.equal(manifest.artifacts.length, sums.length);

@@ -6,6 +6,7 @@ import { gzipSync } from "node:zlib";
 const root = new URL("..", import.meta.url).pathname;
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const readiness = JSON.parse(readFileSync(join(root, "release-readiness.json"), "utf8"));
+const production = JSON.parse(readFileSync(join(root, "production-readiness.json"), "utf8"));
 const dist = join(root, "dist");
 
 const artifacts = [
@@ -165,6 +166,12 @@ writeFileSync(
     name: pkg.name,
     version: pkg.version,
     release_gate: readiness.release_gate,
+    production_state: production.release_state,
+    native_installer_state: production.native_installer_state,
+    production_requirements: production.requirements.map((item) => ({
+      id: item.id,
+      status: item.status
+    })),
     build_epoch: "1970-01-01T00:00:00.000Z",
     artifacts: sums.map((item) => ({
       file: item.fileName,

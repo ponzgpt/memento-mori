@@ -14,12 +14,14 @@ function readJson(path) {
 
 const pkg = readJson("package.json");
 const manifest = readJson("release-readiness.json");
+const production = readJson("production-readiness.json");
 const version = pkg.version;
 const localArtifact = `memento-mori-local-app-${version}.tar.gz`;
 const linuxArtifact = `memento-mori-linux-waybar-${version}.tar.gz`;
 
 assert.match(version, /^\d+\.\d+\.\d+$/, "package.json version must be SemVer");
 assert.equal(manifest.version, version, "release-readiness.json version must match package.json");
+assert.equal(production.version, version, "production-readiness.json version must match package.json");
 assert.equal(manifest.platforms.linux.release_artifact, linuxArtifact);
 assert.equal(manifest.platforms.macos.release_artifact, localArtifact);
 assert.equal(manifest.platforms.windows.release_artifact, localArtifact);
