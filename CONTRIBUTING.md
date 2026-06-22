@@ -7,6 +7,12 @@ Memento Mori accepts pull requests that keep the widget small, local, and useful
 Run:
 
 ```sh
+npm run verify
+```
+
+For smaller local loops, the same gate is composed from:
+
+```sh
 npm run audit
 npm run lint
 npm run check:installers

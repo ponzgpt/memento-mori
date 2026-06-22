@@ -24,31 +24,8 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Audit
-        run: npm run audit
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Check installers
-        run: npm run check:installers
-
-      - name: Check release readiness
-        run: npm run check:release
-
-      - name: Check local app server
-        run: npm run check:web
-
-      - name: Test
-        run: npm test
-
-      - name: Waybar smoke
-        run: |
-          python3 -m py_compile waybar/memento.py
-          python3 waybar/memento.py --config config/profile.example.json
-
-      - name: Package release artifacts
-        run: npm run package
+      - name: Verify release
+        run: npm run verify
 
       - name: Upload packaged artifacts
         uses: actions/upload-artifact@v4

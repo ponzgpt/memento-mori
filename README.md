@@ -128,6 +128,12 @@ The philosophy and tone rules are in [docs/philosophy.md](docs/philosophy.md).
 ## Quality Gates
 
 ```sh
+npm run verify
+```
+
+The full command runs the release gates, packages artifacts, checks Waybar output, and verifies checksums. The individual checks are:
+
+```sh
 npm run audit
 npm run lint
 npm run check:installers

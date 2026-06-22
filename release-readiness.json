@@ -46,6 +46,7 @@
     }
   },
   "required_common_checks": [
+    "npm run verify",
     "npm run audit",
     "npm run lint",
     "npm test",

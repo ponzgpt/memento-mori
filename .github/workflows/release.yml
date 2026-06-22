@@ -21,19 +21,8 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Verify
-        run: |
-          npm run audit
-          npm run lint
-          npm run check:installers
-          npm run check:release
-          npm run check:web
-          npm test
-          python3 -m py_compile waybar/memento.py
-          python3 waybar/memento.py --config config/profile.example.json
-
-      - name: Package release artifacts
-        run: npm run package
+      - name: Verify release
+        run: npm run verify
 
       - name: Create GitHub Release
         env:

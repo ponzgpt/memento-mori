@@ -14,6 +14,12 @@ Signed macOS and Windows installers are a packaging layer over the same source. 
 Every release must pass:
 
 ```sh
+npm run verify
+```
+
+The canonical gate runs:
+
+```sh
 npm run audit
 npm run lint
 npm test

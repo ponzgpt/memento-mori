@@ -50,6 +50,7 @@ const artifacts = [
       "scripts/serve.mjs",
       "scripts/check-release-readiness.mjs",
       "scripts/check-web.mjs",
+      "scripts/verify-release.mjs",
       "docs/install.md",
       "docs/model.md",
       "docs/philosophy.md",

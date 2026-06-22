@@ -40,6 +40,7 @@ assert.equal(manifest.platforms.ios.source_install, null);
 assert.equal(existsSync(join(root, "docs/apple-platform-plan.md")), true);
 
 for (const command of [
+  "npm run verify",
   "npm run audit",
   "npm run lint",
   "npm test",

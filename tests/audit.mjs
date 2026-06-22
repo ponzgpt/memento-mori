@@ -17,6 +17,7 @@ const required = [
   "scripts/package-release.mjs",
   "scripts/check-release-readiness.mjs",
   "scripts/check-web.mjs",
+  "scripts/verify-release.mjs",
   "installers/macos/install.sh",
   "installers/macos/uninstall.sh",
   "installers/windows/install.ps1",
@@ -192,14 +193,17 @@ assert.match(webScript, /web smoke checks passed/);
 assert.match(webScript, /__health/);
 assert.match(webScript, /no-store/);
 
+const verifyScript = readFileSync(join(root, "scripts/verify-release.mjs"), "utf8");
+assert.match(verifyScript, /release verification passed/);
+assert.match(verifyScript, /git.*diff.*--check/s);
+assert.match(verifyScript, /SHA256SUMS/);
+
 const ci = readFileSync(join(root, ".github/workflows/ci.yml"), "utf8");
-assert.match(ci, /npm run audit/);
-assert.match(ci, /npm run check:release/);
-assert.match(ci, /npm run check:web/);
-assert.match(ci, /npm run package/);
+assert.match(ci, /npm run verify/);
 assert.match(ci, /actions\/upload-artifact@v4/);
 
 const releaseWorkflow = readFileSync(join(root, ".github/workflows/release.yml"), "utf8");
+assert.match(releaseWorkflow, /npm run verify/);
 assert.match(releaseWorkflow, /gh release create/);
 assert.match(releaseWorkflow, /contents: write/);
 
@@ -230,6 +234,7 @@ const publicDocs = [
   packageScript,
   readinessScript,
   webScript,
+  verifyScript,
   ci,
   releaseWorkflow,
   macInstaller,

@@ -11,6 +11,12 @@ Use this checklist before publishing a GitHub Release or paid convenience instal
 ## Checks
 
 ```sh
+npm run verify
+```
+
+This is the canonical release gate. It runs the individual checks below, creates release artifacts, and verifies checksums:
+
+```sh
 npm run audit
 npm run lint
 npm run check:installers
