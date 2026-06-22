@@ -17,6 +17,7 @@ Initial source-installable release.
 - iOS and Apple-platform direction for a future SwiftUI and WidgetKit implementation.
 - GitHub Actions verification and release workflows.
 - Release artifacts for the Linux Waybar module and local desktop component app.
+- Machine-readable release manifest with artifact checksums and platform readiness.
 
 ### Verified
 

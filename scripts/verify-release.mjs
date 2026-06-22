@@ -65,7 +65,9 @@ for (const [command, args] of commands) {
 }
 
 const sumsPath = join(dist, "SHA256SUMS");
+const manifestPath = join(dist, "release-manifest.json");
 assert.equal(existsSync(sumsPath), true, "dist/SHA256SUMS is missing");
+assert.equal(existsSync(manifestPath), true, "dist/release-manifest.json is missing");
 
 const sums = readFileSync(sumsPath, "utf8")
   .trim()
@@ -78,10 +80,21 @@ const sums = readFileSync(sumsPath, "utf8")
 
 assert.ok(sums.length >= 2, "expected at least two release artifacts");
 
+const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+assert.equal(manifest.version, JSON.parse(readFileSync(join(root, "package.json"), "utf8")).version);
+assert.equal(manifest.release_gate, "source-installable");
+assert.match(manifest.disclaimer, /mental-health advice/);
+assert.equal(Array.isArray(manifest.artifacts), true);
+assert.equal(manifest.artifacts.length, sums.length);
+
 for (const item of sums) {
   const artifact = join(dist, item.file);
   assert.equal(existsSync(artifact), true, `${item.file} is missing`);
   assert.equal(sha256(artifact), item.digest, `${item.file} checksum mismatch`);
+  const manifestArtifact = manifest.artifacts.find((entry) => entry.file === item.file);
+  assert.ok(manifestArtifact, `${item.file} is missing from release-manifest.json`);
+  assert.equal(manifestArtifact.sha256, item.digest, `${item.file} manifest checksum mismatch`);
+  assert.equal(manifestArtifact.size, readFileSync(artifact).length, `${item.file} manifest size mismatch`);
 }
 
 console.log("\nrelease verification passed");

@@ -5,6 +5,7 @@ import { gzipSync } from "node:zlib";
 
 const root = new URL("..", import.meta.url).pathname;
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+const readiness = JSON.parse(readFileSync(join(root, "release-readiness.json"), "utf8"));
 const dist = join(root, "dist");
 
 const artifacts = [
@@ -133,11 +134,35 @@ const sums = artifacts.map((artifact) => {
   const bytes = readFileSync(outputPath);
   const digest = createHash("sha256").update(bytes).digest("hex");
   const fileName = outputPath.slice(dist.length + 1);
-  return `${digest}  ${fileName}`;
+  return {
+    digest,
+    fileName,
+    size: bytes.length
+  };
 });
 
-writeFileSync(join(dist, "SHA256SUMS"), `${sums.join("\n")}\n`);
+writeFileSync(
+  join(dist, "SHA256SUMS"),
+  `${sums.map((item) => `${item.digest}  ${item.fileName}`).join("\n")}\n`
+);
 
-for (const line of sums) {
-  console.log(line);
+writeFileSync(
+  join(dist, "release-manifest.json"),
+  `${JSON.stringify({
+    name: pkg.name,
+    version: pkg.version,
+    release_gate: readiness.release_gate,
+    build_epoch: "1970-01-01T00:00:00.000Z",
+    artifacts: sums.map((item) => ({
+      file: item.fileName,
+      sha256: item.digest,
+      size: item.size
+    })),
+    platforms: readiness.platforms,
+    disclaimer: readiness.disclaimer
+  }, null, 2)}\n`
+);
+
+for (const item of sums) {
+  console.log(`${item.digest}  ${item.fileName}`);
 }
