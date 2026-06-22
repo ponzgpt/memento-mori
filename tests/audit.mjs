@@ -6,6 +6,7 @@ const root = new URL("..", import.meta.url).pathname;
 const required = [
   "LICENSE",
   "README.md",
+  "CHANGELOG.md",
   "AGENTS.md",
   "app/index.html",
   "app/main.js",
@@ -86,7 +87,20 @@ assert.match(readme, /philosophy/i);
 assert.match(readme, /docs\/install\.md/);
 assert.match(readme, /docs\/philosophy\.md/);
 assert.match(readme, /docs\/model\.md/);
+assert.match(readme, /CHANGELOG\.md/);
 assert.doesNotMatch(readme, /MVP|mockup|prototype|Production Beta/i);
+
+const changelog = readFileSync(join(root, "CHANGELOG.md"), "utf8");
+assert.match(changelog, /# Changelog/);
+assert.match(changelog, /1\.0\.0 - 2026-06-22/);
+assert.match(changelog, /Initial source-installable release/);
+assert.match(changelog, /Linux: ready/);
+assert.match(changelog, /macOS: source-installable/);
+assert.match(changelog, /Windows 11: source-installable/);
+assert.match(changelog, /iOS: documented direction only/);
+assert.match(changelog, /npm run verify/);
+assert.match(changelog, /not medical, legal, actuarial, insurance, or mental-health advice/i);
+assert.doesNotMatch(changelog, /MVP|mockup|prototype|prototipo|Codex|Javier|co-development|preview harness|Production Beta/i);
 
 const featureStatus = readFileSync(join(root, "docs/feature-status.csv"), "utf8");
 assert.match(featureStatus, /MM-US-001/);
@@ -172,6 +186,7 @@ assert.match(release, /Apache-2\.0/);
 assert.match(release, /SHA256SUMS/);
 assert.match(release, /source-installable/);
 assert.match(release, /npm run check:version/);
+assert.match(release, /CHANGELOG\.md/);
 
 const supportMatrix = readFileSync(join(root, "docs/support-matrix.md"), "utf8");
 assert.match(supportMatrix, /Linux/);
@@ -190,6 +205,7 @@ assert.equal(readiness.platforms.ios.status, "documented");
 const packageScript = readFileSync(join(root, "scripts/package-release.mjs"), "utf8");
 assert.match(packageScript, /memento-mori-linux-waybar/);
 assert.match(packageScript, /memento-mori-local-app/);
+assert.match(packageScript, /CHANGELOG\.md/);
 assert.match(packageScript, /pkg\.version/);
 assert.match(packageScript, /installers\/macos\/install\.sh/);
 assert.match(packageScript, /installers\/windows\/install\.ps1/);
@@ -256,6 +272,7 @@ assert.match(winInstaller, /scripts\\serve\.mjs/);
 
 const publicDocs = [
   readme,
+  changelog,
   install,
   model,
   philosophy,

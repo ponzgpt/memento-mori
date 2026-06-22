@@ -13,6 +13,7 @@ const artifacts = [
     files: [
       "LICENSE",
       "README.md",
+      "CHANGELOG.md",
       "release-readiness.json",
       "CONTRIBUTING.md",
       "SUPPORT.md",
@@ -34,6 +35,7 @@ const artifacts = [
     files: [
       "LICENSE",
       "README.md",
+      "CHANGELOG.md",
       "release-readiness.json",
       "CONTRIBUTING.md",
       "SUPPORT.md",

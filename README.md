@@ -124,6 +124,7 @@ The philosophy and tone rules are in [docs/philosophy.md](docs/philosophy.md).
 - [docs/support-matrix.md](docs/support-matrix.md): platform readiness and release gate.
 - [docs/release.md](docs/release.md): release checklist and artifact rules.
 - [docs/feature-status.csv](docs/feature-status.csv): canonical feature and user-story status sheet.
+- [CHANGELOG.md](CHANGELOG.md): release history.
 
 ## Quality Gates
 

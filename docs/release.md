@@ -48,6 +48,7 @@ Do not describe macOS or Windows artifacts as signed installers until signing, n
 ## Notes
 
 - Include source archive links.
+- Update `CHANGELOG.md`.
 - State supported platforms clearly.
 - Preserve Apache-2.0 notices.
 - Keep disclaimers intact.
