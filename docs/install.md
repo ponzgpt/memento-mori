@@ -7,6 +7,8 @@ Memento Mori has two distribution paths:
 
 The software is provided as-is. There is no support entitlement. Issues and pull requests are welcome when they fit the project direction; forks are allowed.
 
+Profile data stays local. Privacy boundaries and deletion paths are documented in [../PRIVACY.md](../PRIVACY.md).
+
 ## Linux
 
 ### Source Install

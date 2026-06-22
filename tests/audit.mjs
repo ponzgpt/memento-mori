@@ -7,6 +7,7 @@ const required = [
   "LICENSE",
   "README.md",
   "CHANGELOG.md",
+  "PRIVACY.md",
   "AGENTS.md",
   "app/index.html",
   "app/main.js",
@@ -92,13 +93,25 @@ assert.match(readme, /philosophy/i);
 assert.match(readme, /docs\/install\.md/);
 assert.match(readme, /docs\/philosophy\.md/);
 assert.match(readme, /docs\/model\.md/);
+assert.match(readme, /PRIVACY\.md/);
 assert.match(readme, /CHANGELOG\.md/);
 assert.doesNotMatch(readme, /MVP|mockup|prototype|Production Beta/i);
+
+const privacy = readFileSync(join(root, "PRIVACY.md"), "utf8");
+assert.match(privacy, /local-first widget/);
+assert.match(privacy, /birth date/);
+assert.match(privacy, /browser local storage/);
+assert.match(privacy, /127\.0\.0\.1/);
+assert.match(privacy, /should not transmit profile values/);
+assert.match(privacy, /Stripe/);
+assert.match(privacy, /not medical, legal, actuarial, insurance, or mental-health advice/i);
+assert.doesNotMatch(privacy, /MVP|mockup|prototype|prototipo|Codex|Javier|co-development|preview harness|Production Beta/i);
 
 const changelog = readFileSync(join(root, "CHANGELOG.md"), "utf8");
 assert.match(changelog, /# Changelog/);
 assert.match(changelog, /1\.0\.0 - 2026-06-22/);
 assert.match(changelog, /Initial source-installable release/);
+assert.match(changelog, /Privacy policy/);
 assert.match(changelog, /Linux: ready/);
 assert.match(changelog, /macOS: source-installable/);
 assert.match(changelog, /Windows 11: source-installable/);
@@ -128,6 +141,7 @@ assert.match(install, /GitHub Releases/);
 assert.match(install, /installers\/macos\/install\.sh/);
 assert.match(install, /installers\\windows\\install\.ps1/);
 assert.match(install, /provided as-is/i);
+assert.match(install, /PRIVACY\.md/);
 assert.doesNotMatch(install, /MVP|mockup|prototype|not shipped yet/i);
 
 const model = readFileSync(join(root, "docs/model.md"), "utf8");
@@ -181,10 +195,12 @@ assert.match(contributing, /Keep profile data local/);
 const support = readFileSync(join(root, "SUPPORT.md"), "utf8");
 assert.match(support, /provided as-is/);
 assert.match(support, /no support entitlement/i);
+assert.match(support, /PRIVACY\.md/);
 
 const security = readFileSync(join(root, "SECURITY.md"), "utf8");
 assert.match(security, /local widget/);
 assert.match(security, /runtime network service/);
+assert.match(security, /PRIVACY\.md/);
 
 const release = readFileSync(join(root, "docs/release.md"), "utf8");
 assert.match(release, /Release Checklist/);
@@ -216,6 +232,7 @@ const packageScript = readFileSync(join(root, "scripts/package-release.mjs"), "u
 assert.match(packageScript, /memento-mori-linux-waybar/);
 assert.match(packageScript, /memento-mori-local-app/);
 assert.match(packageScript, /CHANGELOG\.md/);
+assert.match(packageScript, /PRIVACY\.md/);
 assert.match(packageScript, /release-manifest\.json/);
 assert.match(packageScript, /build_epoch/);
 assert.match(packageScript, /pkg\.version/);
@@ -311,6 +328,7 @@ assert.match(winInstaller, /scripts\\serve\.mjs/);
 
 const publicDocs = [
   readme,
+  privacy,
   changelog,
   install,
   model,

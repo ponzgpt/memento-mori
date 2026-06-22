@@ -13,3 +13,5 @@ Good issue reports include:
 - Terminal output from the smoke test.
 
 Do not include private medical details, diagnoses, documents, or personal health history. The model is approximate and reflective only.
+
+Privacy boundaries and local profile paths are documented in [PRIVACY.md](PRIVACY.md).

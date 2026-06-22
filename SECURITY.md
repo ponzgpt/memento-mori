@@ -2,6 +2,8 @@
 
 Memento Mori is a local widget. It should not require accounts, telemetry, analytics, or a runtime network service for the countdown.
 
+Profile privacy boundaries are documented in [PRIVACY.md](PRIVACY.md).
+
 ## Reporting
 
 For security-sensitive reports, use GitHub private vulnerability reporting if it is enabled on the repository. If it is not enabled, open a minimal public issue that describes the affected component without posting exploit details or private data.
