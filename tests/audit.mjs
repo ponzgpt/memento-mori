@@ -13,6 +13,10 @@ const required = [
   "docs/feature-status.csv",
   "scripts/serve.mjs",
   "scripts/package-release.mjs",
+  "installers/macos/install.sh",
+  "installers/macos/uninstall.sh",
+  "installers/windows/install.ps1",
+  "installers/windows/uninstall.ps1",
   "waybar/memento.py",
   "waybar/config.example.jsonc",
   "waybar/style.example.css",
@@ -59,6 +63,8 @@ assert.match(readme, /not medical, legal, actuarial, insurance/i);
 assert.match(readme, /What It Does/);
 assert.match(readme, /Platform Surfaces/);
 assert.match(readme, /Quality Gates/);
+assert.match(readme, /installers\/macos\/install\.sh/);
+assert.match(readme, /installers\\windows\\install\.ps1/);
 assert.match(readme, /philosophy/i);
 assert.match(readme, /docs\/install\.md/);
 assert.match(readme, /docs\/philosophy\.md/);
@@ -82,6 +88,8 @@ assert.match(install, /macOS/);
 assert.match(install, /Windows 11/);
 assert.match(install, /iOS/);
 assert.match(install, /GitHub Releases/);
+assert.match(install, /installers\/macos\/install\.sh/);
+assert.match(install, /installers\\windows\\install\.ps1/);
 assert.match(install, /provided as-is/i);
 assert.doesNotMatch(install, /MVP|mockup|prototype|not shipped yet/i);
 
@@ -148,6 +156,8 @@ assert.match(release, /SHA256SUMS/);
 const packageScript = readFileSync(join(root, "scripts/package-release.mjs"), "utf8");
 assert.match(packageScript, /memento-mori-linux-waybar/);
 assert.match(packageScript, /memento-mori-local-app/);
+assert.match(packageScript, /installers\/macos\/install\.sh/);
+assert.match(packageScript, /installers\/windows\/install\.ps1/);
 assert.match(packageScript, /SHA256SUMS/);
 
 const ci = readFileSync(join(root, ".github/workflows/ci.yml"), "utf8");
@@ -158,6 +168,16 @@ assert.match(ci, /actions\/upload-artifact@v4/);
 const releaseWorkflow = readFileSync(join(root, ".github/workflows/release.yml"), "utf8");
 assert.match(releaseWorkflow, /gh release create/);
 assert.match(releaseWorkflow, /contents: write/);
+
+const macInstaller = readFileSync(join(root, "installers/macos/install.sh"), "utf8");
+assert.match(macInstaller, /APP_BUNDLE=.*\.app/);
+assert.match(macInstaller, /CFBundleName/);
+assert.match(macInstaller, /node scripts\/serve\.mjs/);
+
+const winInstaller = readFileSync(join(root, "installers/windows/install.ps1"), "utf8");
+assert.match(winInstaller, /MementoMori/);
+assert.match(winInstaller, /WScript\.Shell/);
+assert.match(winInstaller, /scripts\\serve\.mjs/);
 
 const publicDocs = [
   readme,
@@ -173,7 +193,9 @@ const publicDocs = [
   release,
   packageScript,
   ci,
-  releaseWorkflow
+  releaseWorkflow,
+  macInstaller,
+  winInstaller
 ].join("\n");
 assert.doesNotMatch(publicDocs, /MVP|mockup|prototype|prototipo|Codex|Javier|co-development|preview harness|Production Beta/i);
 

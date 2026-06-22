@@ -13,6 +13,7 @@ Use this checklist before publishing a GitHub Release or paid convenience instal
 ```sh
 npm run audit
 npm run lint
+npm run check:installers
 npm test
 npm run package
 python3 -m py_compile waybar/memento.py

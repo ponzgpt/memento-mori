@@ -123,5 +123,6 @@ assert.match(serve, /127\.0\.0\.1/);
 const packageJson = readFileSync(join(root, "package.json"), "utf8");
 assert.doesNotMatch(packageJson, /MVP|mockup|prototype/i);
 assert.match(packageJson, /"package": "node scripts\/package-release\.mjs"/);
+assert.match(packageJson, /"check:installers": "sh -n installers\/macos\/install\.sh && sh -n installers\/macos\/uninstall\.sh"/);
 
 console.log("lint checks passed");

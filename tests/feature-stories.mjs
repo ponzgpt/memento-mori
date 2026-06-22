@@ -228,6 +228,8 @@ assert.equal(new Set(stories.map((item) => item.id)).size, stories.length, "stor
   assert.match(installDocs, /Windows 11/);
   assert.match(installDocs, /iOS/);
   assert.match(installDocs, /Release Artifact/);
+  assert.match(installDocs, /installers\/macos\/install\.sh/);
+  assert.match(installDocs, /installers\\windows\\install\.ps1/);
   assert.match(commercialDocs, /GitHub Releases/);
   assert.match(commercialDocs, /Stripe/);
   assert.equal(packageJson.scripts.package, "node scripts/package-release.mjs");

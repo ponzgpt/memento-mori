@@ -24,6 +24,16 @@ npm run serve
 
 Open `http://127.0.0.1:4173`.
 
+macOS and Windows also include source installers:
+
+```sh
+sh installers/macos/install.sh
+```
+
+```powershell
+powershell -ExecutionPolicy Bypass -File installers\windows\install.ps1
+```
+
 Release artifacts, when published, are available from GitHub Releases. The source remains Apache-2.0; paid installers are convenience packaging for users who prefer a signed executable and a quieter setup path. Full platform notes are in [docs/install.md](docs/install.md).
 
 ## What It Does
@@ -117,6 +127,7 @@ The philosophy and tone rules are in [docs/philosophy.md](docs/philosophy.md).
 ```sh
 npm run audit
 npm run lint
+npm run check:installers
 npm test
 npm run package
 python3 -m py_compile waybar/memento.py

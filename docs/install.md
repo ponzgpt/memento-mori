@@ -61,17 +61,21 @@ macOS distribution should use a signed and notarized `.dmg` or `.pkg` when publi
 
 Paid distribution should use Stripe checkout on the product site or newsletter landing page. GitHub Releases can still host public source archives and early unsigned artifacts when useful.
 
-### Source Run
+### Source Install
 
 ```sh
 git clone https://github.com/ponzgpt/memento-mori.git
 cd memento-mori
-npm run serve
+sh installers/macos/install.sh
 ```
 
-Open `http://127.0.0.1:4173`.
+Open `~/Applications/Memento Mori Widget.app`.
 
-This runs the local desktop component app for visual and behavioral inspection. The native macOS shell should use SwiftUI/AppKit or a small Tauri wrapper while preserving the same calculation model and copy.
+The source installer creates a user-local app bundle backed by the local component app. It requires Node.js. Remove it with:
+
+```sh
+sh installers/macos/uninstall.sh
+```
 
 The source release artifact for the local component app is:
 
@@ -85,17 +89,21 @@ Windows distribution should use a signed `.exe` or `.msi` when published. The ap
 
 Paid distribution should use Stripe checkout. GitHub Releases can host public source archives and early installer artifacts.
 
-### Source Run
+### Source Install
 
 ```powershell
 git clone https://github.com/ponzgpt/memento-mori.git
 cd memento-mori
-npm run serve
+powershell -ExecutionPolicy Bypass -File installers\windows\install.ps1
 ```
 
-Open `http://127.0.0.1:4173`.
+Open `Memento Mori Widget` from the Start Menu.
 
-This runs the local desktop component app. The native Windows shell should keep the tray surface compact: `MM`, countdown, integrated progress, and a single context-menu palette toggle.
+The source installer copies the local component app into `%LOCALAPPDATA%\MementoMori` and creates a Start Menu shortcut. It requires Node.js. Remove it with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File installers\windows\uninstall.ps1
+```
 
 The source release artifact for the local component app is:
 

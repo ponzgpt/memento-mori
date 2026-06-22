@@ -30,6 +30,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Check installers
+        run: npm run check:installers
+
       - name: Test
         run: npm test
 
