@@ -127,6 +127,7 @@ assert.match(packageJson, /"check:installers": "node scripts\/check-installers\.
 assert.match(packageJson, /"check:release": "node scripts\/check-release-readiness\.mjs"/);
 assert.match(packageJson, /"check:version": "node scripts\/check-version\.mjs"/);
 assert.match(packageJson, /"check:web": "node scripts\/check-web\.mjs"/);
+assert.match(packageJson, /"release:notes": "node scripts\/release-notes\.mjs"/);
 assert.match(packageJson, /"verify": "node scripts\/verify-release\.mjs"/);
 
 console.log("lint checks passed");

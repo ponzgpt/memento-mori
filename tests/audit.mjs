@@ -20,6 +20,7 @@ const required = [
   "scripts/check-release-readiness.mjs",
   "scripts/check-version.mjs",
   "scripts/check-web.mjs",
+  "scripts/release-notes.mjs",
   "scripts/verify-release.mjs",
   "installers/macos/install.sh",
   "installers/macos/uninstall.sh",
@@ -69,6 +70,7 @@ const agents = readFileSync(join(root, "AGENTS.md"), "utf8");
 assert.match(agents, /npm run verify/);
 assert.match(agents, /npm run check:installers/);
 assert.match(agents, /npm run check:version/);
+assert.match(agents, /npm run release:notes/);
 assert.match(agents, /python3 waybar\/memento\.py --config config\/profile\.example\.json/);
 assert.match(agents, /Do not install system packages on the host/);
 assert.match(agents, /source installers as signed installers/);
@@ -169,6 +171,7 @@ assert.match(stack, /Tauri/);
 const contributing = readFileSync(join(root, "CONTRIBUTING.md"), "utf8");
 assert.match(contributing, /npm run audit/);
 assert.match(contributing, /npm run check:version/);
+assert.match(contributing, /npm run release:notes/);
 assert.match(contributing, /Keep profile data local/);
 
 const support = readFileSync(join(root, "SUPPORT.md"), "utf8");
@@ -187,6 +190,7 @@ assert.match(release, /SHA256SUMS/);
 assert.match(release, /source-installable/);
 assert.match(release, /npm run check:version/);
 assert.match(release, /CHANGELOG\.md/);
+assert.match(release, /npm run release:notes/);
 
 const supportMatrix = readFileSync(join(root, "docs/support-matrix.md"), "utf8");
 assert.match(supportMatrix, /Linux/);
@@ -211,6 +215,7 @@ assert.match(packageScript, /installers\/macos\/install\.sh/);
 assert.match(packageScript, /installers\/windows\/install\.ps1/);
 assert.match(packageScript, /release-readiness\.json/);
 assert.match(packageScript, /docs\/support-matrix\.md/);
+assert.match(packageScript, /scripts\/release-notes\.mjs/);
 assert.match(packageScript, /SHA256SUMS/);
 
 const installerScript = readFileSync(join(root, "scripts/check-installers.mjs"), "utf8");
@@ -224,6 +229,7 @@ const readinessScript = readFileSync(join(root, "scripts/check-release-readiness
 assert.match(readinessScript, /release-readiness\.json/);
 assert.match(readinessScript, /source-installable/);
 assert.match(readinessScript, /npm run check:version/);
+assert.match(readinessScript, /npm run release:notes/);
 
 const versionScript = readFileSync(join(root, "scripts/check-version.mjs"), "utf8");
 assert.match(versionScript, /version checks passed/);
@@ -238,9 +244,15 @@ assert.match(webScript, /__health/);
 assert.match(webScript, /no-store/);
 assert.match(webScript, /pkg\.version/);
 
+const notesScript = readFileSync(join(root, "scripts/release-notes.mjs"), "utf8");
+assert.match(notesScript, /CHANGELOG\.md/);
+assert.match(notesScript, /Platform Readiness/);
+assert.match(notesScript, /process\.stdout\.write/);
+
 const verifyScript = readFileSync(join(root, "scripts/verify-release.mjs"), "utf8");
 assert.match(verifyScript, /release verification passed/);
 assert.match(verifyScript, /check:version/);
+assert.match(verifyScript, /release:notes/);
 assert.match(verifyScript, /git.*diff.*--check/s);
 assert.match(verifyScript, /SHA256SUMS/);
 
@@ -250,7 +262,10 @@ assert.match(ci, /actions\/upload-artifact@v4/);
 
 const releaseWorkflow = readFileSync(join(root, ".github/workflows/release.yml"), "utf8");
 assert.match(releaseWorkflow, /npm run verify/);
+assert.match(releaseWorkflow, /scripts\/release-notes\.mjs > dist\/RELEASE_NOTES\.md/);
 assert.match(releaseWorkflow, /gh release create/);
+assert.match(releaseWorkflow, /--notes-file dist\/RELEASE_NOTES\.md/);
+assert.doesNotMatch(releaseWorkflow, /--generate-notes/);
 assert.match(releaseWorkflow, /contents: write/);
 
 const pullRequestTemplate = readFileSync(join(root, ".github/pull_request_template.md"), "utf8");
@@ -289,6 +304,7 @@ const publicDocs = [
   packageScript,
   readinessScript,
   webScript,
+  notesScript,
   verifyScript,
   ci,
   releaseWorkflow,

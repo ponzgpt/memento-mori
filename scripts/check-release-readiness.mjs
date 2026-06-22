@@ -46,6 +46,7 @@ for (const command of [
   "npm run check:version",
   "npm test",
   "npm run check:web",
+  "npm run release:notes",
   "npm run package",
   "shasum -a 256 -c dist/SHA256SUMS"
 ]) {

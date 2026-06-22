@@ -26,6 +26,7 @@ npm test
 npm run check:release
 npm run check:version
 npm run check:web
+npm run release:notes
 npm run package
 shasum -a 256 -c dist/SHA256SUMS
 ```

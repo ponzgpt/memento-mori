@@ -29,6 +29,7 @@ npm run check:version
 npm run check:web
 npm run lint
 npm test
+npm run release:notes
 python3 -m py_compile waybar/memento.py
 python3 waybar/memento.py --config config/profile.example.json
 ```

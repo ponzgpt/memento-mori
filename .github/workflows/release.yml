@@ -24,7 +24,10 @@ jobs:
       - name: Verify release
         run: npm run verify
 
+      - name: Prepare release notes
+        run: node scripts/release-notes.mjs > dist/RELEASE_NOTES.md
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "${GITHUB_REF_NAME}" dist/* --generate-notes --verify-tag
+        run: gh release create "${GITHUB_REF_NAME}" dist/* --notes-file dist/RELEASE_NOTES.md --verify-tag
