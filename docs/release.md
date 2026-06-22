@@ -45,7 +45,7 @@ python3 waybar/memento.py --config config/profile.example.json
 
 The current release gate is `source-installable`, tracked in `release-readiness.json` and [support-matrix.md](support-matrix.md).
 
-Do not describe macOS or Windows artifacts as signed installers until signing, notarization, and installer QA are complete.
+Do not describe macOS or Windows artifacts as signed installers until signing, notarization, and installer QA are complete. The platform-specific native packaging checklist is [native-packaging.md](native-packaging.md).
 
 ## Notes
 

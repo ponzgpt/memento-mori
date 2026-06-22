@@ -40,6 +40,7 @@ const required = [
   "docs/install.md",
   "docs/philosophy.md",
   "docs/commercial-model.md",
+  "docs/native-packaging.md",
   "docs/apple-platform-plan.md",
   "docs/stack-decisions.md",
   "docs/release.md",
@@ -126,10 +127,12 @@ assert.doesNotMatch(changelog, /MVP|mockup|prototype|prototipo|Codex|Javier|co-d
 
 const featureStatus = readFileSync(join(root, "docs/feature-status.csv"), "utf8");
 assert.match(featureStatus, /MM-US-001/);
-assert.match(featureStatus, /MM-US-014/);
+assert.match(featureStatus, /MM-US-021/);
 assert.match(featureStatus, /user_story/);
 assert.match(featureStatus, /expected_behavior/);
 assert.match(featureStatus, /latest_result/);
+assert.match(featureStatus, /errors_found/);
+assert.match(featureStatus, /retest_result/);
 
 const install = readFileSync(join(root, "docs/install.md"), "utf8");
 assert.match(install, /Source Install/);
@@ -145,6 +148,7 @@ assert.match(install, /installers\/macos\/install\.sh/);
 assert.match(install, /installers\\windows\\install\.ps1/);
 assert.match(install, /provided as-is/i);
 assert.match(install, /PRIVACY\.md/);
+assert.match(install, /native-packaging\.md/);
 assert.doesNotMatch(install, /MVP|mockup|prototype|not shipped yet/i);
 
 const model = readFileSync(join(root, "docs/model.md"), "utf8");
@@ -183,7 +187,22 @@ assert.match(commercial, /Stripe/);
 assert.match(commercial, /beehiiv/);
 assert.match(commercial, /No support entitlement/);
 assert.match(commercial, /fork/i);
+assert.match(commercial, /native-packaging\.md/);
 assert.doesNotMatch(commercial, /MVP|mockup|prototype/i);
+
+const nativePackaging = readFileSync(join(root, "docs/native-packaging.md"), "utf8");
+assert.match(nativePackaging, /Developer ID/);
+assert.match(nativePackaging, /notarization/i);
+assert.match(nativePackaging, /Stapling/i);
+assert.match(nativePackaging, /Gatekeeper/);
+assert.match(nativePackaging, /Authenticode/);
+assert.match(nativePackaging, /SmartScreen/);
+assert.match(nativePackaging, /TestFlight/);
+assert.match(nativePackaging, /App Privacy/);
+assert.match(nativePackaging, /PRIVACY\.md/);
+assert.match(nativePackaging, /release-manifest\.json/);
+assert.match(nativePackaging, /source-installable/);
+assert.doesNotMatch(nativePackaging, /MVP|mockup|prototype|prototipo|Codex|Javier|co-development|preview harness|Production Beta/i);
 
 const apple = readFileSync(join(root, "docs/apple-platform-plan.md"), "utf8");
 assert.match(apple, /WidgetKit/);
@@ -228,6 +247,7 @@ assert.match(release, /source-installable/);
 assert.match(release, /npm run check:version/);
 assert.match(release, /CHANGELOG\.md/);
 assert.match(release, /npm run release:notes/);
+assert.match(release, /native-packaging\.md/);
 
 const supportMatrix = readFileSync(join(root, "docs/support-matrix.md"), "utf8");
 assert.match(supportMatrix, /Linux/);
@@ -236,6 +256,7 @@ assert.match(supportMatrix, /Windows 11/);
 assert.match(supportMatrix, /iOS/);
 assert.match(supportMatrix, /source-installable/);
 assert.match(supportMatrix, /Continuous integration runs that gate on Linux, macOS, and Windows/);
+assert.match(supportMatrix, /native-packaging\.md/);
 
 const readiness = JSON.parse(readFileSync(join(root, "release-readiness.json"), "utf8"));
 assert.equal(readiness.release_gate, "source-installable");
@@ -257,6 +278,8 @@ assert.match(packageScript, /installers\/windows\/install\.ps1/);
 assert.match(packageScript, /release-readiness\.json/);
 assert.match(packageScript, /docs\/support-matrix\.md/);
 assert.match(packageScript, /docs\/model-data\.md/);
+assert.match(packageScript, /docs\/feature-status\.csv/);
+assert.match(packageScript, /docs\/native-packaging\.md/);
 assert.match(packageScript, /scripts\/release-notes\.mjs/);
 assert.match(packageScript, /scripts\/test-waybar\.mjs/);
 assert.match(packageScript, /SHA256SUMS/);
@@ -352,6 +375,7 @@ const publicDocs = [
   modelData,
   philosophy,
   commercial,
+  nativePackaging,
   apple,
   stack,
   contributing,

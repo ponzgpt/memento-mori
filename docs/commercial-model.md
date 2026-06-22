@@ -44,6 +44,8 @@ cd memento-mori
 - Same core source remains visible on GitHub.
 - No support entitlement. The paid value is installer convenience.
 
+Signed/native packaging requirements are tracked in [native-packaging.md](native-packaging.md). Until those checks are complete, convenience artifacts should be described as source-installable or unsigned.
+
 ## Release Practice
 
 1. Tag releases with SemVer.

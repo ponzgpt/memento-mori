@@ -120,6 +120,7 @@ The philosophy and tone rules are in [docs/philosophy.md](docs/philosophy.md).
 - [docs/model-data.md](docs/model-data.md): exact baseline and offset values.
 - [docs/philosophy.md](docs/philosophy.md): product concept, tone, and visual rules.
 - [docs/commercial-model.md](docs/commercial-model.md): open source plus paid installer posture.
+- [docs/native-packaging.md](docs/native-packaging.md): signed installer and app-store readiness requirements.
 - [docs/stack-decisions.md](docs/stack-decisions.md): technical choices and rejected weight.
 - [docs/apple-platform-plan.md](docs/apple-platform-plan.md): macOS/iOS direction.
 - [docs/support-matrix.md](docs/support-matrix.md): platform readiness and release gate.

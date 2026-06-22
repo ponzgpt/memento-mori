@@ -20,6 +20,7 @@ Initial source-installable release.
 - GitHub Actions verification and release workflows.
 - Release artifacts for the Linux Waybar module and local desktop component app.
 - Machine-readable release manifest with artifact checksums and platform readiness.
+- Native packaging checklist for signed macOS, signed Windows, Linux package, and iOS distribution readiness.
 
 ### Verified
 

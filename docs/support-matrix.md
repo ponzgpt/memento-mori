@@ -11,6 +11,8 @@ This matrix describes what is actually release-ready in the repository.
 
 Signed macOS and Windows installers are a packaging layer over the same source. They require code-signing and distribution credentials before they can honestly be called signed production artifacts. The source paths above are the current release gate.
 
+Native installer and app-store readiness requirements are tracked in [native-packaging.md](native-packaging.md).
+
 Every release must pass:
 
 ```sh

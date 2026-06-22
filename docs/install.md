@@ -9,6 +9,8 @@ The software is provided as-is. There is no support entitlement. Issues and pull
 
 Profile data stays local. Privacy boundaries and deletion paths are documented in [../PRIVACY.md](../PRIVACY.md).
 
+Signed installer requirements are documented in [native-packaging.md](native-packaging.md). Source-installable artifacts should stay labeled source-installable until that checklist is complete.
+
 ## Linux
 
 ### Source Install
@@ -61,6 +63,8 @@ The one-command source install remains the reference path for technical users.
 
 macOS distribution should use a signed and notarized `.dmg` or `.pkg` when published. The installer should place the app in `/Applications`, expose a menu-bar item, and provide a clear uninstall path.
 
+The macOS signed-release checklist is in [native-packaging.md](native-packaging.md).
+
 Paid distribution should use Stripe checkout on the product site or newsletter landing page. GitHub Releases can still host public source archives and early unsigned artifacts when useful.
 
 ### Source Install
@@ -88,6 +92,8 @@ The source release artifact for the local component app is:
 ### Release Artifact
 
 Windows distribution should use a signed `.exe` or `.msi` when published. The app should install as a tray utility, start on login only when the user opts in, and include an ordinary uninstall path.
+
+The Windows signed-release checklist is in [native-packaging.md](native-packaging.md).
 
 Paid distribution should use Stripe checkout. GitHub Releases can host public source archives and early installer artifacts.
 
@@ -128,6 +134,7 @@ The native implementation should use SwiftUI plus WidgetKit:
 - no runtime network dependency for the countdown
 
 See [apple-platform-plan.md](apple-platform-plan.md).
+Native iOS readiness requirements are listed in [native-packaging.md](native-packaging.md).
 
 ## Local Profile
 

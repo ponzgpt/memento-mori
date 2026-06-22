@@ -28,7 +28,9 @@ const artifacts = [
       "docs/install.md",
       "docs/model.md",
       "docs/model-data.md",
+      "docs/feature-status.csv",
       "docs/philosophy.md",
+      "docs/native-packaging.md",
       "docs/support-matrix.md",
       "docs/release.md"
     ]
@@ -64,9 +66,11 @@ const artifacts = [
       "docs/install.md",
       "docs/model.md",
       "docs/model-data.md",
+      "docs/feature-status.csv",
       "docs/philosophy.md",
       "docs/apple-platform-plan.md",
       "docs/commercial-model.md",
+      "docs/native-packaging.md",
       "docs/stack-decisions.md",
       "docs/support-matrix.md",
       "docs/release.md"

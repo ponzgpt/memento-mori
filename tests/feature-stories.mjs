@@ -23,6 +23,7 @@ const installDocs = readFileSync(join(root, "docs/install.md"), "utf8");
 const commercialDocs = readFileSync(join(root, "docs/commercial-model.md"), "utf8");
 const philosophyDocs = readFileSync(join(root, "docs/philosophy.md"), "utf8");
 const modelDocs = readFileSync(join(root, "docs/model.md"), "utf8");
+const nativePackagingDocs = readFileSync(join(root, "docs/native-packaging.md"), "utf8");
 const releaseDocs = readFileSync(join(root, "docs/release.md"), "utf8");
 const supportMatrixDocs = readFileSync(join(root, "docs/support-matrix.md"), "utf8");
 const readme = readFileSync(join(root, "README.md"), "utf8");
@@ -81,11 +82,16 @@ function story(id) {
   assert.match(item.user_story, /^As a /, `${id} must be a user story`);
   assert.ok(item.expected_behavior.length > 30, `${id} expected behavior is too thin`);
   assert.match(item.test_refs, /tests\/feature-stories\.mjs/, `${id} must cite story tests`);
+  assert.ok(item.errors_found.length > 0, `${id} must document current errors`);
+  assert.equal(item.retest_result, "passed", `${id} retest_result must be current`);
   return item;
 }
 
-assert.equal(stories.length, 14, "feature-status.csv should track every current story");
+assert.equal(stories.length, 21, "feature-status.csv should track every current story");
 assert.equal(new Set(stories.map((item) => item.id)).size, stories.length, "story IDs must be unique");
+for (const column of ["errors_found", "retest_result"]) {
+  assert.ok(stories.every((item) => column in item), `feature-status.csv missing ${column}`);
+}
 
 {
   story("MM-US-001");
@@ -217,6 +223,18 @@ assert.equal(new Set(stories.map((item) => item.id)).size, stories.length, "stor
 
 {
   story("MM-US-012");
+  assert.match(html, /Linux desktop app/);
+  assert.match(html, /W11 desktop app/);
+  assert.match(html, /macOS app/);
+  assert.match(html, /iOS app icon and widgets/);
+  assert.match(html, /data-widget-text="plain"/);
+  assert.match(styles, /ios-device/);
+  assert.match(styles, /mac-window-bar/);
+  assert.match(main, /updateReflection/);
+}
+
+{
+  story("MM-US-013");
   assert.equal(packageJson.scripts.serve, "node scripts/serve.mjs");
   assert.match(serve, /__health/);
   assert.match(serve, /no-store/);
@@ -224,13 +242,14 @@ assert.equal(new Set(stories.map((item) => item.id)).size, stories.length, "stor
 }
 
 {
-  story("MM-US-013");
+  story("MM-US-014");
   assert.match(installDocs, /Linux/);
   assert.match(installDocs, /Windows 11/);
   assert.match(installDocs, /iOS/);
   assert.match(installDocs, /Release Artifact/);
   assert.match(installDocs, /installers\/macos\/install\.sh/);
   assert.match(installDocs, /installers\\windows\\install\.ps1/);
+  assert.match(installDocs, /native-packaging\.md/);
   assert.match(commercialDocs, /GitHub Releases/);
   assert.match(commercialDocs, /Stripe/);
   assert.equal(packageJson.scripts.package, "node scripts/package-release.mjs");
@@ -245,7 +264,47 @@ assert.equal(new Set(stories.map((item) => item.id)).size, stories.length, "stor
 }
 
 {
-  story("MM-US-014");
+  story("MM-US-015");
+  const installerScript = readFileSync(join(root, "scripts/check-installers.mjs"), "utf8");
+  const macInstaller = readFileSync(join(root, "installers/macos/install.sh"), "utf8");
+  const macUninstaller = readFileSync(join(root, "installers/macos/uninstall.sh"), "utf8");
+  const winInstaller = readFileSync(join(root, "installers/windows/install.ps1"), "utf8");
+  const winUninstaller = readFileSync(join(root, "installers/windows/uninstall.ps1"), "utf8");
+  assert.match(installerScript, /installer checks passed/);
+  assert.match(macInstaller, /APP_NAME="Memento Mori Widget"/);
+  assert.match(macInstaller, /APP_BUNDLE="\$\{HOME\}\/Applications\/\$\{APP_NAME\}\.app"/);
+  assert.match(macInstaller, /node scripts\/serve\.mjs/);
+  assert.match(macUninstaller, /Memento Mori Widget\.app/);
+  assert.match(winInstaller, /MementoMori/);
+  assert.match(winInstaller, /scripts\\serve\.mjs/);
+  assert.match(winUninstaller, /MementoMori/);
+}
+
+{
+  story("MM-US-016");
+  const packageScript = readFileSync(join(root, "scripts/package-release.mjs"), "utf8");
+  const verifyScript = readFileSync(join(root, "scripts/verify-release.mjs"), "utf8");
+  assert.match(packageScript, /memento-mori-linux-waybar/);
+  assert.match(packageScript, /memento-mori-local-app/);
+  assert.match(packageScript, /SHA256SUMS/);
+  assert.match(packageScript, /release-manifest\.json/);
+  assert.match(packageScript, /docs\/native-packaging\.md/);
+  assert.match(verifyScript, /manifest checksum mismatch/);
+  assert.match(releaseDocs, /release-manifest\.json/);
+}
+
+{
+  story("MM-US-017");
+  const privacyDocs = readFileSync(join(root, "PRIVACY.md"), "utf8");
+  assert.match(privacyDocs, /local-first widget/);
+  assert.match(privacyDocs, /browser local storage/);
+  assert.match(privacyDocs, /Stripe/);
+  assert.match(serve, /127\.0\.0\.1/);
+  assert.match(commercialDocs, /Payment processor: Stripe/);
+}
+
+{
+  story("MM-US-018");
   assert.match(readme, /docs\/philosophy\.md/);
   assert.match(philosophyDocs, /dry, not cruel/);
   assert.match(philosophyDocs, /not an oracle/);
@@ -253,6 +312,38 @@ assert.equal(new Set(stories.map((item) => item.id)).size, stories.length, "stor
   assert.match(modelDocs, /World Bank WDI/);
   const serialized = serializeProfileConfig(DEFAULT_PROFILE);
   assert.match(serialized.disclaimer, /mental-health advice/);
+}
+
+{
+  story("MM-US-019");
+  const supportDocs = readFileSync(join(root, "SUPPORT.md"), "utf8");
+  assert.match(commercialDocs, /Apache-2\.0/);
+  assert.match(commercialDocs, /Cheap downloadable installer/);
+  assert.match(commercialDocs, /No support entitlement/);
+  assert.match(commercialDocs, /native-packaging\.md/);
+  assert.match(supportDocs, /provided as-is/);
+}
+
+{
+  story("MM-US-020");
+  assert.match(featureStatus, /errors_found/);
+  assert.match(featureStatus, /retest_result/);
+  assert.equal(stories.every((item) => item.latest_result === "passed"), true);
+  assert.equal(stories.every((item) => item.retest_result === "passed"), true);
+  assert.match(packageJson.scripts.verify, /verify-release/);
+}
+
+{
+  story("MM-US-021");
+  assert.match(nativePackagingDocs, /Developer ID/);
+  assert.match(nativePackagingDocs, /notarization/i);
+  assert.match(nativePackagingDocs, /Stapling/i);
+  assert.match(nativePackagingDocs, /Authenticode/);
+  assert.match(nativePackagingDocs, /SmartScreen/);
+  assert.match(nativePackagingDocs, /TestFlight/);
+  assert.match(nativePackagingDocs, /App Privacy/);
+  assert.match(nativePackagingDocs, /release-manifest\.json/);
+  assert.match(nativePackagingDocs, /source-installable/);
 }
 
 console.log("feature stories passed");
