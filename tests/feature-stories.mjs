@@ -235,6 +235,7 @@ assert.equal(new Set(stories.map((item) => item.id)).size, stories.length, "stor
   assert.match(commercialDocs, /Stripe/);
   assert.equal(packageJson.scripts.package, "node scripts/package-release.mjs");
   assert.equal(packageJson.scripts["check:release"], "node scripts/check-release-readiness.mjs");
+  assert.equal(packageJson.scripts["check:web"], "node scripts/check-web.mjs");
   assert.match(releaseDocs, /SHA256SUMS/);
   assert.match(supportMatrixDocs, /source-installable/);
 }

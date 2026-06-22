@@ -36,6 +36,9 @@ jobs:
       - name: Check release readiness
         run: npm run check:release
 
+      - name: Check local app server
+        run: npm run check:web
+
       - name: Test
         run: npm test
 

@@ -16,6 +16,7 @@ const required = [
   "scripts/serve.mjs",
   "scripts/package-release.mjs",
   "scripts/check-release-readiness.mjs",
+  "scripts/check-web.mjs",
   "installers/macos/install.sh",
   "installers/macos/uninstall.sh",
   "installers/windows/install.ps1",
@@ -186,9 +187,15 @@ const readinessScript = readFileSync(join(root, "scripts/check-release-readiness
 assert.match(readinessScript, /release-readiness\.json/);
 assert.match(readinessScript, /source-installable/);
 
+const webScript = readFileSync(join(root, "scripts/check-web.mjs"), "utf8");
+assert.match(webScript, /web smoke checks passed/);
+assert.match(webScript, /__health/);
+assert.match(webScript, /no-store/);
+
 const ci = readFileSync(join(root, ".github/workflows/ci.yml"), "utf8");
 assert.match(ci, /npm run audit/);
 assert.match(ci, /npm run check:release/);
+assert.match(ci, /npm run check:web/);
 assert.match(ci, /npm run package/);
 assert.match(ci, /actions\/upload-artifact@v4/);
 
@@ -222,6 +229,7 @@ const publicDocs = [
   JSON.stringify(readiness),
   packageScript,
   readinessScript,
+  webScript,
   ci,
   releaseWorkflow,
   macInstaller,
