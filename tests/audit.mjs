@@ -16,12 +16,16 @@ const required = [
   "waybar/config.example.jsonc",
   "waybar/style.example.css",
   "config/profile.example.json",
-  "docs/research.md",
+  "CONTRIBUTING.md",
+  "SUPPORT.md",
+  "SECURITY.md",
+  "docs/model.md",
   "docs/install.md",
   "docs/philosophy.md",
   "docs/commercial-model.md",
   "docs/apple-platform-plan.md",
   "docs/stack-decisions.md",
+  "docs/release.md",
   "install.sh"
 ];
 
@@ -46,14 +50,14 @@ assert.match(waybarConfig, /"format": "MM \{\}"/);
 const readme = readFileSync(join(root, "README.md"), "utf8");
 assert.match(readme, /Apache-2\.0/);
 assert.match(readme, /not medical, legal, actuarial, insurance/i);
-assert.match(readme, /Commercial Model/);
-assert.match(readme, /Component Workbench/);
-assert.match(readme, /Apple Platform/);
-assert.match(readme, /Stack rationale/);
-assert.match(readme, /Production Beta/);
-assert.match(readme, /Philosophy/);
+assert.match(readme, /What It Does/);
+assert.match(readme, /Platform Surfaces/);
+assert.match(readme, /Quality Gates/);
+assert.match(readme, /philosophy/i);
 assert.match(readme, /docs\/install\.md/);
 assert.match(readme, /docs\/philosophy\.md/);
+assert.match(readme, /docs\/model\.md/);
+assert.doesNotMatch(readme, /MVP|mockup|prototype|Production Beta/i);
 
 const featureStatus = readFileSync(join(root, "docs/feature-status.csv"), "utf8");
 assert.match(featureStatus, /MM-US-001/);
@@ -63,14 +67,22 @@ assert.match(featureStatus, /expected_behavior/);
 assert.match(featureStatus, /latest_result/);
 
 const install = readFileSync(join(root, "docs/install.md"), "utf8");
-assert.match(install, /Beta executable or installer/);
-assert.match(install, /Source install/);
-assert.match(install, /Linux status\/tray/);
-assert.match(install, /macOS menu bar/);
-assert.match(install, /Windows 11 system tray/);
-assert.match(install, /iOS widgets/);
+assert.match(install, /Source Install/);
+assert.match(install, /Release Artifact/);
+assert.match(install, /Linux/);
+assert.match(install, /macOS/);
+assert.match(install, /Windows 11/);
+assert.match(install, /iOS/);
 assert.match(install, /GitHub Releases/);
 assert.match(install, /provided as-is/i);
+assert.doesNotMatch(install, /MVP|mockup|prototype|not shipped yet/i);
+
+const model = readFileSync(join(root, "docs/model.md"), "utf8");
+assert.match(model, /World Bank WDI/);
+assert.match(model, /SP\.DYN\.LE00\.IN/);
+assert.match(model, /birth country/);
+assert.match(model, /current country/);
+assert.match(model, /not clinical calculations/i);
 
 const philosophy = readFileSync(join(root, "docs/philosophy.md"), "utf8");
 assert.match(philosophy, /time is the one budget nobody gets to refinance/);
@@ -81,19 +93,20 @@ assert.match(philosophy, /SIL Open Font License/);
 
 const commercial = readFileSync(join(root, "docs/commercial-model.md"), "utf8");
 assert.match(commercial, /Source code stays on GitHub under Apache-2\.0/);
-assert.match(commercial, /one-command install/i);
-assert.match(commercial, /cheap signed installer/i);
-assert.match(commercial, /free GitHub Release installers/);
+assert.match(commercial, /source install/i);
+assert.match(commercial, /Cheap downloadable installer/i);
+assert.match(commercial, /GitHub Releases/);
 assert.match(commercial, /Stripe/);
 assert.match(commercial, /beehiiv/);
 assert.match(commercial, /No support entitlement/);
 assert.match(commercial, /fork/i);
+assert.doesNotMatch(commercial, /MVP|mockup|prototype/i);
 
 const apple = readFileSync(join(root, "docs/apple-platform-plan.md"), "utf8");
 assert.match(apple, /WidgetKit/);
 assert.match(apple, /SwiftUI/);
 assert.match(apple, /Apple silicon Macs/);
-assert.match(apple, /component workbench/i);
+assert.match(apple, /macOS menu-bar app/);
 assert.match(apple, /system-light/);
 assert.match(apple, /system-dark/);
 assert.match(apple, /hourglasses/);
@@ -101,9 +114,41 @@ assert.match(apple, /https:\/\/developer\.apple\.com\/documentation\/widgetkit/)
 assert.match(apple, /https:\/\/dailystoic\.com\/history-of-memento-mori-art\//);
 
 const stack = readFileSync(join(root, "docs/stack-decisions.md"), "utf8");
-assert.match(stack, /static HTML\/CSS\/JS/i);
-assert.match(stack, /Python Waybar emitter/);
+assert.match(stack, /Static HTML, CSS, and JavaScript/i);
+assert.match(stack, /Python emitter/);
 assert.match(stack, /SwiftUI/);
 assert.match(stack, /Tauri/);
+
+const contributing = readFileSync(join(root, "CONTRIBUTING.md"), "utf8");
+assert.match(contributing, /npm run audit/);
+assert.match(contributing, /Keep profile data local/);
+
+const support = readFileSync(join(root, "SUPPORT.md"), "utf8");
+assert.match(support, /provided as-is/);
+assert.match(support, /no support entitlement/i);
+
+const security = readFileSync(join(root, "SECURITY.md"), "utf8");
+assert.match(security, /local widget/);
+assert.match(security, /runtime network service/);
+
+const release = readFileSync(join(root, "docs/release.md"), "utf8");
+assert.match(release, /Release Checklist/);
+assert.match(release, /SemVer/);
+assert.match(release, /Apache-2\.0/);
+
+const publicDocs = [
+  readme,
+  install,
+  model,
+  philosophy,
+  commercial,
+  apple,
+  stack,
+  contributing,
+  support,
+  security,
+  release
+].join("\n");
+assert.doesNotMatch(publicDocs, /MVP|mockup|prototype|prototipo|Codex|Javier|co-development|preview harness|Production Beta/i);
 
 console.log("audit checks passed");

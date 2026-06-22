@@ -1,9 +1,9 @@
 {
   "name": "memento-mori-widget",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "MVP mockup for a Waybar-style Memento Mori countdown widget.",
+  "description": "Local Memento Mori countdown widget for status bars, tray surfaces, and platform widgets.",
   "scripts": {
     "audit": "node tests/audit.mjs",
     "lint": "node tests/lint.mjs",

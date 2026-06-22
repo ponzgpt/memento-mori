@@ -7,7 +7,7 @@ import {
   splitDuration
 } from "./memento-core.js";
 
-const STORAGE_KEY = "memento-mori.profile.v1.8";
+const STORAGE_KEY = "memento-mori.profile.v1";
 const SKINS = ["system-light", "system-dark"];
 const SKIN_ALIASES = {
   system: "system-light",

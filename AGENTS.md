@@ -2,7 +2,7 @@
 
 ## Container Workflow
 
-- This project is dependency-free for the MVP and can run directly from `app/index.html` or via a local static server.
+- This project is dependency-free for the local component app and can run directly from `app/index.html` or via a local static server.
 - Docker is optional. If Docker is available, preview with:
 
 ```sh

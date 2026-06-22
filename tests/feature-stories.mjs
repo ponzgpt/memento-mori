@@ -22,6 +22,7 @@ const featureStatus = readFileSync(join(root, "docs/feature-status.csv"), "utf8"
 const installDocs = readFileSync(join(root, "docs/install.md"), "utf8");
 const commercialDocs = readFileSync(join(root, "docs/commercial-model.md"), "utf8");
 const philosophyDocs = readFileSync(join(root, "docs/philosophy.md"), "utf8");
+const modelDocs = readFileSync(join(root, "docs/model.md"), "utf8");
 const readme = readFileSync(join(root, "README.md"), "utf8");
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const serve = readFileSync(join(root, "scripts/serve.mjs"), "utf8");
@@ -222,9 +223,10 @@ assert.equal(new Set(stories.map((item) => item.id)).size, stories.length, "stor
 
 {
   story("MM-US-013");
-  assert.match(installDocs, /Linux status\/tray/);
-  assert.match(installDocs, /Windows 11 system tray/);
-  assert.match(installDocs, /iOS widgets/);
+  assert.match(installDocs, /Linux/);
+  assert.match(installDocs, /Windows 11/);
+  assert.match(installDocs, /iOS/);
+  assert.match(installDocs, /Release Artifact/);
   assert.match(commercialDocs, /GitHub Releases/);
   assert.match(commercialDocs, /Stripe/);
 }
@@ -235,6 +237,7 @@ assert.equal(new Set(stories.map((item) => item.id)).size, stories.length, "stor
   assert.match(philosophyDocs, /dry, not cruel/);
   assert.match(philosophyDocs, /not an oracle/);
   assert.match(philosophyDocs, /not a hostage situation/);
+  assert.match(modelDocs, /World Bank WDI/);
   const serialized = serializeProfileConfig(DEFAULT_PROFILE);
   assert.match(serialized.disclaimer, /mental-health advice/);
 }

@@ -1,35 +1,15 @@
 # Install And Use
 
-This is the canonical GitHub install guide for Memento Mori.
+Memento Mori has two distribution paths:
 
-Memento Mori has two distribution tracks:
+- Source: Apache-2.0 code for users who want to inspect, build, adapt, fork, or install the widget themselves.
+- Convenience installer: release artifacts for users who prefer a downloadable executable or package. The paid value is packaging, signing, defaults, and setup polish, not hidden functionality.
 
-- Beta executable or installer: free GitHub Release artifacts during beta so the product can be tested on real machines. Later this becomes the cheap paid convenience installer sold through Stripe.
-- Source code: Apache-2.0 source for technical users who want to inspect, build, fork, or install it themselves.
-
-Current production status:
-
-| Platform | Production-testable now | Notes |
-| --- | --- | --- |
-| Linux status/tray | Yes | Waybar custom module is the reference implementation. Other bars can adapt the JSON emitter. |
-| macOS menu bar | Partial | Component preview exists. Native menu-bar wrapper is planned. |
-| Windows 11 system tray | Partial | Component preview exists. Native tray wrapper is planned. |
-| iOS widgets | Planned | SwiftUI and WidgetKit path is documented, but no iOS target is shipped yet. |
-
-The product is provided as-is. There is no support entitlement. Issues and PRs are welcome when they fit the project direction; forks are allowed.
+The software is provided as-is. There is no support entitlement. Issues and pull requests are welcome when they fit the project direction; forks are allowed.
 
 ## Linux
 
-### Beta executable or installer
-
-During beta, Linux release artifacts should be attached to GitHub Releases for free testing. Target artifacts:
-
-- `memento-mori-linux-*.tar.gz` for the Waybar module and example config
-- AppImage or native package later, if a desktop shell is added
-
-Until those artifacts exist, use the source install below. It is the production-testable Linux path today.
-
-### Source install
+### Source Install
 
 ```sh
 git clone https://github.com/ponzgpt/memento-mori.git
@@ -37,12 +17,10 @@ cd memento-mori
 ./install.sh
 ```
 
-Create or inspect the profile:
+This installs:
 
-```sh
-mkdir -p ~/.config/memento-mori
-python3 ~/.local/bin/memento-mori-waybar --sample-config > ~/.config/memento-mori/config.json
-```
+- `~/.local/bin/memento-mori-waybar`
+- `~/.config/memento-mori/config.json`
 
 Add the custom module to your bar config. For Waybar:
 
@@ -56,7 +34,7 @@ Add the custom module to your bar config. For Waybar:
 }
 ```
 
-Copy or adapt the styles in `waybar/style.example.css`.
+Copy or adapt `waybar/style.example.css` into your bar stylesheet.
 
 Smoke test:
 
@@ -64,19 +42,26 @@ Smoke test:
 python3 ~/.local/bin/memento-mori-waybar --config ~/.config/memento-mori/config.json
 ```
 
-The command should emit one JSON object with `text`, `tooltip`, `class`, and `percentage`.
+Expected output is one JSON object with `text`, `tooltip`, `class`, and `percentage`.
+
+### Release Artifact
+
+Linux release artifacts should be attached to GitHub Releases:
+
+- `memento-mori-linux-*.tar.gz` for the Waybar script, example config, and styles.
+- Optional AppImage or native package when a desktop shell is published.
+
+The one-command source install remains the reference path for technical users.
 
 ## macOS
 
-### Beta executable or installer
+### Release Artifact
 
-The target beta artifact is a signed or ad-hoc signed `.dmg` or `.pkg` published in GitHub Releases for free testing. The later paid version should use the same core source with installer polish and notarization.
+macOS distribution should use a signed and notarized `.dmg` or `.pkg` when published. The installer should place the app in `/Applications`, expose a menu-bar item, and provide a clear uninstall path.
 
-This artifact is not shipped yet.
+Paid distribution should use Stripe checkout on the product site or newsletter landing page. GitHub Releases can still host public source archives and early unsigned artifacts when useful.
 
-### Source build
-
-Today macOS can run the component workbench for design and behavior testing:
+### Source Run
 
 ```sh
 git clone https://github.com/ponzgpt/memento-mori.git
@@ -86,19 +71,17 @@ npm run serve
 
 Open `http://127.0.0.1:4173`.
 
-Native macOS menu-bar production work should use SwiftUI/AppKit or a Tauri shell later. The source path is intentionally not pretending to be a finished menu-bar app yet.
+This runs the local desktop component app for visual and behavioral inspection. The native macOS shell should use SwiftUI/AppKit or a small Tauri wrapper while preserving the same calculation model and copy.
 
 ## Windows 11
 
-### Beta executable or installer
+### Release Artifact
 
-The target beta artifact is a `.exe` or `.msi` attached to GitHub Releases for free testing. The later paid version should be distributed through Stripe as a convenience installer.
+Windows distribution should use a signed `.exe` or `.msi` when published. The app should install as a tray utility, start on login only when the user opts in, and include an ordinary uninstall path.
 
-This artifact is not shipped yet.
+Paid distribution should use Stripe checkout. GitHub Releases can host public source archives and early installer artifacts.
 
-### Source build
-
-Today Windows can run the component workbench for design and behavior testing:
+### Source Run
 
 ```powershell
 git clone https://github.com/ponzgpt/memento-mori.git
@@ -108,41 +91,38 @@ npm run serve
 
 Open `http://127.0.0.1:4173`.
 
-Native W11 system-tray production work should use a tray-capable desktop shell later. The current source tree does not yet ship a Windows tray process.
+This runs the local desktop component app. The native Windows shell should keep the tray surface compact: `MM`, countdown, integrated progress, and a single context-menu palette toggle.
 
 ## iOS
 
-### Beta executable or installer
+### Distribution
 
-iOS distribution should use TestFlight when a native target exists. GitHub can host source and release notes, but iOS install testing goes through Apple tooling.
+iOS distribution should use Apple tooling: TestFlight for pre-release testing and App Store distribution for public releases. GitHub remains the home for source code, release notes, and platform documentation.
 
-This target is not shipped yet.
+### Source Direction
 
-### Source build
+The native implementation should use SwiftUI plus WidgetKit:
 
-The planned source path is SwiftUI plus WidgetKit. See `docs/apple-platform-plan.md`.
+- app icon based on the bone-hourglass mark
+- Lock Screen and Home Screen widgets
+- compact `MM` countdown surface
+- one setup screen with the same fields as the desktop panel
+- no runtime network dependency for the countdown
 
-## Local Component Workbench
+See [apple-platform-plan.md](apple-platform-plan.md).
 
-The browser preview is a development workbench, not the product surface:
+## Local Profile
 
-```sh
-npm run serve
+The example profile lives at `config/profile.example.json`. A user profile should stay local and can be edited by hand:
+
+```json
+{
+  "birth_date": "1992-06-19",
+  "birth_country": "WLD",
+  "current_country": "WLD",
+  "move_age": 0,
+  "skin": "system-light"
+}
 ```
 
-Open `http://127.0.0.1:4173`.
-
-Use it to inspect the Linux, macOS, Windows, and iOS component previews while the native wrappers are being developed.
-
-## Feedback From Your Machines
-
-For each machine, record:
-
-- OS and version
-- bar or shell used, for example Waybar, GNOME extension, macOS menu bar, or W11 tray
-- install path used: GitHub Release artifact or source
-- screenshot of the tray/bar state
-- profile values used, excluding any personal data you do not want public
-- terminal output from the smoke test if the widget does not render
-
-Do not file medical or personal health details as issues. The model is approximate and reflective only.
+Do not put medical history, private diagnoses, or personal documents in public issues. The model is approximate and reflective only.

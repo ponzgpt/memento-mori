@@ -61,6 +61,7 @@ assert.equal(html.includes("data-menu-display"), false, "right-click menu must n
 assert.equal(html.includes("<details"), false, "setup should remain one visible panel");
 assert.equal(html.includes("<summary"), false, "setup should not have collapsible subsections");
 assert.equal(html.includes("webpage"), false, "component workbench should not present itself as a webpage");
+assert.equal(html.includes("preview harness"), false, "UI must not expose development harness wording");
 assert.match(html, /<title>Memento Mori widget<\/title>/);
 assert.match(html, /A quiet little deadline/);
 assert.match(html, /minimized to tray\/bar/);
@@ -118,5 +119,8 @@ const serve = readFileSync(join(root, "scripts/serve.mjs"), "utf8");
 assert.match(serve, /__health/);
 assert.match(serve, /no-store/);
 assert.match(serve, /127\.0\.0\.1/);
+
+const packageJson = readFileSync(join(root, "package.json"), "utf8");
+assert.doesNotMatch(packageJson, /MVP|mockup|prototype/i);
 
 console.log("lint checks passed");

@@ -2,57 +2,59 @@
 
 ## Positioning
 
-Memento Mori should use a source-available commercial convenience model:
+Memento Mori uses an open-source plus convenience-installer model:
 
 - Source code stays on GitHub under Apache-2.0.
-- Technical users get a one-command install path from the repository.
-- Beta users get free GitHub Release installers while the product is being tested on real machines.
-- Non-technical users can later buy a cheap signed installer/executable for convenience and automatic setup.
+- Technical users get a direct source install path.
+- Non-technical users can buy a low-cost signed installer or executable for convenience.
+- The paid version does not hide core functionality. It saves setup time, which is a respectable thing to sell to people with a countdown in their tray.
 
-This keeps the product credible with the Arch/Linux audience while still creating a simple paid offer for users who do not want to build, clone, configure Waybar, or manage platform quirks.
+This keeps the project credible with Linux and open-source users while making the product approachable for people who do not want to clone a repository, edit a bar config, or discover what `$PATH` thinks of them today.
 
 ## Offers
 
-### Free / Technical
+### Free Source
 
-- GitHub repository.
-- One-command install:
+- Public GitHub repository.
+- Source install for Linux:
 
 ```sh
-curl -fsSL https://example.com/memento-mori/install.sh | sh
+git clone https://github.com/ponzgpt/memento-mori.git
+cd memento-mori
+./install.sh
 ```
 
 - Manual Waybar examples.
-- No warranty beyond the open-source license.
-- Community pull requests are welcome when they fit the project direction.
-- Anyone can fork the code and maintain their own variant.
+- Apache-2.0 license.
+- No warranty beyond the license.
+- Community pull requests are welcome when they fit the product direction.
+- Anyone can fork the code and maintain a variant.
 
-### Paid / Convenience
+### Paid Convenience
 
 - Cheap downloadable installer.
 - Target price: low impulse purchase, roughly USD 5-15.
 - Payment processor: Stripe.
 - Sales channels: personal website and beehiiv newsletter.
-- Beta phase: installer artifacts are free on GitHub Releases until the install flow is proven.
 - Signed builds where practical:
-  - Linux AppImage or native packages later.
-  - macOS `.dmg` or `.pkg` later.
-  - Windows `.exe` or `.msi` later.
+  - Linux AppImage, native package, or archive.
+  - macOS `.dmg` or `.pkg`.
+  - Windows `.exe` or `.msi`.
 - Includes defaults, launcher, uninstall path, and setup wizard.
 - Same core source remains visible on GitHub.
 - No support entitlement. The paid value is installer convenience.
 
-## Practical Packaging Path
+## Release Practice
 
-1. Keep the current Waybar script and static setup UI as the free technical MVP.
-2. Add a Tauri shell for cross-platform desktop packaging.
-3. Publish GitHub releases with source archives and free beta installer artifacts.
-4. After beta, sell signed convenience installers through Stripe Checkout on the personal website.
-5. Promote releases through the beehiiv newsletter.
-6. Keep the paid value focused on convenience and trust, not hidden features.
+1. Tag releases with SemVer.
+2. Attach source archives and platform artifacts to GitHub Releases.
+3. Keep checks green before publishing: audit, lint, unit tests, Waybar smoke test.
+4. Preserve Apache-2.0 notices in every packaged artifact.
+5. Route paid downloads through Stripe Checkout when charging for convenience builds.
+6. Keep release notes short, factual, and explicit about platform support.
 
 ## License Notes
 
-Apache-2.0 permits commercial use and redistribution. The paid installer can distribute the same Apache-2.0 code, provided license terms and notices are preserved.
+Apache-2.0 permits commercial use and redistribution, provided license terms and notices are preserved.
 
-Avoid promising medical, actuarial, insurance, mental-health, or legal accuracy in paid copy. The commercial promise is install convenience and polish. The software is provided as-is.
+Do not sell medical, actuarial, insurance, mental-health, or legal accuracy. The commercial promise is install convenience and polish. The software is provided as-is.
