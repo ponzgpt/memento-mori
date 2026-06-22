@@ -27,6 +27,8 @@ const nativePackagingDocs = readFileSync(join(root, "docs/native-packaging.md"),
 const releaseDocs = readFileSync(join(root, "docs/release.md"), "utf8");
 const supportMatrixDocs = readFileSync(join(root, "docs/support-matrix.md"), "utf8");
 const readme = readFileSync(join(root, "README.md"), "utf8");
+const productionReadiness = JSON.parse(readFileSync(join(root, "production-readiness.json"), "utf8"));
+const productionReadinessDocs = readFileSync(join(root, "docs/production-readiness.md"), "utf8");
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const serve = readFileSync(join(root, "scripts/serve.mjs"), "utf8");
 
@@ -87,7 +89,7 @@ function story(id) {
   return item;
 }
 
-assert.equal(stories.length, 21, "feature-status.csv should track every current story");
+assert.equal(stories.length, 22, "feature-status.csv should track every current story");
 assert.equal(new Set(stories.map((item) => item.id)).size, stories.length, "story IDs must be unique");
 for (const column of ["errors_found", "retest_result"]) {
   assert.ok(stories.every((item) => column in item), `feature-status.csv missing ${column}`);
@@ -344,6 +346,19 @@ for (const column of ["errors_found", "retest_result"]) {
   assert.match(nativePackagingDocs, /App Privacy/);
   assert.match(nativePackagingDocs, /release-manifest\.json/);
   assert.match(nativePackagingDocs, /source-installable/);
+}
+
+{
+  story("MM-US-022");
+  assert.equal(productionReadiness.version, packageJson.version);
+  assert.equal(productionReadiness.release_state, "source-installable production release");
+  assert.equal(productionReadiness.native_installer_state, "not signed");
+  assert.equal(productionReadiness.requirements.length, 11);
+  assert.match(packageJson.scripts["check:production"], /check-production-readiness/);
+  assert.match(packageJson.scripts.verify, /verify-release/);
+  assert.match(productionReadinessDocs, /Current Release State/);
+  assert.match(productionReadinessDocs, /Shipping Rule/);
+  assert.match(productionReadinessDocs, /Acknowledgments/);
 }
 
 console.log("feature stories passed");

@@ -43,6 +43,7 @@ for (const command of [
   "npm run verify",
   "npm run audit",
   "npm run lint",
+  "npm run check:production",
   "npm run check:version",
   "npm test",
   "npm run check:web",

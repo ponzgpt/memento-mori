@@ -16,6 +16,7 @@ const artifacts = [
       "README.md",
       "CHANGELOG.md",
       "release-readiness.json",
+      "production-readiness.json",
       "CONTRIBUTING.md",
       "PRIVACY.md",
       "SUPPORT.md",
@@ -31,6 +32,7 @@ const artifacts = [
       "docs/feature-status.csv",
       "docs/philosophy.md",
       "docs/native-packaging.md",
+      "docs/production-readiness.md",
       "docs/support-matrix.md",
       "docs/release.md"
     ]
@@ -42,6 +44,7 @@ const artifacts = [
       "README.md",
       "CHANGELOG.md",
       "release-readiness.json",
+      "production-readiness.json",
       "CONTRIBUTING.md",
       "PRIVACY.md",
       "SUPPORT.md",
@@ -57,6 +60,7 @@ const artifacts = [
       "installers/windows/uninstall.ps1",
       "scripts/serve.mjs",
       "scripts/check-installers.mjs",
+      "scripts/check-production-readiness.mjs",
       "scripts/check-release-readiness.mjs",
       "scripts/check-version.mjs",
       "scripts/check-web.mjs",
@@ -71,6 +75,7 @@ const artifacts = [
       "docs/apple-platform-plan.md",
       "docs/commercial-model.md",
       "docs/native-packaging.md",
+      "docs/production-readiness.md",
       "docs/stack-decisions.md",
       "docs/support-matrix.md",
       "docs/release.md"

@@ -9,6 +9,7 @@ const required = [
   "CHANGELOG.md",
   "PRIVACY.md",
   "AGENTS.md",
+  "production-readiness.json",
   "app/index.html",
   "app/main.js",
   "app/memento-core.js",
@@ -18,6 +19,7 @@ const required = [
   "scripts/serve.mjs",
   "scripts/package-release.mjs",
   "scripts/check-installers.mjs",
+  "scripts/check-production-readiness.mjs",
   "scripts/check-release-readiness.mjs",
   "scripts/check-version.mjs",
   "scripts/check-web.mjs",
@@ -41,6 +43,7 @@ const required = [
   "docs/philosophy.md",
   "docs/commercial-model.md",
   "docs/native-packaging.md",
+  "docs/production-readiness.md",
   "docs/apple-platform-plan.md",
   "docs/stack-decisions.md",
   "docs/release.md",
@@ -73,6 +76,7 @@ assert.match(waybarConfig, /"format": "MM \{\}"/);
 const agents = readFileSync(join(root, "AGENTS.md"), "utf8");
 assert.match(agents, /npm run verify/);
 assert.match(agents, /npm run check:installers/);
+assert.match(agents, /npm run check:production/);
 assert.match(agents, /npm run check:version/);
 assert.match(agents, /npm run release:notes/);
 assert.match(agents, /Linux, macOS, and Windows/);
@@ -91,11 +95,13 @@ assert.match(readme, /installers\/macos\/install\.sh/);
 assert.match(readme, /installers\\windows\\install\.ps1/);
 assert.match(readme, /docs\/support-matrix\.md/);
 assert.match(readme, /release-readiness\.json/);
+assert.match(readme, /production-readiness\.json/);
 assert.match(readme, /philosophy/i);
 assert.match(readme, /docs\/install\.md/);
 assert.match(readme, /docs\/philosophy\.md/);
 assert.match(readme, /docs\/model\.md/);
 assert.match(readme, /docs\/model-data\.md/);
+assert.match(readme, /docs\/production-readiness\.md/);
 assert.match(readme, /PRIVACY\.md/);
 assert.match(readme, /CHANGELOG\.md/);
 assert.doesNotMatch(readme, /MVP|mockup|prototype|Production Beta/i);
@@ -121,13 +127,14 @@ assert.match(changelog, /macOS: source-installable/);
 assert.match(changelog, /Windows 11: source-installable/);
 assert.match(changelog, /iOS: documented direction only/);
 assert.match(changelog, /release manifest/);
+assert.match(changelog, /Production-readiness matrix/);
 assert.match(changelog, /npm run verify/);
 assert.match(changelog, /not medical, legal, actuarial, insurance, or mental-health advice/i);
 assert.doesNotMatch(changelog, /MVP|mockup|prototype|prototipo|Codex|Javier|co-development|preview harness|Production Beta/i);
 
 const featureStatus = readFileSync(join(root, "docs/feature-status.csv"), "utf8");
 assert.match(featureStatus, /MM-US-001/);
-assert.match(featureStatus, /MM-US-021/);
+assert.match(featureStatus, /MM-US-022/);
 assert.match(featureStatus, /user_story/);
 assert.match(featureStatus, /expected_behavior/);
 assert.match(featureStatus, /latest_result/);
@@ -149,6 +156,7 @@ assert.match(install, /installers\\windows\\install\.ps1/);
 assert.match(install, /provided as-is/i);
 assert.match(install, /PRIVACY\.md/);
 assert.match(install, /native-packaging\.md/);
+assert.match(install, /production-readiness\.md/);
 assert.doesNotMatch(install, /MVP|mockup|prototype|not shipped yet/i);
 
 const model = readFileSync(join(root, "docs/model.md"), "utf8");
@@ -177,6 +185,9 @@ assert.match(philosophy, /dry, not cruel/);
 assert.match(philosophy, /Fraunces/);
 assert.match(philosophy, /Geist/);
 assert.match(philosophy, /SIL Open Font License/);
+assert.match(philosophy, /Acknowledgments/);
+assert.match(philosophy, /Unix utility culture/);
+assert.match(philosophy, /Apple-style restraint/);
 
 const commercial = readFileSync(join(root, "docs/commercial-model.md"), "utf8");
 assert.match(commercial, /Source code stays on GitHub under Apache-2\.0/);
@@ -203,6 +214,23 @@ assert.match(nativePackaging, /PRIVACY\.md/);
 assert.match(nativePackaging, /release-manifest\.json/);
 assert.match(nativePackaging, /source-installable/);
 assert.doesNotMatch(nativePackaging, /MVP|mockup|prototype|prototipo|Codex|Javier|co-development|preview harness|Production Beta/i);
+
+const productionReadiness = JSON.parse(readFileSync(join(root, "production-readiness.json"), "utf8"));
+assert.equal(productionReadiness.version, JSON.parse(readFileSync(join(root, "package.json"), "utf8")).version);
+assert.equal(productionReadiness.release_state, "source-installable production release");
+assert.equal(productionReadiness.native_installer_state, "not signed");
+assert.equal(productionReadiness.requirements.length, 11);
+assert.equal(productionReadiness.requirements.every((item) => item.evidence.length > 0), true);
+
+const productionReadinessDocs = readFileSync(join(root, "docs/production-readiness.md"), "utf8");
+assert.match(productionReadinessDocs, /source-installable release/);
+assert.match(productionReadinessDocs, /Current Release State/);
+assert.match(productionReadinessDocs, /Shipping Rule/);
+assert.match(productionReadinessDocs, /Acknowledgments/);
+assert.match(productionReadinessDocs, /Unix utility/);
+assert.match(productionReadinessDocs, /Apple lesson/);
+assert.match(productionReadinessDocs, /docs\/native-packaging\.md|native-packaging\.md/);
+assert.doesNotMatch(productionReadinessDocs, /MVP|mockup|prototype|prototipo|Codex|Javier|co-development|preview harness|Production Beta/i);
 
 const apple = readFileSync(join(root, "docs/apple-platform-plan.md"), "utf8");
 assert.match(apple, /WidgetKit/);
@@ -248,6 +276,7 @@ assert.match(release, /npm run check:version/);
 assert.match(release, /CHANGELOG\.md/);
 assert.match(release, /npm run release:notes/);
 assert.match(release, /native-packaging\.md/);
+assert.match(release, /production-readiness\.md/);
 
 const supportMatrix = readFileSync(join(root, "docs/support-matrix.md"), "utf8");
 assert.match(supportMatrix, /Linux/);
@@ -257,9 +286,11 @@ assert.match(supportMatrix, /iOS/);
 assert.match(supportMatrix, /source-installable/);
 assert.match(supportMatrix, /Continuous integration runs that gate on Linux, macOS, and Windows/);
 assert.match(supportMatrix, /native-packaging\.md/);
+assert.match(supportMatrix, /production-readiness\.md/);
 
 const readiness = JSON.parse(readFileSync(join(root, "release-readiness.json"), "utf8"));
 assert.equal(readiness.release_gate, "source-installable");
+assert.match(readiness.required_common_checks.join("\n"), /npm run check:production/);
 assert.equal(readiness.platforms.linux.status, "ready");
 assert.equal(readiness.platforms.macos.status, "source-installable");
 assert.equal(readiness.platforms.windows.status, "source-installable");
@@ -270,6 +301,7 @@ assert.match(packageScript, /memento-mori-linux-waybar/);
 assert.match(packageScript, /memento-mori-local-app/);
 assert.match(packageScript, /CHANGELOG\.md/);
 assert.match(packageScript, /PRIVACY\.md/);
+assert.match(packageScript, /production-readiness\.json/);
 assert.match(packageScript, /release-manifest\.json/);
 assert.match(packageScript, /build_epoch/);
 assert.match(packageScript, /pkg\.version/);
@@ -281,6 +313,7 @@ assert.match(packageScript, /docs\/model-data\.md/);
 assert.match(packageScript, /docs\/feature-status\.csv/);
 assert.match(packageScript, /docs\/native-packaging\.md/);
 assert.match(packageScript, /scripts\/release-notes\.mjs/);
+assert.match(packageScript, /scripts\/check-production-readiness\.mjs/);
 assert.match(packageScript, /scripts\/test-waybar\.mjs/);
 assert.match(packageScript, /SHA256SUMS/);
 
@@ -295,8 +328,14 @@ assert.match(installerScript, /CFBundleShortVersionString/);
 const readinessScript = readFileSync(join(root, "scripts/check-release-readiness.mjs"), "utf8");
 assert.match(readinessScript, /release-readiness\.json/);
 assert.match(readinessScript, /source-installable/);
+assert.match(readinessScript, /npm run check:production/);
 assert.match(readinessScript, /npm run check:version/);
 assert.match(readinessScript, /npm run release:notes/);
+
+const productionScript = readFileSync(join(root, "scripts/check-production-readiness.mjs"), "utf8");
+assert.match(productionScript, /production-readiness\.json/);
+assert.match(productionScript, /source-installable production release/);
+assert.match(productionScript, /production readiness checks passed/);
 
 const versionScript = readFileSync(join(root, "scripts/check-version.mjs"), "utf8");
 assert.match(versionScript, /version checks passed/);
@@ -327,6 +366,7 @@ assert.match(verifyScript, /findPython/);
 assert.match(verifyScript, /Python 3 is required/);
 assert.match(verifyScript, /release-manifest\.json/);
 assert.match(verifyScript, /manifest checksum mismatch/);
+assert.match(verifyScript, /check:production/);
 assert.match(verifyScript, /check:version/);
 assert.match(verifyScript, /release:notes/);
 assert.match(verifyScript, /git.*diff.*--check/s);
@@ -385,7 +425,9 @@ const publicDocs = [
   supportMatrix,
   agents,
   JSON.stringify(readiness),
+  JSON.stringify(productionReadiness),
   packageScript,
+  productionScript,
   readinessScript,
   webScript,
   notesScript,

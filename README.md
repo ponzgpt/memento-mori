@@ -37,6 +37,7 @@ powershell -ExecutionPolicy Bypass -File installers\windows\install.ps1
 Release artifacts, when published, are available from GitHub Releases. The source remains Apache-2.0; paid installers are convenience packaging for users who prefer a signed executable and a quieter setup path. Full platform notes are in [docs/install.md](docs/install.md).
 
 Current release readiness is tracked in [docs/support-matrix.md](docs/support-matrix.md) and `release-readiness.json`.
+Production scope is tracked in [docs/production-readiness.md](docs/production-readiness.md) and `production-readiness.json`.
 
 ## What It Does
 
@@ -121,6 +122,7 @@ The philosophy and tone rules are in [docs/philosophy.md](docs/philosophy.md).
 - [docs/philosophy.md](docs/philosophy.md): product concept, tone, and visual rules.
 - [docs/commercial-model.md](docs/commercial-model.md): open source plus paid installer posture.
 - [docs/native-packaging.md](docs/native-packaging.md): signed installer and app-store readiness requirements.
+- [docs/production-readiness.md](docs/production-readiness.md): release scope, shipping labels, and production gate.
 - [docs/stack-decisions.md](docs/stack-decisions.md): technical choices and rejected weight.
 - [docs/apple-platform-plan.md](docs/apple-platform-plan.md): macOS/iOS direction.
 - [docs/support-matrix.md](docs/support-matrix.md): platform readiness and release gate.
@@ -141,6 +143,7 @@ The full command runs the release gates, packages artifacts, checks Waybar outpu
 npm run audit
 npm run lint
 npm run check:installers
+npm run check:production
 npm run check:release
 npm run check:version
 npm run check:web

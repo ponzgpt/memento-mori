@@ -26,6 +26,7 @@ For narrower loops, the gate is composed from:
 ```sh
 npm run audit
 npm run check:installers
+npm run check:production
 npm run check:release
 npm run check:version
 npm run check:web

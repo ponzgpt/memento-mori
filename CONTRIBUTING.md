@@ -16,6 +16,7 @@ For smaller local loops, the same gate is composed from:
 npm run audit
 npm run lint
 npm run check:installers
+npm run check:production
 npm run check:release
 npm run check:version
 npm run check:web

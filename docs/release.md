@@ -21,6 +21,7 @@ This is the canonical release gate. It runs the individual checks below, creates
 npm run audit
 npm run lint
 npm run check:installers
+npm run check:production
 npm run check:release
 npm run check:version
 npm run check:web
@@ -46,6 +47,7 @@ python3 waybar/memento.py --config config/profile.example.json
 The current release gate is `source-installable`, tracked in `release-readiness.json` and [support-matrix.md](support-matrix.md).
 
 Do not describe macOS or Windows artifacts as signed installers until signing, notarization, and installer QA are complete. The platform-specific native packaging checklist is [native-packaging.md](native-packaging.md).
+Production scope and shipping labels are tracked in [production-readiness.md](production-readiness.md) and `production-readiness.json`.
 
 ## Notes
 

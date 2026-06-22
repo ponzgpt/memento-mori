@@ -1,0 +1,73 @@
+{
+  "version": "1.0.0",
+  "release_state": "source-installable production release",
+  "native_installer_state": "not signed",
+  "requirements": [
+    {
+      "id": "PR-001",
+      "name": "functional summary first",
+      "status": "met",
+      "evidence": ["README.md"]
+    },
+    {
+      "id": "PR-002",
+      "name": "install paths by platform",
+      "status": "met",
+      "evidence": ["README.md", "docs/install.md", "docs/support-matrix.md"]
+    },
+    {
+      "id": "PR-003",
+      "name": "three desktop operating systems documented",
+      "status": "met",
+      "evidence": ["docs/install.md", "docs/support-matrix.md", "release-readiness.json"]
+    },
+    {
+      "id": "PR-004",
+      "name": "philosophical motivation and acknowledgments",
+      "status": "met",
+      "evidence": ["docs/philosophy.md"]
+    },
+    {
+      "id": "PR-005",
+      "name": "no self-referential development wording",
+      "status": "met",
+      "evidence": ["tests/audit.mjs"]
+    },
+    {
+      "id": "PR-006",
+      "name": "local-first privacy boundary",
+      "status": "met",
+      "evidence": ["PRIVACY.md", "SECURITY.md"]
+    },
+    {
+      "id": "PR-007",
+      "name": "release artifacts and checksums",
+      "status": "met",
+      "evidence": ["scripts/package-release.mjs", "scripts/verify-release.mjs", "docs/release.md"]
+    },
+    {
+      "id": "PR-008",
+      "name": "signed native installer truthfulness",
+      "status": "truthfully-scoped",
+      "evidence": ["release-readiness.json", "docs/native-packaging.md"]
+    },
+    {
+      "id": "PR-009",
+      "name": "feature stories and retest loop",
+      "status": "met",
+      "evidence": ["docs/feature-status.csv", "tests/feature-stories.mjs"]
+    },
+    {
+      "id": "PR-010",
+      "name": "balanced functional and visual surface",
+      "status": "met",
+      "evidence": ["app/index.html", "app/styles.css", "tests/feature-stories.mjs"]
+    },
+    {
+      "id": "PR-011",
+      "name": "GitHub project hygiene",
+      "status": "met",
+      "evidence": ["CONTRIBUTING.md", ".github/workflows/ci.yml", ".github/workflows/release.yml"]
+    }
+  ]
+}

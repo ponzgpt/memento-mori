@@ -7,6 +7,7 @@
   "scripts": {
     "audit": "node tests/audit.mjs",
     "check:installers": "node scripts/check-installers.mjs",
+    "check:production": "node scripts/check-production-readiness.mjs",
     "check:release": "node scripts/check-release-readiness.mjs",
     "check:version": "node scripts/check-version.mjs",
     "check:web": "node scripts/check-web.mjs",

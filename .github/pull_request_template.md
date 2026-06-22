@@ -7,6 +7,7 @@
 - [ ] `npm run verify`
 - [ ] UI inspected when visual behavior changed
 - [ ] Release docs or support matrix updated when platform readiness changed
+- [ ] Production readiness matrix updated when release scope changed
 
 ## Product Fit
 

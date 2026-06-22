@@ -25,3 +25,9 @@ Typography direction:
 Commercial posture:
 
 The source stays open because the premise is intimate enough that users should be able to inspect it. Paid installers are convenience, not a hostage situation. If someone wants to fork it and make the skull smile, that is between them and whatever remains of their taste.
+
+## Acknowledgments
+
+Memento Mori acknowledges the older memento mori and vanitas tradition rather than pretending the idea came from a product meeting. Stoic reflection, Christian and post-Christian art, grave markers, hourglasses, skulls, candles, ash, and fading flowers all point at the same impolite fact: attention is finite because life is finite.
+
+The software shape also owes a debt to Unix utility culture: one clear job, local files, inspectable behavior, and no dashboard sprawl. The visual standard owes a debt to Apple-style restraint: even a small utility should have proportion, texture, and taste.

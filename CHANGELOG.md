@@ -21,6 +21,7 @@ Initial source-installable release.
 - Release artifacts for the Linux Waybar module and local desktop component app.
 - Machine-readable release manifest with artifact checksums and platform readiness.
 - Native packaging checklist for signed macOS, signed Windows, Linux package, and iOS distribution readiness.
+- Production-readiness matrix for release scope, shipping labels, and final gate evidence.
 
 ### Verified
 
@@ -29,6 +30,7 @@ Initial source-installable release.
 - `npm run lint`
 - `npm test`
 - `npm run check:installers`
+- `npm run check:production`
 - `npm run check:release`
 - `npm run check:version`
 - `npm run check:web`

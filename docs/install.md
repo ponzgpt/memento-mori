@@ -10,6 +10,7 @@ The software is provided as-is. There is no support entitlement. Issues and pull
 Profile data stays local. Privacy boundaries and deletion paths are documented in [../PRIVACY.md](../PRIVACY.md).
 
 Signed installer requirements are documented in [native-packaging.md](native-packaging.md). Source-installable artifacts should stay labeled source-installable until that checklist is complete.
+Production scope and platform labels are documented in [production-readiness.md](production-readiness.md).
 
 ## Linux
 
