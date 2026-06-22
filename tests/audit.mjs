@@ -64,6 +64,14 @@ const waybarConfig = readFileSync(join(root, "waybar/config.example.jsonc"), "ut
 assert.match(waybarConfig, /"return-type": "json"/);
 assert.match(waybarConfig, /"format": "MM \{\}"/);
 
+const agents = readFileSync(join(root, "AGENTS.md"), "utf8");
+assert.match(agents, /npm run verify/);
+assert.match(agents, /npm run check:installers/);
+assert.match(agents, /npm run check:version/);
+assert.match(agents, /python3 waybar\/memento\.py --config config\/profile\.example\.json/);
+assert.match(agents, /Do not install system packages on the host/);
+assert.match(agents, /source installers as signed installers/);
+
 const readme = readFileSync(join(root, "README.md"), "utf8");
 assert.match(readme, /Apache-2\.0/);
 assert.match(readme, /not medical, legal, actuarial, insurance/i);
@@ -229,6 +237,12 @@ assert.match(releaseWorkflow, /npm run verify/);
 assert.match(releaseWorkflow, /gh release create/);
 assert.match(releaseWorkflow, /contents: write/);
 
+const pullRequestTemplate = readFileSync(join(root, ".github/pull_request_template.md"), "utf8");
+assert.match(pullRequestTemplate, /npm run verify/);
+assert.match(pullRequestTemplate, /UI inspected when visual behavior changed/);
+assert.match(pullRequestTemplate, /support matrix updated when platform readiness changed/);
+assert.match(pullRequestTemplate, /Does not describe source-installable artifacts as signed native installers/);
+
 const macInstaller = readFileSync(join(root, "installers/macos/install.sh"), "utf8");
 assert.match(macInstaller, /APP_BUNDLE=.*\.app/);
 assert.match(macInstaller, /CFBundleName/);
@@ -253,6 +267,7 @@ const publicDocs = [
   security,
   release,
   supportMatrix,
+  agents,
   JSON.stringify(readiness),
   packageScript,
   readinessScript,
@@ -260,6 +275,7 @@ const publicDocs = [
   verifyScript,
   ci,
   releaseWorkflow,
+  pullRequestTemplate,
   macInstaller,
   winInstaller
 ].join("\n");
