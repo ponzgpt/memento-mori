@@ -12,6 +12,7 @@ Initial source-installable release.
 - Waybar-compatible Linux JSON module with tooltip, CSS classes, and progress percentage.
 - Local component app with tray/bar previews, settings panel, contextual menus, reflection prompt, and bone/ash plus onyx palettes.
 - Deterministic life-expectancy model using birth date, birth country, current country, residence age, and coarse local lifestyle rows.
+- Auditable model-data document listing exact baseline and offset values.
 - Apache-2.0 source distribution with no accounts, analytics, cloud sync, or runtime countdown API.
 - Privacy policy documenting local profile data, runtime network boundaries, and deletion paths.
 - Source installers for macOS and Windows backed by the local component app.

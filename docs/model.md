@@ -56,3 +56,5 @@ Memento Mori does not provide:
 - runtime network calls for the countdown
 
 The model should remain auditable. If a future platform shell needs more code, the calculation core should stay small enough to inspect without needing a second life.
+
+The exact release values are listed in [model-data.md](model-data.md).

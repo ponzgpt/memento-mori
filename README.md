@@ -117,6 +117,7 @@ The philosophy and tone rules are in [docs/philosophy.md](docs/philosophy.md).
 
 - [docs/install.md](docs/install.md): install and packaging paths.
 - [docs/model.md](docs/model.md): calculation model and source boundaries.
+- [docs/model-data.md](docs/model-data.md): exact baseline and offset values.
 - [docs/philosophy.md](docs/philosophy.md): product concept, tone, and visual rules.
 - [docs/commercial-model.md](docs/commercial-model.md): open source plus paid installer posture.
 - [docs/stack-decisions.md](docs/stack-decisions.md): technical choices and rejected weight.

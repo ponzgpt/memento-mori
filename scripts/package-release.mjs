@@ -27,6 +27,7 @@ const artifacts = [
       "waybar/style.example.css",
       "docs/install.md",
       "docs/model.md",
+      "docs/model-data.md",
       "docs/philosophy.md",
       "docs/support-matrix.md",
       "docs/release.md"
@@ -62,6 +63,7 @@ const artifacts = [
       "scripts/verify-release.mjs",
       "docs/install.md",
       "docs/model.md",
+      "docs/model-data.md",
       "docs/philosophy.md",
       "docs/apple-platform-plan.md",
       "docs/commercial-model.md",

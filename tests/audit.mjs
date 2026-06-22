@@ -36,6 +36,7 @@ const required = [
   "SUPPORT.md",
   "SECURITY.md",
   "docs/model.md",
+  "docs/model-data.md",
   "docs/install.md",
   "docs/philosophy.md",
   "docs/commercial-model.md",
@@ -93,6 +94,7 @@ assert.match(readme, /philosophy/i);
 assert.match(readme, /docs\/install\.md/);
 assert.match(readme, /docs\/philosophy\.md/);
 assert.match(readme, /docs\/model\.md/);
+assert.match(readme, /docs\/model-data\.md/);
 assert.match(readme, /PRIVACY\.md/);
 assert.match(readme, /CHANGELOG\.md/);
 assert.doesNotMatch(readme, /MVP|mockup|prototype|Production Beta/i);
@@ -111,6 +113,7 @@ const changelog = readFileSync(join(root, "CHANGELOG.md"), "utf8");
 assert.match(changelog, /# Changelog/);
 assert.match(changelog, /1\.0\.0 - 2026-06-22/);
 assert.match(changelog, /Initial source-installable release/);
+assert.match(changelog, /model-data/);
 assert.match(changelog, /Privacy policy/);
 assert.match(changelog, /Linux: ready/);
 assert.match(changelog, /macOS: source-installable/);
@@ -150,6 +153,19 @@ assert.match(model, /SP\.DYN\.LE00\.IN/);
 assert.match(model, /birth country/);
 assert.match(model, /current country/);
 assert.match(model, /not clinical calculations/i);
+assert.match(model, /model-data\.md/);
+
+const modelData = readFileSync(join(root, "docs/model-data.md"), "utf8");
+assert.match(modelData, /World Bank WDI/);
+assert.match(modelData, /SP\.DYN\.LE00\.IN/);
+assert.match(modelData, /WLD \| World average \| 73\.480380292779/);
+assert.match(modelData, /USA \| United States \| 78\.890243902439/);
+assert.match(modelData, /JPN \| Japan \| 84\.0363414634146/);
+assert.match(modelData, /migration_weight = clamp/);
+assert.match(modelData, /smoking \| current \| -4\.5/);
+assert.match(modelData, /life_expectancy_years = clamp/);
+assert.match(modelData, /not a clinical model/i);
+assert.doesNotMatch(modelData, /MVP|mockup|prototype|prototipo|Codex|Javier|co-development|preview harness|Production Beta/i);
 
 const philosophy = readFileSync(join(root, "docs/philosophy.md"), "utf8");
 assert.match(philosophy, /time is the one budget nobody gets to refinance/);
@@ -240,6 +256,7 @@ assert.match(packageScript, /installers\/macos\/install\.sh/);
 assert.match(packageScript, /installers\/windows\/install\.ps1/);
 assert.match(packageScript, /release-readiness\.json/);
 assert.match(packageScript, /docs\/support-matrix\.md/);
+assert.match(packageScript, /docs\/model-data\.md/);
 assert.match(packageScript, /scripts\/release-notes\.mjs/);
 assert.match(packageScript, /scripts\/test-waybar\.mjs/);
 assert.match(packageScript, /SHA256SUMS/);
@@ -332,6 +349,7 @@ const publicDocs = [
   changelog,
   install,
   model,
+  modelData,
   philosophy,
   commercial,
   apple,
