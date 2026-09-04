@@ -1,60 +1,47 @@
 # Calculation Model
 
-Data checked: 2026-06-19.
+Data snapshot: World Bank WDI 2024 values included in the repository.
 
-## Functional Model
+## Purpose
 
-Memento Mori estimates a deterministic target date from:
+The model supplies perspective, not prognosis. It translates a public population statistic into a central date and deliberately surrounds it with a broad range.
+
+## Web formula
 
 ```text
-birth date + country life expectancy + local checkbox offsets
+central_horizon = birth_date + country_life_expectancy_years
+range_start = central_horizon - 7 years
+range_end = central_horizon + 7 years
+progress = age_now / country_life_expectancy_years
 ```
 
-The output is a countdown, not a prediction. The widget keeps the model local, transparent, and intentionally coarse.
+Remaining years, weeks, and days are alternative presentations of the same central horizon. They are not separate forecasts.
 
-## Data Source
+## Source
 
-The default population baseline uses World Bank WDI indicator `SP.DYN.LE00.IN`, 2024 life expectancy at birth values.
+The included baselines use World Bank World Development Indicators series `SP.DYN.LE00.IN`, life expectancy at birth, with 2024 values for the world and seven country references. Exact stored values are listed in [model-data.md](model-data.md).
 
-Life expectancy at birth is a population-period statistic. It does not know the user, their doctor, their family, their city, their luck, or what they did last weekend. The app labels the estimate as approximate because anything else would be numerology with nicer typography.
+Life expectancy at birth is a population-period statistic. It does not account for an individual's health, family history, local conditions, future events, or medical care. The source therefore supports a reflective reference but cannot support an individual death prediction.
 
-## Country Context
+## Input validation
 
-The profile separates:
+The web flow requires:
 
-- birth country
-- current country
-- age since moving
+- a real calendar date in `YYYY-MM-DD` form;
+- a date that is not in the future;
+- an age no greater than 120 years;
+- a country code present in the bundled baseline table.
 
-If birth country and current country differ, the model blends toward the current country after the entered move age. This gives migration context without pretending to model neighborhood-level effects, health-care access, or city-specific mortality differences.
+An invalid input produces no result and displays an inline announced error.
 
-## Local Offsets
+## Why the web flow uses no lifestyle offsets
 
-The live settings panel includes six checkbox rows:
+The repository retains older native experiments that support coarse local offsets, but the public web app sets every offset to “skip.” Those adjustments were not backed by an individual clinical model and created a risk of false authority. Removing them makes the primary product simpler and more honest.
 
-- sex
-- sleep
-- exercise
-- drinking
-- smoking
-- health context
+## Range choice
 
-Each row is mutually exclusive. Unselected rows are skipped internally. Selected rows apply fixed local offsets to the population baseline.
-
-These offsets are not clinical calculations. They are a small reflective adjustment so the widget does not feel completely generic.
+The seven-year margin is a product communication boundary, not a confidence interval. Its job is to keep uncertainty visible and prevent a central date from looking exact. It does not make the estimate medically or actuarially valid.
 
 ## Boundaries
 
-Memento Mori does not provide:
-
-- diagnosis
-- clinical risk scoring
-- actuarial or insurance scoring
-- mental-health advice
-- legal advice
-- remote profile storage
-- runtime network calls for the countdown
-
-The model should remain auditable. If a future platform shell needs more code, the calculation core should stay small enough to inspect without needing a second life.
-
-The exact release values are listed in [model-data.md](model-data.md).
+Memento Mori does not provide diagnosis, clinical risk scoring, insurance or actuarial scoring, legal advice, mental-health advice, or remote profile storage.

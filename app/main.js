@@ -1,345 +1,375 @@
 import {
   BASELINES,
   DEFAULT_PROFILE,
-  buildWaybarPayload,
+  WEB_DEFAULT_PROFILE,
   calculateEstimate,
-  formatDate,
-  splitDuration
-} from "./memento-core.js";
+  clamp,
+  getPerspectiveRange,
+  validateBirthDate
+} from "./memento-core.js?v=2.0.0-r2";
 
-const STORAGE_KEY = "memento-mori.profile.v1";
-const SKINS = ["system-light", "system-dark"];
-const SKIN_ALIASES = {
-  system: "system-light",
-  bone: "system-light",
-  onyx: "system-dark"
+const PROFILE_STORAGE_KEY = "memento-mori.web-profile.v2";
+const INTENTION_STORAGE_KEY = "memento-mori.daily-intention.v1";
+const DAY_MS = 24 * 60 * 60 * 1000;
+const WEEK_MS = 7 * DAY_MS;
+const MONTH_MS = 365.2425 / 12 * DAY_MS;
+const COUNTRY_LABELS = {
+  WLD: "Promedio mundial",
+  USA: "Estados Unidos",
+  GBR: "Reino Unido",
+  DEU: "Alemania",
+  ESP: "España",
+  JPN: "Japón",
+  IND: "India",
+  BRA: "Brasil"
 };
 
-const fields = [
-  "birthDate",
-  "birthCountry",
-  "currentCountry",
-  "moveAge"
-];
-
-function queryRequired(selector) {
+function required(selector) {
   const element = document.querySelector(selector);
   if (!element) {
-    throw new Error(`Missing required UI element: ${selector}`);
+    throw new Error(`Falta un elemento obligatorio de la interfaz: ${selector}`);
   }
   return element;
 }
 
-const els = {
-  now: document.querySelectorAll("[data-now]"),
-  birthCountry: queryRequired("#birthCountry"),
-  currentCountry: queryRequired("#currentCountry"),
-  countdown: queryRequired("[data-countdown]"),
-  widgetTexts: document.querySelectorAll("[data-widget-text]"),
-  widgetProgresses: document.querySelectorAll("[data-widget-progress]"),
-  widgetShells: document.querySelectorAll("[data-widget-shell]"),
-  deathDate: queryRequired("[data-death-date]"),
-  lifeYears: queryRequired("[data-life-years]"),
-  baseline: queryRequired("[data-baseline]"),
-  progressLabels: document.querySelectorAll("[data-progress]"),
-  delta: queryRequired("[data-delta]"),
-  disclaimer: queryRequired("[data-disclaimer]"),
-  contextMenu: queryRequired("[data-context-menu]"),
-  reflectionCard: queryRequired("[data-reflection-card]"),
-  reflectionTexts: document.querySelectorAll("[data-reflection-text]"),
-  toast: queryRequired("[data-reflection-toast]"),
-  toastText: queryRequired("[data-toast-text]"),
-  appPanel: queryRequired("[data-app-panel]"),
-  panelDockWidget: queryRequired("[data-panel-dock-widget]"),
-  panelToggleButton: queryRequired("[data-action='toggle-panel']")
+const elements = {
+  profileForm: required("#profile-form"),
+  birthDate: required("#birth-date"),
+  birthError: required("#birth-error"),
+  country: required("#country"),
+  reset: required("[data-reset]"),
+  emptyResult: required("[data-empty-result]"),
+  result: required("[data-result]"),
+  horizonDate: required("[data-horizon-date]"),
+  rangeStart: required("[data-range-start]"),
+  rangeEnd: required("[data-range-end]"),
+  yearsLeft: required("[data-years-left]"),
+  weeksLeft: required("[data-weeks-left]"),
+  daysLeft: required("[data-days-left]"),
+  progressRing: required("[data-progress-ring]"),
+  progressNumber: required("[data-progress-number]"),
+  progressCopy: required("[data-progress-copy]"),
+  liveReadout: required("[data-live-readout]"),
+  perspective: required("[data-perspective]"),
+  lifeGrid: required("[data-life-grid]"),
+  gridCaption: required("[data-grid-caption]"),
+  afternoons: required("[data-free-afternoons]"),
+  meetings: required("[data-monthly-meetings]"),
+  intentionSection: required("[data-intention-section]"),
+  intentionForm: required("#intention-form"),
+  intention: required("#intention"),
+  characterCount: required("[data-character-count]"),
+  savedIntention: required("[data-saved-intention]"),
+  intentionText: required("[data-intention-text]"),
+  complete: required("[data-complete]"),
+  clearIntention: required("[data-clear-intention]"),
+  copy: required("[data-copy]"),
+  toast: required("[data-toast]"),
+  storageStatus: required("[data-storage-status]")
 };
 
-let profile = loadProfile();
-let lastReflectionBucket = "";
-let panelOpen = true;
+let storageAvailable = true;
+let currentEstimate = null;
+let toastTimer = null;
 
-function normalizeSkin(skin) {
-  if (SKINS.includes(skin)) {
-    return skin;
-  }
-  return SKIN_ALIASES[skin] || "system-light";
-}
-
-function loadProfile() {
+function readStorage(key, fallback) {
   try {
-    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    return {
-      ...DEFAULT_PROFILE,
-      birthCountry: DEFAULT_PROFILE.birthCountry || DEFAULT_PROFILE.country,
-      currentCountry: DEFAULT_PROFILE.currentCountry || DEFAULT_PROFILE.country,
-      ...stored,
-      skin: normalizeSkin(stored?.skin || DEFAULT_PROFILE.skin)
-    };
+    const raw = window.localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
   } catch {
-    return { ...DEFAULT_PROFILE, skin: normalizeSkin(DEFAULT_PROFILE.skin) };
+    storageAvailable = false;
+    return fallback;
   }
 }
 
-function saveProfile() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+function writeStorage(key, value) {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+    return true;
+  } catch {
+    storageAvailable = false;
+    updateStorageStatus();
+    showToast("El cálculo funciona, pero este navegador no permite guardar los datos.");
+    return false;
+  }
 }
 
-function hydrateCountrySelect(select) {
-  Object.entries(BASELINES).forEach(([code, item]) => {
-    const option = document.createElement("option");
-    option.value = code;
-    option.textContent = `${item.label} (${item.years.toFixed(1)}y)`;
-    select.append(option);
-  });
+function removeStorage(key) {
+  try {
+    window.localStorage.removeItem(key);
+  } catch {
+    storageAvailable = false;
+  }
+}
+
+function updateStorageStatus() {
+  elements.storageStatus.textContent = storageAvailable
+    ? "Solo en este dispositivo"
+    : "Persistencia no disponible";
+}
+
+function toInputDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function formatDate(date) {
+  return new Intl.DateTimeFormat("es-ES", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(date);
+}
+
+function formatNumber(value) {
+  return Math.max(0, Math.round(value)).toLocaleString("es-ES");
+}
+
+function showToast(message) {
+  window.clearTimeout(toastTimer);
+  elements.toast.textContent = message;
+  elements.toast.hidden = false;
+  toastTimer = window.setTimeout(() => {
+    elements.toast.hidden = true;
+  }, 4200);
 }
 
 function hydrateCountries() {
-  hydrateCountrySelect(els.birthCountry);
-  hydrateCountrySelect(els.currentCountry);
-}
-
-function hydrateFields() {
-  fields.forEach((name) => {
-    const input = document.querySelector(`[name="${name}"]`);
-    if (input && profile[name] !== undefined) {
-      input.value = profile[name];
-    }
-  });
-  hydrateCheckRows();
-  setSkin(profile.skin || "system-light");
-}
-
-function collectFields() {
-  fields.forEach((name) => {
-    const input = document.querySelector(`[name="${name}"]`);
-    if (input) {
-      profile[name] = input.value;
-    }
-  });
-  document.querySelectorAll("[data-factor]").forEach((input) => {
-    if (input.checked) {
-      profile[input.dataset.factor] = input.value;
-    }
-  });
-}
-
-function hydrateCheckRows() {
-  document.querySelectorAll("[data-factor]").forEach((input) => {
-    input.checked = profile[input.dataset.factor] === input.value;
-  });
-}
-
-function setFactor(input) {
-  const factor = input.dataset.factor;
-  if (input.checked) {
-    document.querySelectorAll(`[data-factor="${factor}"]`).forEach((peer) => {
-      if (peer !== input) {
-        peer.checked = false;
-      }
-    });
-    profile[factor] = input.value;
-  } else {
-    profile[factor] = "skip";
+  elements.country.replaceChildren();
+  for (const [code, baseline] of Object.entries(BASELINES)) {
+    const option = document.createElement("option");
+    option.value = code;
+    option.textContent = `${COUNTRY_LABELS[code] || baseline.label} · ${baseline.years.toFixed(1)} años`;
+    elements.country.append(option);
   }
 }
 
-function formatPlainReadout(ms) {
-  const parts = splitDuration(ms);
-  const prefix = ms < 0 ? "+" : "";
-  return `${prefix}${parts.years}y ${parts.days}d ${parts.hours}h ${parts.minutes}m ${parts.seconds}s`;
+function profileForEstimate() {
+  const country = elements.country.value || WEB_DEFAULT_PROFILE.country;
+  return {
+    ...DEFAULT_PROFILE,
+    birthDate: elements.birthDate.value,
+    country,
+    birthCountry: country,
+    currentCountry: country
+  };
 }
 
-function setSkin(skin) {
-  profile.skin = normalizeSkin(skin);
-  document.documentElement.dataset.skin = profile.skin;
-  document.querySelectorAll("[data-action='toggle-skin']").forEach((button) => {
-    button.dataset.activeSkin = profile.skin;
-    button.setAttribute("aria-pressed", profile.skin === "system-dark" ? "true" : "false");
-  });
+function validateForm(now = new Date()) {
+  const validation = validateBirthDate(elements.birthDate.value, now);
+  elements.birthError.hidden = validation.valid;
+  elements.birthError.textContent = validation.message;
+  elements.birthDate.setAttribute("aria-invalid", String(!validation.valid));
+  return validation.valid;
 }
 
-function toggleSkin() {
-  setSkin(profile.skin === "system-dark" ? "system-light" : "system-dark");
-}
+function renderLifeGrid(estimate) {
+  const livedYears = clamp(Math.floor(estimate.ageYears), 0, 100);
+  const centralYears = clamp(Math.ceil(estimate.lifeExpectancyYears), 0, 100);
+  const rangeEndYears = clamp(Math.ceil(estimate.lifeExpectancyYears + 7), 0, 100);
+  const fragment = document.createDocumentFragment();
 
-function setPanelOpen(nextOpen) {
-  panelOpen = nextOpen;
-  els.appPanel.hidden = !panelOpen;
-  els.panelDockWidget.hidden = panelOpen;
-  els.appPanel.classList.toggle("is-maximized", panelOpen);
-  els.panelToggleButton.textContent = panelOpen ? "Minimize" : "Open window";
-}
-
-function reflectionFor(now) {
-  const hour = now.getHours();
-  const pool = [
-    {
-      text: "Unless the plan is to become excellent at postponing your life."
-    },
-    {
-      text: "Make the bed. Tiny empire, low taxes, immediate regime change."
-    },
-    {
-      text: "You are not owed a calmer season. Adorable theory, though."
-    },
-    {
-      text: "The obstacle is probably not fate. Check the task you are avoiding."
-    },
-    {
-      text: "If it is late enough to doomscroll, teeth remain a bold option."
-    },
-    {
-      text: "Tomorrow's self has reviewed your leadership and left notes."
+  for (let year = 1; year <= 100; year += 1) {
+    const cell = document.createElement("span");
+    cell.className = "life-year";
+    if (year <= livedYears) {
+      cell.classList.add("lived");
+    } else if (year <= centralYears) {
+      cell.classList.add("remaining");
+    } else if (year <= rangeEndYears) {
+      cell.classList.add("range");
     }
-  ];
+    fragment.append(cell);
+  }
 
-  const latePool = hour >= 22 || hour < 5 ? pool.slice(4) : pool.slice(0, 4);
-  const index = Math.abs((now.getMinutes() * 7 + now.getSeconds() * 13 + hour) % latePool.length);
-  return latePool[index];
+  elements.lifeGrid.replaceChildren(fragment);
+  elements.lifeGrid.setAttribute(
+    "aria-label",
+    `${livedYears} años vividos y un horizonte central de ${Math.round(estimate.lifeExpectancyYears)} años, con margen de siete años.`
+  );
+  elements.gridCaption.textContent = `Has vivido aproximadamente ${livedYears} años. El horizonte central ocupa hasta los ${Math.round(estimate.lifeExpectancyYears)}; el contorno prolonga el margen hasta los ${Math.round(estimate.lifeExpectancyYears + 7)}.`;
 }
 
-function maybeShowReflection(now, estimate) {
-  const remainingSeconds = Math.floor(Math.abs(estimate.remainingMs) / 1000);
-  const bucket = `${Math.floor(remainingSeconds / 60)}:${now.getMinutes()}`;
-  const threshold = remainingSeconds % 60 === 0 || remainingSeconds % 300 === 0;
-  const hash = (remainingSeconds + now.getMinutes() * 17 + now.getHours() * 31) % 5;
+function renderEstimate(estimate, now) {
+  const range = getPerspectiveRange(estimate);
+  const remainingMs = Math.max(0, estimate.remainingMs);
+  const exactYears = remainingMs / (365.2425 * DAY_MS);
+  const progressPercent = Math.round(estimate.progress * 100);
 
-  if (!threshold || hash !== 0 || lastReflectionBucket === bucket) {
+  currentEstimate = estimate;
+  elements.emptyResult.hidden = true;
+  elements.result.hidden = false;
+  elements.reset.hidden = false;
+  elements.perspective.hidden = false;
+  elements.intentionSection.hidden = false;
+  elements.horizonDate.textContent = formatDate(estimate.deathDate);
+  elements.rangeStart.textContent = formatDate(range.start);
+  elements.rangeEnd.textContent = formatDate(range.end);
+  elements.yearsLeft.textContent = exactYears.toLocaleString("es-ES", {
+    maximumFractionDigits: 1,
+    minimumFractionDigits: 1
+  });
+  elements.weeksLeft.textContent = formatNumber(remainingMs / WEEK_MS);
+  elements.daysLeft.textContent = formatNumber(remainingMs / DAY_MS);
+  elements.progressRing.style.setProperty("--progress", `${progressPercent * 3.6}deg`);
+  elements.progressNumber.textContent = `${progressPercent}%`;
+  elements.progressCopy.textContent = `${progressPercent}%`;
+  elements.liveReadout.textContent = `Referencia actualizada el ${new Intl.DateTimeFormat("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+  }).format(now)}.`;
+  elements.afternoons.textContent = formatNumber(remainingMs / WEEK_MS);
+  elements.meetings.textContent = formatNumber(remainingMs / MONTH_MS);
+  renderLifeGrid(estimate);
+}
+
+function clearEstimate() {
+  currentEstimate = null;
+  elements.emptyResult.hidden = false;
+  elements.result.hidden = true;
+  elements.reset.hidden = true;
+  elements.perspective.hidden = true;
+  elements.intentionSection.hidden = true;
+  elements.lifeGrid.replaceChildren();
+}
+
+function calculateAndRender({ persist = true, announce = false } = {}) {
+  const now = new Date();
+  if (!validateForm(now)) {
+    clearEstimate();
+    elements.birthDate.focus();
+    return false;
+  }
+
+  const profile = profileForEstimate();
+  const estimate = calculateEstimate(profile, now);
+  renderEstimate(estimate, now);
+  if (persist) {
+    writeStorage(PROFILE_STORAGE_KEY, {
+      birthDate: profile.birthDate,
+      country: profile.country
+    });
+  }
+  if (announce) {
+    showToast("Perspectiva calculada y guardada en este dispositivo.");
+  }
+  return true;
+}
+
+function renderIntention(value) {
+  const text = typeof value?.text === "string" ? value.text.trim() : "";
+  const completed = Boolean(value?.completed);
+  elements.intention.value = text;
+  elements.characterCount.value = String(text.length);
+  elements.savedIntention.hidden = !text;
+  elements.intentionText.textContent = text;
+  elements.complete.setAttribute("aria-pressed", String(completed));
+  elements.complete.setAttribute(
+    "aria-label",
+    completed ? "Marcar intención como pendiente" : "Marcar intención como completada"
+  );
+}
+
+function loadInitialState() {
+  hydrateCountries();
+  const storedProfile = readStorage(PROFILE_STORAGE_KEY, WEB_DEFAULT_PROFILE);
+  const storedIntention = readStorage(INTENTION_STORAGE_KEY, { text: "", completed: false });
+  elements.birthDate.max = toInputDate(new Date());
+  elements.birthDate.value = typeof storedProfile.birthDate === "string" ? storedProfile.birthDate : "";
+  elements.country.value = BASELINES[storedProfile.country] ? storedProfile.country : WEB_DEFAULT_PROFILE.country;
+  updateStorageStatus();
+  renderIntention(storedIntention);
+
+  if (elements.birthDate.value && validateBirthDate(elements.birthDate.value).valid) {
+    calculateAndRender({ persist: false });
+  } else {
+    clearEstimate();
+  }
+}
+
+elements.profileForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  calculateAndRender({ announce: true });
+});
+
+elements.birthDate.addEventListener("input", () => {
+  if (!elements.birthError.hidden) {
+    validateForm();
+  }
+});
+
+elements.reset.addEventListener("click", () => {
+  const confirmed = window.confirm("¿Borrar tu fecha, país e intención guardados en este dispositivo?");
+  if (!confirmed) {
     return;
   }
+  removeStorage(PROFILE_STORAGE_KEY);
+  removeStorage(INTENTION_STORAGE_KEY);
+  elements.birthDate.value = "";
+  elements.country.value = WEB_DEFAULT_PROFILE.country;
+  elements.birthError.hidden = true;
+  elements.birthDate.setAttribute("aria-invalid", "false");
+  renderIntention({ text: "", completed: false });
+  clearEstimate();
+  showToast("Datos locales eliminados.");
+});
 
-  lastReflectionBucket = bucket;
-  const reflection = reflectionFor(now);
-  showToast(reflection);
-}
+elements.intention.addEventListener("input", () => {
+  elements.characterCount.value = String(elements.intention.value.length);
+});
 
-function showToast(reflection) {
-  els.toastText.textContent = reflection.text;
-  els.toast.hidden = false;
-  window.setTimeout(() => {
-    els.toast.hidden = true;
-  }, 7000);
-}
-
-function updateReflection(now) {
-  const reflection = reflectionFor(now);
-  els.reflectionTexts.forEach((node) => {
-    node.textContent = reflection.text;
-  });
-}
-
-function showContextMenu(event) {
+elements.intentionForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  const os = event.currentTarget.closest("[data-os]")?.dataset.os || "linux";
-  const x = Math.min(event.clientX, window.innerWidth - 250);
-  const y = Math.min(event.clientY, window.innerHeight - 250);
-  els.contextMenu.dataset.os = os;
-  els.contextMenu.style.left = `${Math.max(8, x)}px`;
-  els.contextMenu.style.top = `${Math.max(8, y)}px`;
-  els.contextMenu.hidden = false;
-}
-
-function hideContextMenu() {
-  els.contextMenu.hidden = true;
-}
-
-function handleMenuButton(button) {
-  if (button.dataset.action === "toggle-skin") {
-    toggleSkin();
+  const text = elements.intention.value.trim();
+  if (!text) {
+    showToast("Escribe una intención concreta antes de guardarla.");
+    elements.intention.focus();
+    return;
   }
-  saveProfile();
-  render();
-  hideContextMenu();
-}
-
-function handleMenuClick(event, button) {
-  event.preventDefault();
-  event.stopPropagation();
-  handleMenuButton(button);
-}
-
-function render() {
-  const now = new Date();
-  const estimate = calculateEstimate(profile, now);
-  const payload = buildWaybarPayload(estimate, { skin: profile.skin });
-  const progressPercent = Math.round(estimate.progress * 100);
-  const timeText = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-
-  els.now.forEach((node) => {
-    node.textContent = timeText;
-  });
-  els.countdown.textContent = estimate.valid ? formatPlainReadout(estimate.remainingMs) : "Enter a birth date";
-  els.widgetTexts.forEach((node) => {
-    node.textContent = node.dataset.widgetText === "plain" ? payload.text : `MM ${payload.text}`;
-  });
-  els.widgetShells.forEach((node) => {
-    node.classList.remove("calm", "finite", "near", "borrowed");
-    node.classList.add(estimate.stateClass);
-  });
-  els.widgetProgresses.forEach((node) => {
-    node.style.width = `${progressPercent}%`;
-  });
-  els.deathDate.textContent = formatDate(estimate.deathDate);
-  els.lifeYears.textContent = `${estimate.lifeExpectancyYears.toFixed(2)} years`;
-  els.baseline.textContent = `${estimate.baseline.label}, ${estimate.baseline.year}`;
-  els.progressLabels.forEach((node) => {
-    node.textContent = `${progressPercent}% elapsed`;
-  });
-  els.delta.textContent = "updates instantly";
-  els.delta.dataset.positive = "true";
-  els.disclaimer.textContent =
-    "This estimate is a reflection aid. It is not medical, legal, actuarial, insurance, or mental-health advice.";
-  updateReflection(now);
-  maybeShowReflection(now, estimate);
-}
-
-hydrateCountries();
-hydrateFields();
-setPanelOpen(true);
-render();
-
-document.querySelectorAll("input:not([data-factor]), select").forEach((input) => {
-  input.addEventListener("input", () => {
-    collectFields();
-    saveProfile();
-    render();
-  });
+  const value = { text, completed: false, savedAt: new Date().toISOString() };
+  writeStorage(INTENTION_STORAGE_KEY, value);
+  renderIntention(value);
+  showToast("Intención guardada en este dispositivo.");
 });
 
-document.querySelectorAll("[data-factor]").forEach((input) => {
-  input.addEventListener("change", () => {
-    setFactor(input);
-    saveProfile();
-    render();
-  });
+elements.complete.addEventListener("click", () => {
+  const value = {
+    text: elements.intentionText.textContent.trim(),
+    completed: elements.complete.getAttribute("aria-pressed") !== "true",
+    savedAt: new Date().toISOString()
+  };
+  writeStorage(INTENTION_STORAGE_KEY, value);
+  renderIntention(value);
 });
 
-document.querySelectorAll("[data-action='toggle-skin']").forEach((button) => {
-  button.addEventListener("click", (event) => handleMenuClick(event, button));
+elements.clearIntention.addEventListener("click", () => {
+  removeStorage(INTENTION_STORAGE_KEY);
+  renderIntention({ text: "", completed: false });
+  showToast("Intención eliminada.");
 });
 
-els.widgetShells.forEach((widget) => {
-  widget.addEventListener("contextmenu", showContextMenu);
-});
+elements.copy.addEventListener("click", async () => {
+  if (!currentEstimate) {
+    return;
+  }
+  const range = getPerspectiveRange(currentEstimate);
+  const summary = [
+    "Mi tiempo en perspectiva · Memento Mori",
+    `Horizonte poblacional central: ${formatDate(currentEstimate.deathDate)}`,
+    `Rango amplio: ${formatDate(range.start)} — ${formatDate(range.end)}`,
+    "No es una predicción individual. memento.technoir.cloud"
+  ].join("\n");
 
-document.addEventListener("click", (event) => {
-  if (!els.contextMenu.contains(event.target)) {
-    hideContextMenu();
+  try {
+    await navigator.clipboard.writeText(summary);
+    showToast("Resumen copiado sin incluir tu fecha de nacimiento.");
+  } catch {
+    showToast("No se pudo acceder al portapapeles. Puedes copiar la fecha visible.");
   }
 });
 
-els.panelToggleButton.addEventListener("click", () => {
-  setPanelOpen(!panelOpen);
-});
-
-els.appPanel.addEventListener("dblclick", (event) => {
-  if (!event.target.closest("button, input, select, label")) {
-    setPanelOpen(false);
-  }
-});
-
-els.panelDockWidget.addEventListener("dblclick", () => {
-  setPanelOpen(true);
-});
-
-window.setInterval(render, 1000);
+loadInitialState();

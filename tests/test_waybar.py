@@ -18,7 +18,7 @@ spec.loader.exec_module(memento)
 class WaybarEmitterTest(unittest.TestCase):
     def test_payload_contract_uses_full_seconds(self):
         config = {
-            "birth_date": "1992-06-19",
+            "birth_date": "1990-01-01",
             "life_expectancy_years": 73.4804,
             "skin": "system-dark",
         }
@@ -45,7 +45,7 @@ class WaybarEmitterTest(unittest.TestCase):
     def test_cli_sample_config_is_valid_json(self):
         sample_json = json.dumps(memento.sample_config())
 
-        self.assertEqual(json.loads(sample_json)["birth_date"], "1992-06-19")
+        self.assertEqual(json.loads(sample_json)["birth_date"], "1990-01-01")
 
 
 if __name__ == "__main__":

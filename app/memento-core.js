@@ -16,7 +16,7 @@ export const SOURCE_NOTE =
   "World Bank WDI SP.DYN.LE00.IN, 2024 values, API last updated 2026-04-08. This is a population-period statistic, not an individual prediction.";
 
 export const DEFAULT_PROFILE = {
-  birthDate: "1992-06-19",
+  birthDate: "1990-01-01",
   country: "WLD",
   birthCountry: "WLD",
   currentCountry: "WLD",
@@ -29,6 +29,13 @@ export const DEFAULT_PROFILE = {
   smoking: "skip",
   health: "skip"
 };
+
+export const WEB_DEFAULT_PROFILE = {
+  birthDate: "",
+  country: "WLD"
+};
+
+export const PERSPECTIVE_MARGIN_YEARS = 7;
 
 export const FACTOR_KEYS = ["sex", "sleep", "exercise", "drinking", "smoking", "health"];
 
@@ -90,6 +97,36 @@ export function parseBirthDate(value) {
   return date;
 }
 
+export function validateBirthDate(value, now = new Date()) {
+  const birth = parseBirthDate(value);
+
+  if (!birth) {
+    return {
+      valid: false,
+      birth: null,
+      message: "Introduce una fecha de nacimiento válida."
+    };
+  }
+
+  if (birth.getTime() > now.getTime()) {
+    return {
+      valid: false,
+      birth,
+      message: "La fecha de nacimiento no puede estar en el futuro."
+    };
+  }
+
+  if (yearsBetween(birth, now) > 120) {
+    return {
+      valid: false,
+      birth,
+      message: "Introduce una fecha dentro de los últimos 120 años."
+    };
+  }
+
+  return { valid: true, birth, message: "" };
+}
+
 export function yearsBetween(start, end) {
   return (end.getTime() - start.getTime()) / MILLIS_PER_YEAR;
 }
@@ -148,8 +185,9 @@ export function calculateCustomOffset(profile) {
 }
 
 export function calculateEstimate(profile, now = new Date()) {
-  const birth = parseBirthDate(profile.birthDate);
-  const ageYears = birth ? Math.max(0, yearsBetween(birth, now)) : 0;
+  const validation = validateBirthDate(profile.birthDate, now);
+  const birth = validation.valid ? validation.birth : null;
+  const ageYears = birth ? yearsBetween(birth, now) : 0;
   const baseline = buildResidenceBaseline(profile, ageYears);
   const customOffset = calculateCustomOffset(profile);
 
@@ -159,7 +197,8 @@ export function calculateEstimate(profile, now = new Date()) {
   const progress = lifeExpectancyYears > 0 ? clamp(ageYears / lifeExpectancyYears, 0, 1) : 0;
 
   return {
-    valid: Boolean(birth),
+    valid: validation.valid,
+    validationMessage: validation.message,
     birth,
     baseline,
     sourceNote: SOURCE_NOTE,
@@ -170,6 +209,18 @@ export function calculateEstimate(profile, now = new Date()) {
     remainingMs,
     progress,
     stateClass: classifyRemaining(progress, remainingMs)
+  };
+}
+
+export function getPerspectiveRange(estimate, marginYears = PERSPECTIVE_MARGIN_YEARS) {
+  if (!estimate?.valid || !estimate.deathDate) {
+    return { start: null, end: null, marginYears };
+  }
+
+  return {
+    start: addYears(estimate.deathDate, -marginYears),
+    end: addYears(estimate.deathDate, marginYears),
+    marginYears
   };
 }
 

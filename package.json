@@ -1,9 +1,9 @@
 {
-  "name": "memento-mori-widget",
-  "version": "1.0.0",
+  "name": "memento-mori-web",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "Local Memento Mori countdown widget for status bars, tray surfaces, and platform widgets.",
+  "description": "Private web app that turns a population horizon into perspective and one intentional action for today.",
   "scripts": {
     "audit": "node tests/audit.mjs",
     "check:installers": "node scripts/check-installers.mjs",

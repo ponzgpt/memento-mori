@@ -33,7 +33,7 @@ def parse_args() -> argparse.Namespace:
 def sample_config() -> dict:
     return {
         "schema": "memento-mori.profile.v1",
-        "birth_date": "1992-06-19",
+        "birth_date": "1990-01-01",
         "life_expectancy_years": DEFAULT_LIFE_EXPECTANCY_YEARS,
         "skin": "system-light",
         "disclaimer": "Approximation only. Not medical, legal, actuarial, insurance, or mental-health advice.",

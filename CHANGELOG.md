@@ -2,6 +2,44 @@
 
 All notable changes are tracked here. The format follows Keep a Changelog conventions loosely, with SemVer as the release versioning scheme.
 
+## 2.0.0 - 2026-08-01
+
+Rebuilt the primary product as a complete Spanish web experience for perspective and intentional use of time.
+
+### Added
+
+- Two-field calculation flow with inline date validation.
+- Central population horizon with an explicit seven-year range on each side.
+- Remaining years, weeks, days, progress ring, and 100-year life grid.
+- Device-local daily intention that can be edited, completed, or deleted.
+- Local profile persistence, complete reset, and graceful storage-unavailable behavior.
+- Privacy-preserving copy summary that excludes the birth date.
+- Responsive layout, keyboard skip link, announced errors, and reduced-motion behavior.
+- Production social card and detailed Docker/VPS/TLS deployment runbook.
+
+### Changed
+
+- The web app is now the primary product; native widget experiments are secondary companions.
+- The web calculation omits unsupported lifestyle offsets and emphasizes uncertainty.
+- Documentation and feature stories now follow the real user problem and Racks final-project criteria.
+
+### Verified
+
+- `npm run verify`
+- `npm run check:web`
+- `npm test`
+- Public HTTPS flow on the canonical domain.
+
+### Platform Readiness
+
+- Web: production deployment through Docker, nginx, Traefik, and the existing VPS.
+- Linux, macOS, and Windows companions: retained as source experiments.
+- iOS: documented direction only.
+
+### Notes
+
+- The estimate is approximate and reflective. It is not medical, legal, actuarial, insurance, or mental-health advice.
+
 ## 1.0.0 - 2026-06-22
 
 Initial source-installable release.

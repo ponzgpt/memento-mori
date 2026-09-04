@@ -1,45 +1,37 @@
 # Privacy
 
-Memento Mori is designed as a local-first widget. The countdown should not require an account, analytics, telemetry, cloud sync, or a runtime network service.
+Memento Mori is a local-first web app. Producing a perspective does not require an account, analytics, telemetry, advertising, cloud sync, or a runtime API.
 
-## Data Used
+## Data used by the web app
 
-The app can use:
+- Birth date.
+- Country reference.
+- A short daily intention, when the visitor chooses to write one.
+- Whether that intention is marked complete.
 
-- birth date
-- birth country
-- current country
-- age when current residence began
-- coarse lifestyle rows for sex, sleep, exercise, drinking, smoking, and health context
-- selected palette and local display preferences
+The web flow does not request medical history, diagnosis, sex, smoking, alcohol, sleep, exercise, precise location, name, email, or payment information.
 
-These values are used to calculate an approximate countdown on the device. They are personal enough to deserve boring, conservative handling.
+## Where data lives
 
-## Local Storage
+The calculation runs in JavaScript inside the browser. Two versioned local-storage records are used:
 
-The profile is stored locally:
+- `memento-mori.web-profile.v2`
+- `memento-mori.daily-intention.v1`
 
-- Linux Waybar source install: `~/.config/memento-mori/config.json`
-- macOS source install: `~/Library/Application Support/Memento Mori`
-- Windows source install: `%LOCALAPPDATA%\MementoMori`
-- local component app: browser local storage for the page served from `127.0.0.1`
+They remain in the current browser profile on the current device. nginx serves static files but does not receive the entered values. The app contains no analytics or third-party runtime scripts.
 
-The project should not transmit profile values to a server for countdown calculation.
-
-## Network
-
-The countdown model does not need network access at runtime. Documentation links, GitHub Releases, Stripe checkout, and newsletter pages are separate distribution or documentation surfaces, not part of the local countdown calculation.
+If local storage is blocked or unavailable, the calculation continues to work for the current page session and the interface reports that persistence is unavailable.
 
 ## Deletion
 
-Delete the local profile paths above to remove saved data. For the local component app, clear site data for `http://127.0.0.1:4173` in the browser used to open it.
+The “Borrar mis datos” action removes both records after confirmation. Clearing site data for `memento.technoir.cloud` in the browser removes them as well.
 
-## Reports
+The retained experimental native companions use their documented device-local configuration paths; they are not part of the final web flow.
 
-Do not include birth dates, diagnoses, medical documents, private health history, or secrets in public issues. Keep reports technical: operating system, install path, bar or shell, expected behavior, actual behavior, and relevant terminal output.
+## Copying and reports
+
+The copy action creates a neutral horizon summary and deliberately excludes the birth date. Do not put birth dates, health records, credentials, or private personal history in public issue reports.
 
 ## Limits
 
-The estimate is approximate and reflective. It is not medical, legal, actuarial, insurance, or mental-health advice.
-
-Paid convenience installers, when available, may use Stripe or a product website for purchase and download delivery. That payment flow is separate from the local countdown profile.
+The estimate is approximate and reflective. It is not an individual prediction and is not medical, legal, actuarial, insurance, or mental-health advice.

@@ -1,23 +1,43 @@
 # Stack Decisions
 
-Decision timestamp: 2026-06-19T21:32:53+0100.
+Decision updated: 2026-08-01.
 
-## Current Stack
+## Primary web product
 
-- Static HTML, CSS, and JavaScript power the local desktop component app. The surface is small, dependency-free, inspectable, and easy to package later.
-- A small Python emitter powers the Linux Waybar integration. Python is commonly available on target systems, emits Waybar JSON cleanly, and avoids a resident desktop process.
-- A small Swift/AppKit source app powers the macOS menu-bar install. It gives macOS users the actual status item behavior without Electron, a browser shell, or a local web server.
-- A shell installer copies one executable script and creates one config file. That matches the Unix expectation of explicit files in user-owned paths.
+- Static semantic HTML defines one complete Spanish user journey.
+- CSS provides the editorial visual system, responsive layout, focus states, and reduced-motion behavior.
+- Dependency-free JavaScript owns validation, deterministic calculation, local persistence, the life grid, the daily intention, reset, and copy behavior.
+- A shared calculation module remains importable by tests and retained native experiments.
+- nginx serves the production files in a small Docker image.
+- Traefik on the existing VPS terminates TLS and routes the stable domain.
 
-## Native Packaging Direction
+## Decision criteria
 
-- Tauri is the preferred wrapper for Linux, Windows, and macOS desktop packaging if a native shell is added. It can reuse the existing UI while staying lighter than Electron.
-- SwiftUI plus WidgetKit is the Apple path for iOS widgets and Apple silicon Mac compatibility.
-- The calculation core should remain portable and small so every native surface can share the same behavior.
+### User value
 
-## Rejected Weight
+The product needs two inputs, one calculation, a visualization, and device-local state. None of those jobs requires a framework, backend, or account.
 
-- Electron is too heavy for a tray countdown and contradicts the minimal system-widget ethos.
-- A backend service is unnecessary. The widget should run locally, keep health-adjacent inputs private, and avoid runtime network dependency.
-- A frontend framework is not needed for the current component count. Explicit DOM code is easier to audit and package here.
-- Account systems, sync, analytics, and gamified dashboards are intentionally absent. The clock is already rude enough.
+### Cost
+
+The existing Hostinger VPS, Dokploy network, domain, and certificate automation are reused. There is no additional hosting subscription and no metered application API.
+
+### Operational simplicity
+
+The production artifact contains only static files. There are no database migrations, external secrets, background jobs, or third-party JavaScript services. A release is one immutable Docker image and a service update; rollback is a previous image tag.
+
+### Course fit
+
+The implementation evidences requirements, routes/sections, reusable modules, Git, DRY calculation logic, tests, production build, Docker, VPS deployment, domain routing, TLS, and verification. Backend, MongoDB, JWT, Stripe, and authentication were studied but consciously excluded because they do not solve this product's problem.
+
+## Rejected weight
+
+- React/Next.js: unnecessary state and component complexity for the current flow.
+- Backend/API: no server-side job and would create personal-data custody.
+- Database/authentication: local persistence is sufficient and lower friction.
+- Stripe: no paid transaction is part of the final-project value proposition.
+- Analytics: unnecessary for the evaluation build and inconsistent with the stated privacy boundary.
+- Countdown-to-the-second UI: visually precise but epistemically misleading.
+
+## Retained companions
+
+Waybar, macOS, and Windows experiments remain in the repository as secondary explorations. They do not define the final web product, its acceptance criteria, or its deployment.

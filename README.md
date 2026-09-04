@@ -1,166 +1,104 @@
-# Memento Mori Widget
+# Memento Mori
 
-Memento Mori is a local status-bar widget that places an approximate life countdown next to the system clock. It uses a birth date, country context, and a few coarse lifestyle rows to render years, days, hours, minutes, and seconds remaining. Linux users can install the Waybar module from source with `./install.sh`; macOS users can install a native menu-bar app from source; Windows users can run the desktop component app from source; paid convenience installers are distributed through release artifacts when available.
+Memento Mori is a Spanish-first web app that turns a population life-expectancy reference into a calm picture of finite time and one intentional action for today.
 
-This is a reflective interface, not a prophecy. It is not medical, legal, actuarial, insurance, or mental-health advice.
+Public app: <https://memento.technoir.cloud/>
 
-## Install
+This is a reflective aid, not an individual death prediction. It is not medical, legal, actuarial, insurance, or mental-health advice.
 
-Source install for Linux bars that support custom JSON modules:
+## The concrete problem
+
+People know that time is finite, but the idea stays abstract. Abstract limits are easy to postpone around: the loud task wins, the meaningful conversation moves to next month, and an ordinary day feels interchangeable with any other.
+
+The app makes that limit understandable without claiming certainty. A visitor enters a birth date and a country reference, sees a central population horizon with a broad uncertainty range, views the result at human scale, and writes one concrete intention for today.
+
+## Primary flow
+
+1. Enter a birth date and country reference.
+2. Receive a central horizon plus an explicit seven-year margin on each side.
+3. See approximate remaining years, weeks, days, and a 100-year life grid.
+4. Translate the perspective into one intention for today.
+5. Return on the same device and recover the profile and intention locally.
+
+## Product boundaries
+
+- No account, backend, database, analytics, advertising, or cloud profile.
+- No lifestyle or health scoring in the web flow.
+- No claim that the displayed date predicts an individual death.
+- No gamification, streaks, fear language, or productivity guilt.
+- The copied summary excludes the birth date.
+
+These are deliberate product decisions. Additional technical layers would increase complexity without improving the core user job.
+
+## Run locally
+
+The web app has no runtime package dependencies.
 
 ```sh
-git clone https://github.com/ponzgpt/memento-mori.git
-cd memento-mori
-./install.sh
-```
-
-Run the local desktop component app on Linux or Windows:
-
-```sh
-git clone https://github.com/ponzgpt/memento-mori.git
-cd memento-mori
 npm run serve
 ```
 
-Open `http://127.0.0.1:4173`.
+Open <http://127.0.0.1:4173>.
 
-macOS and Windows also include source installers. On macOS this builds a native menu-bar app:
-
-```sh
-sh installers/macos/install.sh
-```
-
-```powershell
-powershell -ExecutionPolicy Bypass -File installers\windows\install.ps1
-```
-
-Release artifacts, when published, are available from GitHub Releases. The source remains Apache-2.0; paid installers are convenience packaging for users who prefer a signed executable and a quieter setup path. Full platform notes are in [docs/install.md](docs/install.md).
-
-Current release readiness is tracked in [docs/support-matrix.md](docs/support-matrix.md) and `release-readiness.json`.
-Production scope is tracked in [docs/production-readiness.md](docs/production-readiness.md) and `production-readiness.json`.
-
-## What It Does
-
-- Shows a compact `MM` countdown in a tray/status-bar shape.
-- Includes seconds by default.
-- Integrates progress inside the widget.
-- Provides a single live settings panel: birth date, birth country, living country, since age, sex, sleep, exercise, drinking, smoking, and health context.
-- Supports two built-in palettes: bone and ash, and onyx.
-- Emits Waybar-compatible JSON for Linux.
-- Keeps all profile data local.
-- Occasionally shows a dry reflection prompt. No title, no lecture, just the little tap on the glass.
-
-## Platform Surfaces
-
-| Platform | Primary path | Source path |
-| --- | --- | --- |
-| Linux | Waybar-compatible custom JSON module | `./install.sh` |
-| macOS | Native menu-bar app | `sh installers/macos/install.sh` |
-| Windows 11 | Tray-app packaging from release artifacts | `npm run serve` for the desktop component app |
-| iOS | WidgetKit app distribution through Apple tooling | SwiftUI/WidgetKit plan in [docs/apple-platform-plan.md](docs/apple-platform-plan.md) |
-
-Linux is the reference implementation because the Unix bar module is the smallest useful version of the idea. Native desktop and Apple surfaces should keep the same model, palette, and copy rules rather than growing a dashboard nobody asked for.
-
-## Waybar Module
-
-Create or inspect a profile:
+Container preview:
 
 ```sh
-mkdir -p ~/.config/memento-mori
-python3 ~/.local/bin/memento-mori-waybar --sample-config > ~/.config/memento-mori/config.json
+docker build -t memento-mori-web:2.0.0 .
+docker run --rm -p 8080:80 memento-mori-web:2.0.0
 ```
 
-Add the module to Waybar:
-
-```jsonc
-"custom/memento-mori": {
-  "exec": "python3 ~/.local/bin/memento-mori-waybar --config ~/.config/memento-mori/config.json",
-  "interval": 1,
-  "return-type": "json",
-  "format": "MM {}",
-  "tooltip": true
-}
-```
-
-Copy or adapt the styles in `waybar/style.example.css`.
-
-Smoke test:
-
-```sh
-python3 ~/.local/bin/memento-mori-waybar --config ~/.config/memento-mori/config.json
-```
-
-The command emits one JSON object with `text`, `tooltip`, `class`, and `percentage`.
+Open <http://127.0.0.1:8080>.
 
 ## Calculation
 
-The model is deterministic and deliberately modest:
+The model is deterministic and inspectable:
 
 ```text
-birth date + birth/current country life expectancy + coarse local offsets
+birth date + 2024 country life-expectancy reference = central horizon
+central horizon -/+ 7 years = perspective range
 ```
 
-Country values use World Bank WDI life expectancy at birth data. If birth country and current country differ, the model blends toward the current residence after the entered move age. The lifestyle rows are local offsets, not a clinical risk model. Details are in [docs/model.md](docs/model.md).
+Country values are a fixed snapshot of World Bank WDI indicator `SP.DYN.LE00.IN`. A population-period statistic cannot know an individual future, so the product labels the result as approximate and keeps a wide range visible beside it. Details are in [docs/model.md](docs/model.md).
 
-## Design
+## Privacy
 
-The widget borrows from memento mori and vanitas imagery: hourglass, bone, ash, onyx, candlelight, and the occasional skull where it belongs. The point is attention, not horror. The tray stays quiet; the panel carries the art.
+Calculation happens in the browser. The profile and daily intention use local storage on that device. If storage is unavailable, calculation still works and the interface reports that persistence is unavailable. [PRIVACY.md](PRIVACY.md) documents the data boundary and deletion paths.
 
-Typography direction:
+## Deployment
 
-- Fraunces for clock and brand moments.
-- Geist for interface text.
-- System fallbacks always remain in place.
+The production build is the same static `app/` directory served by nginx in Docker. The existing Hostinger VPS and Dokploy network are reused; Traefik handles the stable domain and TLS. This keeps the runtime small, costs no additional subscription, and demonstrates the course's Docker/VPS/domain/SSL path. See [docs/deployment.md](docs/deployment.md) for the exact build, release, verification, rollback, and decision rationale.
 
-The philosophy and tone rules are in [docs/philosophy.md](docs/philosophy.md).
-
-## Repository
-
-- [docs/install.md](docs/install.md): install and packaging paths.
-- [docs/model.md](docs/model.md): calculation model and source boundaries.
-- [docs/model-data.md](docs/model-data.md): exact baseline and offset values.
-- [docs/philosophy.md](docs/philosophy.md): product concept, tone, and visual rules.
-- [docs/commercial-model.md](docs/commercial-model.md): open source plus paid installer posture.
-- [docs/native-packaging.md](docs/native-packaging.md): signed installer and app-store readiness requirements.
-- [docs/production-readiness.md](docs/production-readiness.md): release scope, shipping labels, and production gate.
-- [docs/stack-decisions.md](docs/stack-decisions.md): technical choices and rejected weight.
-- [docs/apple-platform-plan.md](docs/apple-platform-plan.md): macOS/iOS direction.
-- [docs/support-matrix.md](docs/support-matrix.md): platform readiness and release gate.
-- [docs/release.md](docs/release.md): release checklist and artifact rules.
-- [docs/feature-status.csv](docs/feature-status.csv): canonical feature and user-story status sheet.
-- [PRIVACY.md](PRIVACY.md): local data and privacy boundaries.
-- [CHANGELOG.md](CHANGELOG.md): release history.
-
-## Quality Gates
+## Quality gate
 
 ```sh
 npm run verify
 ```
 
-The full command runs the release gates, packages artifacts, checks Waybar output, and verifies checksums. CI runs it on Linux, macOS, and Windows. The individual checks are:
+The gate checks calculation edge cases, feature stories, accessibility-related markup, web assets, documentation, native companion scripts, release metadata, deterministic packaging, Python syntax, Waybar output, and `git diff --check`.
+
+Focused commands:
 
 ```sh
-npm run audit
-npm run lint
-npm run check:installers
-npm run check:production
-npm run check:release
-npm run check:version
-npm run check:web
 npm test
-npm run release:notes
-npm run package
-python3 -m py_compile waybar/memento.py
-python3 waybar/memento.py --config config/profile.example.json
+npm run lint
+npm run check:web
 ```
 
-Optional container preview:
+## Repository map
 
-```sh
-docker build -t memento-mori-widget .
-docker run --rm -p 8080:80 memento-mori-widget
-```
+- `app/`: production web app and social card.
+- `docs/product-requirements.md`: user problem, scope, requirements, and acceptance criteria.
+- `docs/model.md`: source, formula, uncertainty, and limitations.
+- `docs/deployment.md`: production deployment and rollback runbook.
+- `docs/feature-status.csv`: feature stories and retest state.
+- `tests/`: calculation and product acceptance tests.
+- `Dockerfile` and `compose.yaml`: reproducible static runtime.
+- `waybar/`, `native/`, and `installers/`: retained experimental native companions; they are not the final-course product.
+
+## Why the stack is intentionally small
+
+Plain HTML, CSS, and JavaScript are enough for this interaction. Docker makes the runtime reproducible. nginx serves immutable static files efficiently. The VPS, Traefik, and TLS path already exist. A framework, API, database, authentication service, or payment flow would add failure modes and personal-data handling without solving the stated problem.
 
 ## License
 
-Apache-2.0. The software is provided as-is. Community pull requests are welcome when they improve the product without turning a small status-bar widget into a lifestyle platform. Forks are allowed; mortality, unfortunately, remains upstream.
+Apache-2.0. The software is provided as-is.

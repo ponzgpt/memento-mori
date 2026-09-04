@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "release_gate": "source-installable",
   "platforms": {
     "linux": {
       "status": "ready",
       "surface": "Waybar-compatible custom JSON module",
       "source_install": "./install.sh",
-      "release_artifact": "memento-mori-linux-waybar-1.0.0.tar.gz",
+      "release_artifact": "memento-mori-linux-waybar-2.0.0.tar.gz",
       "signed_installer": false,
       "verification": [
         "python3 -m py_compile waybar/memento.py",
@@ -17,7 +17,7 @@
       "status": "source-installable",
       "surface": "native menu-bar app built from Swift source",
       "source_install": "sh installers/macos/install.sh",
-      "release_artifact": "memento-mori-local-app-1.0.0.tar.gz",
+      "release_artifact": "memento-mori-local-app-2.0.0.tar.gz",
       "signed_installer": false,
       "verification": [
         "npm run check:installers",
@@ -28,7 +28,7 @@
       "status": "source-installable",
       "surface": "Start Menu launcher backed by the local component app",
       "source_install": "powershell -ExecutionPolicy Bypass -File installers\\windows\\install.ps1",
-      "release_artifact": "memento-mori-local-app-1.0.0.tar.gz",
+      "release_artifact": "memento-mori-local-app-2.0.0.tar.gz",
       "signed_installer": false,
       "verification": [
         "npm run package"

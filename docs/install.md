@@ -143,7 +143,7 @@ The example profile lives at `config/profile.example.json`. A user profile shoul
 
 ```json
 {
-  "birth_date": "1992-06-19",
+  "birth_date": "1990-01-01",
   "birth_country": "WLD",
   "current_country": "WLD",
   "move_age": 0,
