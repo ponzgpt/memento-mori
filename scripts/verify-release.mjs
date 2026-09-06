@@ -48,13 +48,16 @@ const commands = [
 function run(command, args) {
   const label = [command, ...args].join(" ");
   console.log(`\n$ ${label}`);
+  // Windows needs shell:true to launch npm.cmd — since Node 18.20/20.12,
+  // spawning a .cmd or .bat without a shell fails and reports status null.
   const result = spawnSync(command, args, {
     cwd: root,
     encoding: "utf8",
-    stdio: "inherit"
+    stdio: "inherit",
+    shell: process.platform === "win32"
   });
 
-  assert.equal(result.status, 0, `${label} failed`);
+  assert.equal(result.status, 0, `${label} failed (exit ${result.status}${result.error ? `: ${result.error.message}` : ""})`);
 }
 
 function sha256(path) {
