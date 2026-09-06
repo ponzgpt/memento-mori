@@ -1,0 +1,9 @@
+# Check out with LF everywhere, including on Windows. Several checks match
+# file contents against regexes written with \n; a CRLF checkout fails them
+# on Windows only, which is a checkout artefact rather than a real defect.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.tar.gz binary
