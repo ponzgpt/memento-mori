@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
+import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const root = new URL("..", import.meta.url).pathname;
+const root = fileURLToPath(new URL("..", import.meta.url));
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const port = Number.parseInt(process.env.SMOKE_PORT || "4183", 10);
 const baseUrl = `http://127.0.0.1:${port}`;

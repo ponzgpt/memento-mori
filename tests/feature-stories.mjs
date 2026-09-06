@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
+import { fileURLToPath } from "node:url";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const root = new URL("..", import.meta.url).pathname;
+const root = fileURLToPath(new URL("..", import.meta.url));
 const read = (path) => readFileSync(join(root, path), "utf8");
 const html = read("app/index.html");
 const main = read("app/main.js");

@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
+import { fileURLToPath } from "node:url";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const root = new URL("..", import.meta.url).pathname;
+const root = fileURLToPath(new URL("..", import.meta.url));
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const changelog = readFileSync(join(root, "CHANGELOG.md"), "utf8");
 const heading = `## ${pkg.version} - `;

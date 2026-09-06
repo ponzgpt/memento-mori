@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
+import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
-const root = new URL("..", import.meta.url).pathname;
+const root = fileURLToPath(new URL("..", import.meta.url));
 
 function read(path) {
   return readFileSync(join(root, path), "utf8");
@@ -109,11 +110,13 @@ assert.match(winUninstall, /Remove-Item -Force -ErrorAction SilentlyContinue \$S
 const shell = maybePowerShell();
 if (shell) {
   for (const file of ["installers/windows/install.ps1", "installers/windows/uninstall.ps1"]) {
+    // -Command does not bind a trailing argument to $args, so the path goes
+    // into the script text. Single quotes are doubled to escape them for PS.
+    const target = join(root, file).replace(/'/g, "''");
     run(shell, [
       "-NoProfile",
       "-Command",
-      "$errors = $null; [System.Management.Automation.Language.Parser]::ParseFile($args[0], [ref]$null, [ref]$errors) > $null; if ($errors.Count) { $errors | ForEach-Object { Write-Error $_ }; exit 1 }",
-      join(root, file)
+      `$errors = $null; [System.Management.Automation.Language.Parser]::ParseFile('${target}', [ref]$null, [ref]$errors) > $null; if ($errors.Count) { $errors | ForEach-Object { Write-Error $_ }; exit 1 }`
     ]);
   }
 }

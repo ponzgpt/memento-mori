@@ -1,9 +1,10 @@
 import { createHash } from "node:crypto";
+import { fileURLToPath } from "node:url";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { gzipSync } from "node:zlib";
 
-const root = new URL("..", import.meta.url).pathname;
+const root = fileURLToPath(new URL("..", import.meta.url));
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const readiness = JSON.parse(readFileSync(join(root, "release-readiness.json"), "utf8"));
 const production = JSON.parse(readFileSync(join(root, "production-readiness.json"), "utf8"));
