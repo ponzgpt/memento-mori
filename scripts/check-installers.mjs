@@ -84,7 +84,9 @@ assert.match(macSource, /NSStatusBar\.system\.statusItem/);
 assert.match(macSource, /NSMenu/);
 assert.match(macSource, /Settings/);
 assert.match(macSource, /UserDefaults/);
-if (available("swiftc", ["--version"])) {
+// The menu bar app imports AppKit, so it only compiles on macOS. Linux CI has
+// swiftc but no AppKit, and would fail here on a file it cannot build anyway.
+if (process.platform === "darwin" && available("swiftc", ["--version"])) {
   run("swiftc", ["native/macos/MementoMoriMenuBar.swift", "-o", "/tmp/memento-mori-menubar-check"]);
 }
 
