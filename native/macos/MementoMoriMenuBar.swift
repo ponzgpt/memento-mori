@@ -132,6 +132,53 @@ private func shortDurationText(_ secondsValue: TimeInterval) -> String {
     return "\(prefix)\(years)y \(days)d \(hours)h"
 }
 
+/// Calavera mínima, dibujada como imagen template para que la barra la tiña
+/// sola en claro y en oscuro. No es skull-and-crossbones: docs/apple-platform-plan.md
+/// pide un emblema sobrio, así que solo hay cráneo, cuencas y mandíbula.
+private func skullImage(height: CGFloat = 15) -> NSImage {
+    let width = height * 0.80
+    let image = NSImage(size: NSSize(width: width, height: height), flipped: false) { _ in
+        NSColor.black.setFill()
+
+        let cranium = NSBezierPath(roundedRect: NSRect(x: 0, y: height * 0.28,
+                                                       width: width, height: height * 0.72),
+                                   xRadius: width * 0.46, yRadius: height * 0.36)
+        cranium.fill()
+
+        let jaw = NSBezierPath(roundedRect: NSRect(x: width * 0.22, y: height * 0.02,
+                                                   width: width * 0.56, height: height * 0.34),
+                               xRadius: width * 0.14, yRadius: height * 0.10)
+        jaw.fill()
+
+        // Las cuencas y la nariz se perforan en negativo: así el glifo sigue
+        // siendo una sola silueta y no depende del color de fondo.
+        NSGraphicsContext.current?.compositingOperation = .destinationOut
+        NSColor.black.setFill()
+
+        let socket = width * 0.30
+        let socketY = height * 0.50
+        NSBezierPath(ovalIn: NSRect(x: width * 0.11, y: socketY,
+                                    width: socket, height: socket)).fill()
+        NSBezierPath(ovalIn: NSRect(x: width - width * 0.11 - socket, y: socketY,
+                                    width: socket, height: socket)).fill()
+
+        let nose = NSBezierPath()
+        nose.move(to: NSPoint(x: width * 0.50, y: height * 0.50))
+        nose.line(to: NSPoint(x: width * 0.38, y: height * 0.34))
+        nose.line(to: NSPoint(x: width * 0.62, y: height * 0.34))
+        nose.close()
+        nose.fill()
+
+        // Una sola muesca central para la dentadura: a 15 pt dos muescas caen
+        // por debajo del píxel y se empastan en una mancha gris.
+        NSBezierPath(rect: NSRect(x: width * 0.47, y: 0, width: width * 0.08,
+                                  height: height * 0.22)).fill()
+        return true
+    }
+    image.isTemplate = true
+    return image
+}
+
 private func reflectionText(now: Date) -> String {
     let calendar = Calendar.current
     let hour = calendar.component(.hour, from: now)
@@ -174,6 +221,9 @@ final class MementoApp: NSObject, NSApplicationDelegate {
         if let button = statusItem.button {
             button.font = NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .semibold)
             button.toolTip = "Memento Mori"
+            button.image = skullImage()
+            button.imagePosition = .imageLeading
+            button.imageHugsTitle = true
         }
         rebuildMenu()
         update()
@@ -240,7 +290,8 @@ final class MementoApp: NSObject, NSApplicationDelegate {
 
     private func update() {
         let current = estimate()
-        statusItem.button?.title = "MM \(shortDurationText(current.remaining))"
+        // el glifo ya identifica la app; repetir "MM" delante solo gasta barra
+        statusItem.button?.title = " \(shortDurationText(current.remaining))"
         statusItem.button?.appearsDisabled = false
         rebuildMenu()
     }

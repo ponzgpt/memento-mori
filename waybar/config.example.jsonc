@@ -13,7 +13,9 @@
     "exec": "python3 ~/.local/bin/memento-mori-waybar --config ~/.config/memento-mori/config.json",
     "interval": 1,
     "return-type": "json",
-    "format": "MM {}",
+    // La calavera es el identificador del módulo. Si tu barra no monta una
+    // fuente con emoji, sustitúyela por el glifo Nerd Font "" (nf-mdi-skull).
+    "format": "💀 {}",
     "tooltip": true,
     "on-click": "xdg-open ~/.config/memento-mori/config.json"
   }
