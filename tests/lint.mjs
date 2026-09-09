@@ -46,8 +46,8 @@ const html = readFileSync(join(root, "app/index.html"), "utf8");
 const main = readFileSync(join(root, "app/main.js"), "utf8");
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 
-assert.match(html, /<html lang="es">/);
-assert.match(html, /<title>Memento Mori · Tu tiempo en perspectiva<\/title>/);
+assert.match(html, /<html lang="en">/);
+assert.match(html, /<title>Memento Mori · Your time in perspective<\/title>/);
 assert.match(html, new RegExp(`styles\\.css\\?v=${pkg.version.replaceAll(".", "\\.")}`));
 assert.match(html, new RegExp(`main\\.js\\?v=${pkg.version.replaceAll(".", "\\.")}`));
 assert.equal((html.match(/<h1/g) || []).length, 1, "the page needs one h1");
@@ -57,7 +57,9 @@ assert.equal((html.match(/<h1/g) || []).length, 1, "the page needs one h1");
 // geometría que assets/skull.svg y skullImage() en Swift-, no una librería de
 // iconos que se cuele con el tiempo.
 const svgCount = (html.match(/<svg\b/gi) || []).length;
-assert.equal(svgCount, 3, "expected exactly the three platform-preview skull glyphs, no other inline SVG");
+// Tres chips de vista previa (macOS/Windows/Waybar) + la marca del header +
+// el emblema grande del orb + la marca pequeña del footer.
+assert.equal(svgCount, 6, "expected exactly the six canonical skull glyphs, no other inline SVG");
 const skullMarkers = (html.match(/cx="20\.8" cy="38" r="12"/g) || []).length;
 assert.equal(skullMarkers, svgCount, "every inline <svg> must be the canonical skull glyph, not other artwork");
 assert.doesNotMatch(`${html}\n${main}`, /component workbench|preview harness|teleprompter/i);

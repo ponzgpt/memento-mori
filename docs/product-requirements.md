@@ -23,7 +23,7 @@ People know time is limited but experience that limit as an abstraction. The res
 
 ## Functional requirements
 
-- Spanish-first, responsive, keyboard-accessible single-page web app.
+- Bilingual (English default, Spanish toggle), responsive, keyboard-accessible single-page web app.
 - Birth date validation: required, real calendar date, not in the future, plausible age.
 - Birth country and, optionally, a different current country plus the age moved, selected from the documented World Bank WDI snapshot -- same fields, same blend formula as the widget.
 - The same six lifestyle factors as the widget (sex, sleep, exercise, drinking, smoking, health), same values, same defaults -- see `docs/model-data.md`.

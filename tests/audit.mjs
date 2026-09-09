@@ -9,8 +9,12 @@ const requiredFiles = [
   "app/index.html",
   "app/main.js",
   "app/memento-core.js",
+  "app/i18n.js",
   "app/styles.css",
   "app/og.png",
+  "app/favicon.svg",
+  "app/favicon.ico",
+  "nginx.conf",
   "docs/product-requirements.md",
   "docs/model.md",
   "docs/deployment.md",
@@ -90,9 +94,10 @@ assert.match(stack, /Course fit/);
 assert.match(stack, /Backend\/API/);
 assert.match(dockerfile, /nginx:1\.27-alpine/);
 assert.match(dockerfile, /COPY app\//);
+assert.match(dockerfile, /nginx\.conf/, "the image must ship the no-store nginx config, or a future deploy can go invisible again");
 
-assert.match(html, /Recuerda que vas a morir/);
-assert.match(html, /Calcular mi perspectiva/);
+assert.match(html, /Remember that you will die/);
+assert.match(html, /Calculate my perspective/);
 assert.match(html, /data-intention-section/);
 assert.match(main, /validateForm/);
 assert.match(main, /renderLifeGrid/);

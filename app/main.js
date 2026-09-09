@@ -8,28 +8,19 @@ import {
   formatDuration,
   getPerspectiveRange,
   validateBirthDate
-} from "./memento-core.js?v=2.0.0-racks.4";
+} from "./memento-core.js?v=2.0.0-racks.5";
+import { countryLabel, getLang, setLang, t } from "./i18n.js?v=2.0.0-racks.5";
 
 const PROFILE_STORAGE_KEY = "memento-mori.web-profile.v2";
 const INTENTION_STORAGE_KEY = "memento-mori.daily-intention.v1";
 const DAY_MS = 24 * 60 * 60 * 1000;
 const WEEK_MS = 7 * DAY_MS;
 const MONTH_MS = 365.2425 / 12 * DAY_MS;
-const COUNTRY_LABELS = {
-  WLD: "Promedio mundial",
-  USA: "Estados Unidos",
-  GBR: "Reino Unido",
-  DEU: "Alemania",
-  ESP: "España",
-  JPN: "Japón",
-  IND: "India",
-  BRA: "Brasil"
-};
 
 function required(selector) {
   const element = document.querySelector(selector);
   if (!element) {
-    throw new Error(`Falta un elemento obligatorio de la interfaz: ${selector}`);
+    throw new Error(`Missing required interface element: ${selector}`);
   }
   return element;
 }
@@ -75,9 +66,29 @@ const elements = {
   storageStatus: required("[data-storage-status]")
 };
 
+const metaDescription = document.querySelector('meta[name="description"]');
+const langToggleButtons = document.querySelectorAll(".lang-toggle [data-lang]");
+
 let storageAvailable = true;
 let currentEstimate = null;
 let toastTimer = null;
+let currentLang = getLang();
+
+// Tiny {placeholder} substitution so translated strings can carry a computed
+// number or date without turning into template-literal soup at every call
+// site — matching the spirit of the widget's own key-based L(_:), not a
+// general-purpose templating engine this page doesn't need.
+function tf(key, vars = {}) {
+  let text = t(key, currentLang);
+  for (const [name, value] of Object.entries(vars)) {
+    text = text.replaceAll(`{${name}}`, String(value));
+  }
+  return text;
+}
+
+function localeTag() {
+  return currentLang === "es" ? "es-ES" : "en-US";
+}
 
 function readStorage(key, fallback) {
   try {
@@ -96,7 +107,7 @@ function writeStorage(key, value) {
   } catch {
     storageAvailable = false;
     updateStorageStatus();
-    showToast("El cálculo funciona, pero este navegador no permite guardar los datos.");
+    showToast(t("js.toast.storageUnavailable", currentLang));
     return false;
   }
 }
@@ -111,8 +122,8 @@ function removeStorage(key) {
 
 function updateStorageStatus() {
   elements.storageStatus.textContent = storageAvailable
-    ? "Solo en este dispositivo"
-    : "Persistencia no disponible";
+    ? t("js.storageStatus.local", currentLang)
+    : t("js.storageStatus.unavailable", currentLang);
 }
 
 function toInputDate(date) {
@@ -123,7 +134,7 @@ function toInputDate(date) {
 }
 
 function formatDate(date) {
-  return new Intl.DateTimeFormat("es-ES", {
+  return new Intl.DateTimeFormat(localeTag(), {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -132,7 +143,7 @@ function formatDate(date) {
 }
 
 function formatNumber(value) {
-  return Math.max(0, Math.round(value)).toLocaleString("es-ES");
+  return Math.max(0, Math.round(value)).toLocaleString(localeTag());
 }
 
 function showToast(message) {
@@ -146,12 +157,16 @@ function showToast(message) {
 
 function hydrateCountries() {
   for (const select of [elements.birthCountry, elements.currentCountry]) {
+    const previousValue = select.value;
     select.replaceChildren();
     for (const [code, baseline] of Object.entries(BASELINES)) {
       const option = document.createElement("option");
       option.value = code;
-      option.textContent = `${COUNTRY_LABELS[code] || baseline.label} · ${baseline.years.toFixed(1)} años`;
+      option.textContent = `${countryLabel(code, baseline, currentLang)} · ${baseline.years.toFixed(1)} ${t("countries.yearsUnit", currentLang)}`;
       select.append(option);
+    }
+    if (previousValue) {
+      select.value = previousValue;
     }
   }
 }
@@ -184,7 +199,7 @@ function profileForEstimate() {
 function validateForm(now = new Date()) {
   const validation = validateBirthDate(elements.birthDate.value, now);
   elements.birthError.hidden = validation.valid;
-  elements.birthError.textContent = validation.message;
+  elements.birthError.textContent = validation.valid ? "" : t(validation.messageKey, currentLang);
   elements.birthDate.setAttribute("aria-invalid", String(!validation.valid));
   return validation.valid;
 }
@@ -211,9 +226,13 @@ function renderLifeGrid(estimate) {
   elements.lifeGrid.replaceChildren(fragment);
   elements.lifeGrid.setAttribute(
     "aria-label",
-    `${livedYears} años vividos y un horizonte central de ${Math.round(estimate.lifeExpectancyYears)} años, con margen de siete años.`
+    tf("js.gridAria", { lived: livedYears, central: Math.round(estimate.lifeExpectancyYears) })
   );
-  elements.gridCaption.textContent = `Has vivido aproximadamente ${livedYears} años. El horizonte central ocupa hasta los ${Math.round(estimate.lifeExpectancyYears)}; el contorno prolonga el margen hasta los ${Math.round(estimate.lifeExpectancyYears + 7)}.`;
+  elements.gridCaption.textContent = tf("js.gridCaption", {
+    lived: livedYears,
+    central: Math.round(estimate.lifeExpectancyYears),
+    range: Math.round(estimate.lifeExpectancyYears + 7)
+  });
 }
 
 function renderEstimate(estimate, now) {
@@ -231,7 +250,7 @@ function renderEstimate(estimate, now) {
   elements.horizonDate.textContent = formatDate(estimate.deathDate);
   elements.rangeStart.textContent = formatDate(range.start);
   elements.rangeEnd.textContent = formatDate(range.end);
-  elements.yearsLeft.textContent = exactYears.toLocaleString("es-ES", {
+  elements.yearsLeft.textContent = exactYears.toLocaleString(localeTag(), {
     maximumFractionDigits: 1,
     minimumFractionDigits: 1
   });
@@ -240,11 +259,9 @@ function renderEstimate(estimate, now) {
   elements.progressRing.style.setProperty("--progress", `${progressPercent * 3.6}deg`);
   elements.progressNumber.textContent = `${progressPercent}%`;
   elements.progressCopy.textContent = `${progressPercent}%`;
-  elements.liveReadout.textContent = `Referencia actualizada el ${new Intl.DateTimeFormat("es-ES", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric"
-  }).format(now)}.`;
+  elements.liveReadout.textContent = tf("js.liveReadout", {
+    date: new Intl.DateTimeFormat(localeTag(), { day: "2-digit", month: "2-digit", year: "numeric" }).format(now)
+  });
   elements.afternoons.textContent = formatNumber(remainingMs / WEEK_MS);
   elements.meetings.textContent = formatNumber(remainingMs / MONTH_MS);
   renderLifeGrid(estimate);
@@ -275,7 +292,7 @@ function calculateAndRender({ persist = true, announce = false } = {}) {
     writeStorage(PROFILE_STORAGE_KEY, profile);
   }
   if (announce) {
-    showToast("Perspectiva calculada y guardada en este dispositivo.");
+    showToast(t("js.toast.calculated", currentLang));
   }
   return true;
 }
@@ -290,7 +307,7 @@ function renderIntention(value) {
   elements.complete.setAttribute("aria-pressed", String(completed));
   elements.complete.setAttribute(
     "aria-label",
-    completed ? "Marcar intención como pendiente" : "Marcar intención como completada"
+    completed ? t("js.intention.markPending", currentLang) : t("js.intention.markComplete", currentLang)
   );
 }
 
@@ -340,13 +357,51 @@ function startPreviewCountdown() {
   window.setInterval(tick, 1000);
 }
 
-function loadInitialState() {
+// Aplica el idioma actual a todo lo que no se recalcula solo: el texto
+// estático marcado con data-i18n*, el <title>/meta description, las
+// etiquetas de país (dependen del idioma) y, si ya hay un resultado en
+// pantalla, sus fechas y textos formateados -si no se retraduce esto último
+// el resultado se queda a medio camino entre los dos idiomas.
+function applyTranslations(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.title = t("meta.title", lang);
+  if (metaDescription) {
+    metaDescription.setAttribute("content", t("meta.description", lang));
+  }
+
+  for (const el of document.querySelectorAll("[data-i18n]")) {
+    el.textContent = t(el.getAttribute("data-i18n"), lang);
+  }
+  for (const el of document.querySelectorAll("[data-i18n-html]")) {
+    el.innerHTML = t(el.getAttribute("data-i18n-html"), lang);
+  }
+  for (const el of document.querySelectorAll("[data-i18n-aria-label]")) {
+    el.setAttribute("aria-label", t(el.getAttribute("data-i18n-aria-label"), lang));
+  }
+  for (const el of document.querySelectorAll("[data-i18n-placeholder]")) {
+    el.setAttribute("placeholder", t(el.getAttribute("data-i18n-placeholder"), lang));
+  }
+  for (const button of langToggleButtons) {
+    button.setAttribute("aria-pressed", String(button.dataset.lang === lang));
+  }
+
   hydrateCountries();
+  updateStorageStatus();
+  if (!elements.birthError.hidden) {
+    validateForm();
+  }
+  if (currentEstimate) {
+    renderEstimate(currentEstimate, new Date());
+  }
+}
+
+function loadInitialState() {
+  applyTranslations(currentLang);
   const storedProfile = readStorage(PROFILE_STORAGE_KEY, WEB_DEFAULT_PROFILE);
   const storedIntention = readStorage(INTENTION_STORAGE_KEY, { text: "", completed: false });
   elements.birthDate.max = toInputDate(new Date());
   applyProfileToForm(storedProfile);
-  updateStorageStatus();
   renderIntention(storedIntention);
 
   if (elements.birthDate.value && validateBirthDate(elements.birthDate.value).valid) {
@@ -369,8 +424,18 @@ elements.birthDate.addEventListener("input", () => {
 
 elements.movedCountry.addEventListener("change", updateMoveFieldsVisibility);
 
+for (const button of langToggleButtons) {
+  button.addEventListener("click", () => {
+    if (button.dataset.lang === currentLang) {
+      return;
+    }
+    setLang(button.dataset.lang);
+    applyTranslations(button.dataset.lang);
+  });
+}
+
 elements.reset.addEventListener("click", () => {
-  const confirmed = window.confirm("¿Borrar tu fecha, país e intención guardados en este dispositivo?");
+  const confirmed = window.confirm(t("js.resetConfirm", currentLang));
   if (!confirmed) {
     return;
   }
@@ -381,7 +446,7 @@ elements.reset.addEventListener("click", () => {
   elements.birthDate.setAttribute("aria-invalid", "false");
   renderIntention({ text: "", completed: false });
   clearEstimate();
-  showToast("Datos locales eliminados.");
+  showToast(t("js.toast.dataDeleted", currentLang));
 });
 
 elements.intention.addEventListener("input", () => {
@@ -392,14 +457,14 @@ elements.intentionForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const text = elements.intention.value.trim();
   if (!text) {
-    showToast("Escribe una intención concreta antes de guardarla.");
+    showToast(t("js.toast.intentionRequired", currentLang));
     elements.intention.focus();
     return;
   }
   const value = { text, completed: false, savedAt: new Date().toISOString() };
   writeStorage(INTENTION_STORAGE_KEY, value);
   renderIntention(value);
-  showToast("Intención guardada en este dispositivo.");
+  showToast(t("js.toast.intentionSaved", currentLang));
 });
 
 elements.complete.addEventListener("click", () => {
@@ -415,7 +480,7 @@ elements.complete.addEventListener("click", () => {
 elements.clearIntention.addEventListener("click", () => {
   removeStorage(INTENTION_STORAGE_KEY);
   renderIntention({ text: "", completed: false });
-  showToast("Intención eliminada.");
+  showToast(t("js.toast.intentionDeleted", currentLang));
 });
 
 elements.copy.addEventListener("click", async () => {
@@ -424,17 +489,17 @@ elements.copy.addEventListener("click", async () => {
   }
   const range = getPerspectiveRange(currentEstimate);
   const summary = [
-    "Mi tiempo en perspectiva · Memento Mori",
-    `Horizonte poblacional central: ${formatDate(currentEstimate.deathDate)}`,
-    `Rango amplio: ${formatDate(range.start)} — ${formatDate(range.end)}`,
-    "No es una predicción individual. memento.technoir.cloud"
+    t("js.copySummary.title", currentLang),
+    `${t("js.copySummary.horizon", currentLang)} ${formatDate(currentEstimate.deathDate)}`,
+    `${t("js.copySummary.range", currentLang)} ${formatDate(range.start)} — ${formatDate(range.end)}`,
+    t("js.copySummary.disclaimer", currentLang)
   ].join("\n");
 
   try {
     await navigator.clipboard.writeText(summary);
-    showToast("Resumen copiado sin incluir tu fecha de nacimiento.");
+    showToast(t("js.toast.copied", currentLang));
   } catch {
-    showToast("No se pudo acceder al portapapeles. Puedes copiar la fecha visible.");
+    showToast(t("js.toast.copyFailed", currentLang));
   }
 });
 

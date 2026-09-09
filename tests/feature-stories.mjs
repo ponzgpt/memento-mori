@@ -7,6 +7,7 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const read = (path) => readFileSync(join(root, path), "utf8");
 const html = read("app/index.html");
 const main = read("app/main.js");
+const i18n = read("app/i18n.js");
 const styles = read("app/styles.css");
 const requirements = read("docs/product-requirements.md");
 const featureStatus = read("docs/feature-status.csv");
@@ -35,7 +36,7 @@ assert.match(main, /calculateEstimate/);
 assert.match(html, /data-horizon-date/);
 assert.match(html, /data-range-start/);
 assert.match(html, /data-range-end/);
-assert.match(html, /±7 años/);
+assert.match(html, /±7-year/);
 assert.match(main, /getPerspectiveRange/);
 
 assert.match(html, /data-life-grid/);
@@ -52,12 +53,12 @@ assert.match(main, /data-clear-intention/);
 
 assert.match(main, /memento-mori\.web-profile\.v2/);
 assert.match(main, /window\.localStorage/);
-assert.match(main, /Persistencia no disponible/);
+assert.match(i18n, /Persistence unavailable/);
 assert.match(main, /window\.confirm/);
 
-assert.match(html, /Sin cuenta, sin anuncios y sin enviar tus datos/);
-assert.match(html, /No es una fecha de muerte predicha/);
-assert.match(html, /No es una predicción individual ni consejo médico/);
+assert.match(html, /No account, no ads, and nothing sent/);
+assert.match(html, /not a predicted death date/);
+assert.match(html, /not medical, actuarial, insurance, legal, or mental-health advice/);
 assert.match(requirements, /Never claim to predict an individual death/);
 
 assert.match(html, /class="skip-link"/);
@@ -67,14 +68,19 @@ assert.match(styles, /prefers-reduced-motion/);
 assert.match(styles, /@media \(max-width: 720px\)/);
 
 assert.match(main, /navigator\.clipboard\.writeText/);
-assert.match(main, /sin incluir tu fecha de nacimiento/i);
+assert.match(i18n, /without your birth date/i);
 const copiedSummary = main.match(/const summary = \[([\s\S]*?)\]\.join/);
 assert.ok(copiedSummary, "copy summary block is missing");
 assert.doesNotMatch(copiedSummary[1], /birthDate|birth-date/);
 
 assert.match(requirements, /Add no backend, database, authentication, payment/);
 assert.doesNotMatch(html, /<script[^>]+https?:\/\//);
-assert.doesNotMatch(html, /analytics|tracking|pixel/i);
+// La versión anterior prohibía la palabra "analytics" a secas, lo que en
+// español nunca chocaba con nada (la copia decía "analítica") pero rompe en
+// cuanto la página en inglés dice honestamente "no analytics" -exactamente
+// la frase que este chequeo debería aprobar, no bloquear-. Lo que de verdad
+// hay que impedir es un fragmento de tracker real, no la palabra en prosa.
+assert.doesNotMatch(html, /google-analytics|googletagmanager|gtag\(|fbq\(|plausible\.io|<img[^>]+pixel/i);
 
 // La web es la demo, el widget es el producto: la página tiene que apuntar
 // al repositorio para que quien pruebe la web pueda instalarlo.

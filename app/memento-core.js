@@ -112,6 +112,10 @@ export function parseBirthDate(value) {
   return date;
 }
 
+// Returns a messageKey rather than user-facing text: this module has no
+// notion of which language is on screen (the widget's UI does, via
+// app/i18n.js), so the caller looks the key up in whichever language the
+// visitor has chosen.
 export function validateBirthDate(value, now = new Date()) {
   const birth = parseBirthDate(value);
 
@@ -119,7 +123,7 @@ export function validateBirthDate(value, now = new Date()) {
     return {
       valid: false,
       birth: null,
-      message: "Introduce una fecha de nacimiento válida."
+      messageKey: "validation.required"
     };
   }
 
@@ -127,7 +131,7 @@ export function validateBirthDate(value, now = new Date()) {
     return {
       valid: false,
       birth,
-      message: "La fecha de nacimiento no puede estar en el futuro."
+      messageKey: "validation.future"
     };
   }
 
@@ -135,11 +139,11 @@ export function validateBirthDate(value, now = new Date()) {
     return {
       valid: false,
       birth,
-      message: "Introduce una fecha dentro de los últimos 120 años."
+      messageKey: "validation.tooOld"
     };
   }
 
-  return { valid: true, birth, message: "" };
+  return { valid: true, birth, messageKey: "" };
 }
 
 export function yearsBetween(start, end) {
@@ -213,7 +217,7 @@ export function calculateEstimate(profile, now = new Date()) {
 
   return {
     valid: validation.valid,
-    validationMessage: validation.message,
+    validationMessageKey: validation.messageKey,
     birth,
     baseline,
     sourceNote: SOURCE_NOTE,

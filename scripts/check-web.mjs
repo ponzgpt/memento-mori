@@ -37,12 +37,12 @@ try {
   assert.equal(index.status, 200);
   assert.match(index.headers.get("content-type") || "", /text\/html/);
   assert.match(index.headers.get("cache-control") || "", /no-store/);
-  assert.match(html, /Memento Mori · Tu tiempo en perspectiva/);
+  assert.match(html, /Memento Mori · Your time in perspective/);
   assert.match(html, new RegExp(`main\\.js\\?v=${pkg.version.replaceAll(".", "\\.")}`));
   assert.match(html, new RegExp(`styles\\.css\\?v=${pkg.version.replaceAll(".", "\\.")}`));
-  assert.match(html, /Calcular mi perspectiva/);
+  assert.match(html, /Calculate my perspective/);
 
-  for (const asset of ["/styles.css", "/main.js", "/memento-core.js"]) {
+  for (const asset of ["/styles.css", "/main.js", "/memento-core.js", "/i18n.js"]) {
     const response = await fetchWithRetry(asset);
     assert.equal(response.status, 200, `${asset} must be served`);
     assert.ok((await response.text()).length > 500, `${asset} is unexpectedly small`);
