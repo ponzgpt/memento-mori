@@ -8,7 +8,7 @@ import {
   formatDuration,
   getPerspectiveRange,
   validateBirthDate
-} from "./memento-core.js?v=2.0.0-r2";
+} from "./memento-core.js?v=2.0.0-racks.4";
 
 const PROFILE_STORAGE_KEY = "memento-mori.web-profile.v2";
 const INTENTION_STORAGE_KEY = "memento-mori.daily-intention.v1";

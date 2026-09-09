@@ -36,8 +36,21 @@ const dockerfile = read("Dockerfile");
 const pkg = JSON.parse(read("package.json"));
 
 assert.equal(pkg.version, "2.0.0");
-assert.match(html, /main\.js\?v=2\.0\.0-r2/, "HTML must invalidate the prior runtime cache");
-assert.match(main, /memento-core\.js\?v=2\.0\.0-r2/, "runtime import must invalidate the prior core cache");
+// Antes esto fijaba un valor literal ("debe ser exactamente 2.0.0-r2"), así
+// que dejó de significar nada en cuanto alguien desplegó sin acordarse de
+// tocar esta línea a la vez -lo que de hecho ocurrió: producción sirvió
+// JS/CSS obsoletos durante un despliegue entero porque la cadena de caché no
+// había cambiado-. La comprobación real no es "coincide con un texto fijo"
+// sino "main.js, memento-core.js y styles.css usan la misma versión que
+// cambia en cada release"; nginx.conf ya sirve todo con no-store, así que
+// esto queda como cinturón y tirantes, no como único mecanismo.
+const versionMatch = html.match(/main\.js\?v=([^"]+)"/);
+assert.ok(versionMatch, "index.html must cache-bust main.js with a ?v= query string");
+const cacheVersion = versionMatch[1].replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+assert.match(html, new RegExp(`styles\\.css\\?v=${cacheVersion}"`),
+  "styles.css must share main.js's cache-busting version");
+assert.match(main, new RegExp(`memento-core\\.js\\?v=${cacheVersion}"`),
+  "the memento-core.js import must share the same cache-busting version");
 assert.match(readme, /^# Memento Mori\n/);
 assert.match(readme, /https:\/\/memento\.technoir\.cloud\//);
 assert.match(readme, /The concrete problem/);
