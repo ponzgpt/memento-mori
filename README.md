@@ -1,8 +1,8 @@
 # Memento Mori
 
-Memento Mori is a Spanish-first web app that turns a population life-expectancy reference into a calm picture of finite time and one intentional action for today.
+Memento Mori is a small, honest countdown: a population life-expectancy reference turned into a calm picture of finite time. The native menu-bar/Waybar widget is the product -- it lives in the OS you already look at. This repository's web app is its bilingual (English default, Spanish toggle) online demo and download page, running the exact same model.
 
-Public app: <https://memento.technoir.cloud/>
+Public demo: <https://memento.technoir.cloud/>
 
 This is a reflective aid, not an individual death prediction. It is not medical, legal, actuarial, insurance, or mental-health advice.
 
@@ -10,20 +10,19 @@ This is a reflective aid, not an individual death prediction. It is not medical,
 
 People know that time is finite, but the idea stays abstract. Abstract limits are easy to postpone around: the loud task wins, the meaningful conversation moves to next month, and an ordinary day feels interchangeable with any other.
 
-The app makes that limit understandable without claiming certainty. A visitor enters a birth date and a country reference, sees a central population horizon with a broad uncertainty range, views the result at human scale, and writes one concrete intention for today.
+The product makes that limit understandable without claiming certainty. Enter a birth date, a country of birth (and, if it differs, a country of residence and the age you moved), and six lifestyle factors; get a central population horizon with a broad uncertainty range, the result at human scale, and one concrete intention for today. Installed as the widget, that same estimate sits in the menu bar and keeps counting; the web app is the same calculation, tried in a browser first.
 
 ## Primary flow
 
-1. Enter a birth date and country reference.
+1. Enter a birth date, country context, and the six lifestyle factors.
 2. Receive a central horizon plus an explicit seven-year margin on each side.
 3. See approximate remaining years, weeks, days, and a 100-year life grid.
 4. Translate the perspective into one intention for today.
-5. Return on the same device and recover the profile and intention locally.
+5. Return on the same device and recover the profile and intention locally, or install the widget so the estimate lives outside the browser.
 
 ## Product boundaries
 
 - No account, backend, database, analytics, advertising, or cloud profile.
-- No lifestyle or health scoring in the web flow.
 - No claim that the displayed date predicts an individual death.
 - No gamification, streaks, fear language, or productivity guilt.
 - The copied summary excludes the birth date.
@@ -86,14 +85,14 @@ npm run check:web
 
 ## Repository map
 
-- `app/`: production web app and social card.
-- `docs/product-requirements.md`: user problem, scope, requirements, and acceptance criteria.
-- `docs/model.md`: source, formula, uncertainty, and limitations.
-- `docs/deployment.md`: production deployment and rollback runbook.
+- `native/`, `waybar/`, and `installers/`: the native menu-bar (macOS/Windows) and Waybar (Linux) widget -- this is the primary product.
+- `app/`: the web app -- an online demo of the same model, and the download page for the widget.
+- `docs/product-requirements.md`: user problem, scope, requirements, and acceptance criteria for the web app.
+- `docs/model.md` and `docs/model-data.md`: the shared model both surfaces run -- source, formula, exact values, uncertainty, and limitations.
+- `docs/deployment.md`: production deployment and rollback runbook for the web app.
 - `docs/feature-status.csv`: feature stories and retest state.
 - `tests/`: calculation and product acceptance tests.
-- `Dockerfile` and `compose.yaml`: reproducible static runtime.
-- `waybar/`, `native/`, and `installers/`: retained experimental native companions; they are not the final-course product.
+- `Dockerfile`, `nginx.conf`, and `compose.yaml`: reproducible static runtime for the web app.
 
 ## Why the stack is intentionally small
 

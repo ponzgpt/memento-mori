@@ -60,14 +60,18 @@ assert.match(readme, /https:\/\/memento\.technoir\.cloud\//);
 assert.match(readme, /The concrete problem/);
 assert.match(readme, /Primary flow/);
 assert.match(readme, /Why the stack is intentionally small/);
-assert.match(readme, /retained experimental native companions/i);
+// El README solía llamar a los companions nativos "experimentos retenidos";
+// eso se invirtió el 2026-09-09 -el widget es el producto, la web es su
+// demo- así que lo que hay que comprobar ahora es justo lo contrario.
+assert.match(readme, /the product/i);
+assert.doesNotMatch(readme, /retained experimental native companions/i);
 
 assert.match(requirements, /## User problem/);
 assert.match(requirements, /## Acceptance criteria/);
 assert.match(requirements, /Add no backend, database, authentication, payment/);
 assert.match(model, /SP\.DYN\.LE00\.IN/);
 assert.match(model, /seven-year margin/i);
-assert.match(model, /lifestyle offsets/);
+assert.match(model, /lifestyle factor/i);
 assert.match(privacy, /memento-mori\.web-profile\.v2/);
 assert.match(privacy, /memento-mori\.daily-intention\.v1/);
 assert.match(privacy, /does not receive the entered values/i);

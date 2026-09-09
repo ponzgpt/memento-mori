@@ -1,21 +1,21 @@
 # Stack Decisions
 
-Decision updated: 2026-08-01.
+Decision updated: 2026-08-01. Superseded 2026-09-09: the native widget (macOS/Windows menu bar, Linux Waybar) is the primary product; this document's "web product" scope is now specifically the demo and download page, not the whole of Memento Mori. See [product-requirements.md](product-requirements.md).
 
-## Primary web product
+## Web demo stack
 
-- Static semantic HTML defines one complete Spanish user journey.
+- Static semantic HTML defines one complete user journey, in English by default with a Spanish toggle (`app/i18n.js`, no library).
 - CSS provides the editorial visual system, responsive layout, focus states, and reduced-motion behavior.
 - Dependency-free JavaScript owns validation, deterministic calculation, local persistence, the life grid, the daily intention, reset, and copy behavior.
-- A shared calculation module remains importable by tests and retained native experiments.
-- nginx serves the production files in a small Docker image.
+- A shared calculation module (`app/memento-core.js`) carries the same population baselines and lifestyle-factor values as the native widget, kept numerically in sync by hand and pinned by `tests/memento-core.test.mjs` -- they cannot literally share code across JavaScript and Swift.
+- nginx serves the production files in a small Docker image, with `nginx.conf` forcing `Cache-Control: no-store` so a release is never invisible behind a stale browser cache.
 - Traefik on the existing VPS terminates TLS and routes the stable domain.
 
 ## Decision criteria
 
 ### User value
 
-The product needs two inputs, one calculation, a visualization, and device-local state. None of those jobs requires a framework, backend, or account.
+The web demo needs birth-date, country, and lifestyle-factor inputs, one calculation, a visualization, and device-local state -- the same inputs the widget asks for. None of those jobs requires a framework, backend, or account.
 
 ### Cost
 
@@ -38,6 +38,6 @@ The implementation evidences requirements, routes/sections, reusable modules, Gi
 - Analytics: unnecessary for the evaluation build and inconsistent with the stated privacy boundary.
 - Countdown-to-the-second UI: visually precise but epistemically misleading.
 
-## Retained companions
+## The native widget is the product, not a companion
 
-Waybar, macOS, and Windows experiments remain in the repository as secondary explorations. They do not define the final web product, its acceptance criteria, or its deployment.
+Waybar, macOS, and Windows are not experiments retained alongside the web app -- they are Memento Mori. The web app's acceptance criteria in `product-requirements.md` cover the demo and download page specifically; the widget has its own design rules in `docs/apple-platform-plan.md`, `docs/native-packaging.md`, and `docs/philosophy.md`.

@@ -6,16 +6,23 @@ Data snapshot: World Bank WDI 2024 values included in the repository.
 
 The model supplies perspective, not prognosis. It translates a public population statistic into a central date and deliberately surrounds it with a broad range.
 
-## Web formula
+## Formula
+
+The web app and the native widget run the same model -- see [product-requirements.md](product-requirements.md) for why that pairing exists and how the two implementations are kept in sync.
 
 ```text
-central_horizon = birth_date + country_life_expectancy_years
-range_start = central_horizon - 7 years
-range_end = central_horizon + 7 years
-progress = age_now / country_life_expectancy_years
+baseline_years   = birth_country_years blended toward current_country_years,
+                    weighted by years since the age moved (see model-data.md)
+local_offset     = sum of the six lifestyle-factor adjustments
+life_expectancy  = clamp(baseline_years + local_offset, 45, 105)
+
+central_horizon = birth_date + life_expectancy
+range_start     = central_horizon - 7 years
+range_end       = central_horizon + 7 years
+progress        = age_now / life_expectancy
 ```
 
-Remaining years, weeks, and days are alternative presentations of the same central horizon. They are not separate forecasts.
+Remaining years, weeks, and days are alternative presentations of the same central horizon. They are not separate forecasts. Exact baseline and offset values are listed in [model-data.md](model-data.md).
 
 ## Source
 
@@ -30,13 +37,14 @@ The web flow requires:
 - a real calendar date in `YYYY-MM-DD` form;
 - a date that is not in the future;
 - an age no greater than 120 years;
-- a country code present in the bundled baseline table.
+- a country code present in the bundled baseline table for both birth and current country;
+- a real answer for each of the six lifestyle factors -- there is no "skip", on the web or in the widget; see the next section for why.
 
 An invalid input produces no result and displays an inline announced error.
 
-## Why the web flow uses no lifestyle offsets
+## Why the lifestyle factors exist, and why there is no "skip"
 
-The repository retains older native experiments that support coarse local offsets, but the public web app sets every offset to “skip.” Those adjustments were not backed by an individual clinical model and created a risk of false authority. Removing them makes the primary product simpler and more honest.
+An earlier version of the web app set every lifestyle offset to a no-op "skip", on the reasoning that a coarse adjustment risked false authority. That decision only ever applied to the web: the native widget always asked for a real answer to all six factors, because letting someone dodge the question doesn't make the estimate more honest, it just quietly reverts to whichever answer skip happens to encode. The web app now asks the same six questions the widget does, with the same values, so that a visitor gets the same number in the browser as they would after installing it -- see [model-data.md](model-data.md) for the exact table, and [product-requirements.md](product-requirements.md) for why the two surfaces are required to stay in sync.
 
 ## Range choice
 

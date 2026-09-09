@@ -1,15 +1,16 @@
 # Privacy
 
-Memento Mori is a local-first web app. Producing a perspective does not require an account, analytics, telemetry, advertising, cloud sync, or a runtime API.
+Memento Mori -- the native widget and this web demo alike -- is local-first. Producing a perspective does not require an account, analytics, telemetry, advertising, cloud sync, or a runtime API.
 
 ## Data used by the web app
 
 - Birth date.
-- Country reference.
+- Country of birth and, if different, current country of residence and the age you moved.
+- Six lifestyle factors: sex, sleep, exercise, drinking, smoking, and health -- the same six the native widget asks for, with the same values (see `docs/model-data.md`).
 - A short daily intention, when the visitor chooses to write one.
 - Whether that intention is marked complete.
 
-The web flow does not request medical history, diagnosis, sex, smoking, alcohol, sleep, exercise, precise location, name, email, or payment information.
+None of this leaves the browser: the calculation runs client-side and nothing above is sent to a server, an analytics tool, or a third party. The web flow does not request medical history, diagnosis, precise location, name, email, or payment information.
 
 ## Where data lives
 
@@ -24,9 +25,9 @@ If local storage is blocked or unavailable, the calculation continues to work fo
 
 ## Deletion
 
-The “Borrar mis datos” action removes both records after confirmation. Clearing site data for `memento.technoir.cloud` in the browser removes them as well.
+The "Delete my data" action ("Borrar mis datos" in Spanish) removes both records after confirmation. Clearing site data for `memento.technoir.cloud` in the browser removes them as well.
 
-The retained experimental native companions use their documented device-local configuration paths; they are not part of the final web flow.
+The native widget is a separate installation with its own local storage (macOS `UserDefaults`, a local config file for Waybar) -- deleting the web app's browser data does not touch it. Each platform's uninstall path is documented in `docs/install.md`.
 
 ## Copying and reports
 
