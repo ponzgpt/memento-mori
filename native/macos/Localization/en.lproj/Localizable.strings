@@ -4,11 +4,14 @@
 "Profile" = "Profile";
 "Lifestyle" = "Lifestyle";
 
-/* Profile fields */
-"Birth date" = "Birth date";
-"Born" = "Born";
+/* Profile fields. The four rows read as one sentence, in this order:
+   "Born on 15 November 1990 / Born in ESP / Living in GBR / Since age 28".
+   Month names are not here: they come from the system's own localized
+   standaloneMonthSymbols. */
+"Born on" = "Born on";
+"Born in" = "Born in";
 "Living in" = "Living in";
-"Moved at age" = "Moved at age";
+"Since age" = "Since age";
 
 /* Lifestyle field labels */
 "Sex" = "Sex";
@@ -57,6 +60,10 @@
 "Japan" = "Japan";
 "India" = "India";
 "Brazil" = "Brazil";
+
+/* Menu bar display toggles. D/H/M/S and % need no translation; only the
+   death-date segment does. */
+"toggle.date" = "Date";
 
 /* Menu actions */
 "Show in menu bar" = "Show in menu bar";

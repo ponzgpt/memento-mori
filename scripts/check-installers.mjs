@@ -127,15 +127,39 @@ for (const key of esKeys) {
   assert.ok(enKeys.has(key), `en.lproj/Localizable.strings is missing "${key}"`);
 }
 
-// Toda clave de la forma L("literal") en el código debe existir en el fichero
-// en inglés. Las claves dinámicas (factor.valor, quote.grupo.índice) no se
-// pueden extraer por regex del código con garantías, así que solo se
-// comprueban aquí las literales -que son las que más fácil se desincronizan
-// al renombrar algo a mano.
-const literalKeys = [...macSource.matchAll(/\bL\("([^"$\\]+)"\)/g)].map(([, k]) => k);
-assert.ok(literalKeys.length > 0, "no L(\"...\") calls found to check");
-for (const key of literalKeys) {
-  assert.ok(enKeys.has(key), `MementoMoriMenuBar.swift calls L("${key}") but en.lproj is missing that key`);
+// Reconstruye todas las claves que el código puede llegar a pedir y las
+// compara con el .strings en los dos sentidos. En los dos, porque los dos
+// fallos han ocurrido de verdad al reescribir esta pantalla: renombrar una
+// fila y olvidar la clave nueva (sale la clave cruda en pantalla), y quitar
+// una fila dejando la clave vieja muerta en el fichero.
+const runtimeKeys = new Set();
+
+// L("literal")
+for (const [, k] of macSource.matchAll(/\bL\("([^"$\\]+)"\)/g)) runtimeKeys.add(k);
+// labelKey que se pasan como variable: tuplas ("sex", "Sex") y countryRow(labelKey: "Born in", ...)
+for (const [, k] of macSource.matchAll(/\("\w+", "([^"]+)"\)/g)) runtimeKeys.add(k);
+for (const [, k] of macSource.matchAll(/labelKey: "([^"]+)"/g)) runtimeKeys.add(k);
+// nombres de país: el label inglés del Baseline es a la vez la clave
+for (const [, k] of macSource.matchAll(/Baseline\(label: "([^"]+)"/g)) runtimeKeys.add(k);
+// opciones de cada factor: clave "<factor>.<valor>"
+for (const [, factor, body] of macSource.matchAll(/"(\w+)": \[\n((?:\s*FactorOption[^\]]*?\n)+)\s*\]/g)) {
+  for (const [, value] of body.matchAll(/FactorOption\(value: "(\w+)"/g)) {
+    runtimeKeys.add(`${factor}.${value}`);
+  }
+}
+// frases: los dos grupos y su número de variantes salen del propio código
+const quoteCounts = macSource.match(/let regularCount = (\d+)[\s\S]*?let lateCount = (\d+)/);
+assert.ok(quoteCounts, "could not read the reflection quote counts from the source");
+for (const [pool, count] of [["regular", +quoteCounts[1]], ["late", +quoteCounts[2]]]) {
+  for (let i = 0; i < count; i += 1) runtimeKeys.add(`quote.${pool}.${i}`);
+}
+
+assert.ok(runtimeKeys.size > 20, `only found ${runtimeKeys.size} localization keys in the source`);
+for (const key of runtimeKeys) {
+  assert.ok(enKeys.has(key), `the app can ask for "${key}" but en.lproj does not define it`);
+}
+for (const key of enKeys) {
+  assert.ok(runtimeKeys.has(key), `en.lproj defines "${key}" but nothing in the app asks for it`);
 }
 
 assert.match(macUninstall, /rm -rf "\$\{APP_BUNDLE\}" "\$\{APP_SUPPORT\}"/);

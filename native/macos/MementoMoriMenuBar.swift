@@ -115,9 +115,16 @@ private struct Profile {
     var currentCountry: String
     var moveAge: Double
     var factors: [String: String]
+    // Qué se enseña en la barra de menús. Los años no se pueden apagar: son
+    // el suelo del contador, y una cuenta atrás que no cuenta nada no es una
+    // cuenta atrás. Todo lo demás es elección de cada uno, entre ocupar tres
+    // caracteres u ocupar media barra.
+    var showDays: Bool
     var showHours: Bool
     var showMinutes: Bool
     var showSeconds: Bool
+    var showPercent: Bool
+    var showDeathDate: Bool
 }
 
 private struct Estimate {
@@ -159,13 +166,15 @@ private func utcCalendar() -> Calendar {
     return cal
 }
 
-/// Cuenta atrás con granularidad configurable, más el porcentaje transcurrido
-/// a la derecha del todo. Años y días son la base fija; horas, minutos y
-/// segundos son independientes entre sí porque en el menú cada uno tiene su
-/// propio interruptor. El sufijo de año se localiza (y/a); el resto -d/h/m/s-
-/// coincide en inglés y en español, así que se deja literal.
-private func formatCountdown(_ secondsValue: TimeInterval, showHours: Bool,
-                             showMinutes: Bool, showSeconds: Bool, progress: Double) -> String {
+/// Cuenta atrás con granularidad configurable. Los años son la base fija; días,
+/// horas, minutos y segundos son independientes entre sí porque en el menú cada
+/// uno tiene su propio interruptor. El sufijo de año se localiza (y/a); el
+/// resto -d/h/m/s- coincide en inglés y en español, así que se deja literal.
+///
+/// El porcentaje y la fecha de muerte no salen de aquí: son piezas aparte que
+/// compone quien pinta la barra, porque cada una tiene su propio interruptor.
+private func formatCountdown(_ secondsValue: TimeInterval, showDays: Bool, showHours: Bool,
+                             showMinutes: Bool, showSeconds: Bool) -> String {
     var seconds = Int(abs(secondsValue))
     let years = Int(Double(seconds) / secondsPerYear)
     seconds -= Int(Double(years) * secondsPerYear)
@@ -177,13 +186,13 @@ private func formatCountdown(_ secondsValue: TimeInterval, showHours: Bool,
     seconds -= minutes * 60
     let secs = seconds
 
-    var parts = ["\(years)\(L("unit.year"))", "\(days)d"]
+    var parts = ["\(years)\(L("unit.year"))"]
+    if showDays { parts.append("\(days)d") }
     if showHours { parts.append("\(hours)h") }
     if showMinutes { parts.append("\(minutes)m") }
     if showSeconds { parts.append(String(format: "%02ds", secs)) }
     let prefix = secondsValue < 0 ? "+" : ""
-    let pct = Int(round(progress * 100))
-    return prefix + parts.joined(separator: " ") + " · \(pct)%"
+    return prefix + parts.joined(separator: " ")
 }
 
 /// Calavera mínima, dibujada como imagen template para que la barra la tiña
@@ -279,6 +288,7 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var valueLabels: [String: NSTextField] = [:]
     private var controlRefs: [String: NSControl] = [:]
     private var displayToggle: NSSegmentedControl!
+    private var moveAgeItem: NSMenuItem?
 
     override init() {
         self.dateFormatter = DateFormatter()
@@ -325,9 +335,14 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
             currentCountry: defaults.string(forKey: "currentCountry") ?? "WLD",
             moveAge: defaults.object(forKey: "moveAge") as? Double ?? 0,
             factors: factors,
+            showDays: defaults.object(forKey: "showDays") as? Bool ?? true,
             showHours: defaults.object(forKey: "showHours") as? Bool ?? true,
             showMinutes: defaults.object(forKey: "showMinutes") as? Bool ?? true,
-            showSeconds: defaults.object(forKey: "showSeconds") as? Bool ?? true
+            showSeconds: defaults.object(forKey: "showSeconds") as? Bool ?? true,
+            showPercent: defaults.object(forKey: "showPercent") as? Bool ?? true,
+            // La fecha de muerte viene apagada: es la pieza más larga con
+            // diferencia y ya está siempre visible al abrir el menú.
+            showDeathDate: defaults.object(forKey: "showDeathDate") as? Bool ?? false
         )
     }
 
@@ -339,9 +354,12 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
         for (key, value) in profile.factors {
             defaults.set(value, forKey: key)
         }
+        defaults.set(profile.showDays, forKey: "showDays")
         defaults.set(profile.showHours, forKey: "showHours")
         defaults.set(profile.showMinutes, forKey: "showMinutes")
         defaults.set(profile.showSeconds, forKey: "showSeconds")
+        defaults.set(profile.showPercent, forKey: "showPercent")
+        defaults.set(profile.showDeathDate, forKey: "showDeathDate")
     }
 
     private func estimate(now: Date = Date()) -> Estimate {
@@ -377,11 +395,23 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
     /// en vistas que ya existen — nunca reconstruye el menú.
     private func refreshHeader() {
         let e = estimate()
-        let text = formatCountdown(e.remaining, showHours: profile.showHours,
-                                   showMinutes: profile.showMinutes, showSeconds: profile.showSeconds,
-                                   progress: e.progress)
-        statusItem.button?.title = " " + text
-        headerBigLabel?.stringValue = text
+        let pct = "\(Int(round(e.progress * 100)))%"
+
+        // La barra enseña lo que cada uno haya elegido enseñar.
+        var barParts = [formatCountdown(e.remaining, showDays: profile.showDays,
+                                        showHours: profile.showHours,
+                                        showMinutes: profile.showMinutes,
+                                        showSeconds: profile.showSeconds)]
+        if profile.showPercent { barParts.append(pct) }
+        if profile.showDeathDate { barParts.append(dateFormatter.string(from: e.deathDate)) }
+        statusItem.button?.title = " " + barParts.joined(separator: " · ")
+
+        // El menú desplegado enseña siempre todo: los interruptores dicen
+        // "mostrar en la barra", así que apagar algo ahí no debería esconder
+        // el dato en el único sitio donde se va a mirar a propósito.
+        let full = formatCountdown(e.remaining, showDays: true, showHours: true,
+                                   showMinutes: true, showSeconds: true)
+        headerBigLabel?.stringValue = "\(full) · \(pct)"
 
         let origin = countryName(profile.birthCountry)
         let place = profile.birthCountry == profile.currentCountry
@@ -401,10 +431,19 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(quoteItem())
         menu.addItem(.separator())
 
+        // "Born on 15 November 1990" / "Born in ESP" / "Living in GBR" /
+        // "Since age 28": las cuatro filas se leen como una frase, en ese
+        // orden, en vez de como cuatro ajustes sueltos.
         menu.addItem(sectionLabel(L("Profile")))
         menu.addItem(birthDateRow())
-        menu.addItem(countriesRow())
-        menu.addItem(moveAgeRow())
+        menu.addItem(countryRow(labelKey: "Born in", key: "birthCountry",
+                                selected: profile.birthCountry))
+        menu.addItem(countryRow(labelKey: "Living in", key: "currentCountry",
+                                selected: profile.currentCountry))
+        let moveAge = moveAgeRow()
+        moveAgeItem = moveAge
+        menu.addItem(moveAge)
+        updateMoveAgeVisibility()
         menu.addItem(.separator())
 
         menu.addItem(sectionLabel(L("Lifestyle")))
@@ -502,41 +541,65 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // editar texto ni abrir una superposición propia, así que funcionan
     // exactamente igual que los sliders de Lifestyle.
 
+    /// "Born on  [15] [November] [1990]".
+    ///
+    /// El mes va por nombre y no por número a propósito: 11/09 es el 11 de
+    /// septiembre para un español y el 9 de noviembre para un estadounidense,
+    /// y esta app se lee en los dos idiomas. Los nombres salen de
+    /// standaloneMonthSymbols, así que ya vienen traducidos por el sistema y
+    /// no hay que mantenerlos en el .strings.
     private func birthDateRow() -> NSMenuItem {
         let container = rowContainer(height: 30)
-        let lbl = label(L("Birth date"))
-        lbl.frame = NSRect(x: menuPad, y: 6, width: 100, height: 18)
+        let lbl = label(L("Born on"))
+        lbl.frame = NSRect(x: menuPad, y: 6, width: 76, height: 18)
         container.addSubview(lbl)
 
         let comps = utcCalendar().dateComponents([.day, .month, .year], from: profile.birthDate)
         let currentYear = utcCalendar().component(.year, from: Date())
+        let day = comps.day ?? 1
+        let month = comps.month ?? 1
+        let year = comps.year ?? 1990
 
-        var x = menuPad + 100
-        x = stepperField(value: comps.day ?? 1, x: x, valueWidth: 20, minVal: 1, maxVal: 31,
-                         key: "birthDay", container: container)
-        x = slash(at: x, container: container)
-        x = stepperField(value: comps.month ?? 1, x: x, valueWidth: 20, minVal: 1, maxVal: 12,
-                         key: "birthMonth", container: container)
-        x = slash(at: x, container: container)
-        _ = stepperField(value: comps.year ?? 1990, x: x, valueWidth: 36, minVal: 1900, maxVal: currentYear,
+        var x = menuPad + 76
+        x = stepperField(text: String(day), value: day, x: x, valueWidth: 20, alignment: .right,
+                         minVal: 1, maxVal: daysInMonth(month: month, year: year),
+                         wraps: true, key: "birthDay", container: container)
+        x = stepperField(text: monthName(month), value: month, x: x, valueWidth: 78, alignment: .left,
+                         minVal: 1, maxVal: 12, wraps: true, key: "birthMonth", container: container)
+        _ = stepperField(text: String(year), value: year, x: x, valueWidth: 34, alignment: .right,
+                         minVal: 1900, maxVal: currentYear, wraps: false,
                          key: "birthYear", container: container)
         return wrap(container)
     }
 
-    private func slash(at x: CGFloat, container: NSView) -> CGFloat {
-        let field = label("/", size: 12, color: .tertiaryLabelColor)
-        field.frame = NSRect(x: x, y: 5, width: 10, height: 18)
-        container.addSubview(field)
-        return x + 10
+    private func monthName(_ month: Int) -> String {
+        let symbols = DateFormatter().standaloneMonthSymbols ?? []
+        guard symbols.indices.contains(month - 1) else { return String(month) }
+        return symbols[month - 1].capitalized
+    }
+
+    /// Días reales del mes: sin esto, poner 31 y luego mover el mes a febrero
+    /// daba un 31 de febrero que Foundation normalizaba en silencio al 3 de
+    /// marzo, moviendo la fecha de nacimiento sin avisar.
+    private func daysInMonth(month: Int, year: Int) -> Int {
+        var comps = DateComponents()
+        comps.year = year
+        comps.month = month
+        comps.day = 1
+        let cal = utcCalendar()
+        guard let date = cal.date(from: comps),
+              let range = cal.range(of: .day, in: .month, for: date) else { return 31 }
+        return range.count
     }
 
     /// Crea el par valor+stepper de una parte de la fecha y devuelve la x
     /// donde debería empezar el siguiente elemento de la fila.
     @discardableResult
-    private func stepperField(value: Int, x: CGFloat, valueWidth: CGFloat, minVal: Int, maxVal: Int,
+    private func stepperField(text: String, value: Int, x: CGFloat, valueWidth: CGFloat,
+                              alignment: NSTextAlignment, minVal: Int, maxVal: Int, wraps: Bool,
                               key: String, container: NSView) -> CGFloat {
-        let valueLabel = label(String(value), size: 12)
-        valueLabel.alignment = .right
+        let valueLabel = label(text, size: 12)
+        valueLabel.alignment = alignment
         valueLabel.frame = NSRect(x: x, y: 5, width: valueWidth, height: 18)
         container.addSubview(valueLabel)
         valueLabels[key] = valueLabel
@@ -544,6 +607,7 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let stepper = NSStepper(frame: NSRect(x: x + valueWidth + 2, y: 3, width: 19, height: 22))
         stepper.minValue = Double(minVal)
         stepper.maxValue = Double(maxVal)
+        stepper.valueWraps = wraps
         stepper.integerValue = value
         stepper.identifier = NSUserInterfaceItemIdentifier(key)
         stepper.target = self
@@ -551,55 +615,66 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
         container.addSubview(stepper)
         controlRefs[key] = stepper
 
-        return x + valueWidth + 2 + 19 + 6
+        return x + valueWidth + 2 + 19 + 8
     }
 
-    // MARK: - País de nacimiento / residencia (slider, no NSPopUpButton)
+    // MARK: - País de nacimiento / residencia
     //
-    // Un NSPopUpButton dentro de la vista de un NSMenuItem necesita abrir su
-    // propio menú superpuesto sobre el menú que ya está en tracking, y esa
-    // superposición anidada es exactamente el otro patrón que no llega a
-    // funcionar de forma fiable aquí. El slider no necesita abrir nada.
+    // Antes eran sliders, y era un abuso del control: un país no está "entre"
+    // otros dos, así que deslizar de la media mundial a Brasil pasando por
+    // Alemania no significa nada. Lo puse así solo porque un NSPopUpButton
+    // necesita abrir su propio menú superpuesto sobre el menú que ya está en
+    // tracking, y eso no funciona dentro de la vista de un NSMenuItem.
+    //
+    // El segmented control sí es el control correcto para un conjunto pequeño
+    // y sin orden: enseña las ocho opciones a la vez, se elige con un clic y
+    // no finge una escala que no existe. Los segmentos llevan el código del
+    // Banco Mundial -que es la fuente del dato- y el nombre completo del
+    // seleccionado se lee a la derecha de la etiqueta.
 
-    private func countriesRow() -> NSMenuItem {
-        let container = rowContainer(height: 80)
-        countrySlider(labelKey: "Born", key: "birthCountry", selected: profile.birthCountry,
-                     labelY: 62, sliderY: 42, container: container)
-        countrySlider(labelKey: "Living in", key: "currentCountry", selected: profile.currentCountry,
-                     labelY: 22, sliderY: 2, container: container)
-        return wrap(container)
-    }
+    private func countryRow(labelKey: String, key: String, selected: String) -> NSMenuItem {
+        let container = rowContainer(height: 46)
 
-    private func countrySlider(labelKey: String, key: String, selected: String,
-                               labelY: CGFloat, sliderY: CGFloat, container: NSView) {
+        // La etiqueta ocupa hasta x=146 y el nombre del país arranca en 170:
+        // con 150 y 170 se solapaban doce puntos.
         let lbl = label(L(labelKey))
-        lbl.frame = NSRect(x: menuPad, y: labelY, width: 150, height: 14)
+        lbl.frame = NSRect(x: menuPad, y: 26, width: 130, height: 16)
         container.addSubview(lbl)
 
         let valueLabel = label(countryName(selected), size: 12, color: .secondaryLabelColor)
         valueLabel.alignment = .right
-        valueLabel.frame = NSRect(x: menuWidth - menuPad - 150, y: labelY, width: 150, height: 14)
+        valueLabel.frame = NSRect(x: menuPad + 154, y: 26, width: menuInnerWidth - 154, height: 16)
         container.addSubview(valueLabel)
         valueLabels[key] = valueLabel
 
-        let slider = NSSlider(frame: NSRect(x: menuPad, y: sliderY, width: menuInnerWidth, height: 18))
-        slider.minValue = 0
-        slider.maxValue = Double(countryOrder.count - 1)
-        slider.numberOfTickMarks = countryOrder.count
-        slider.allowsTickMarkValuesOnly = true
-        slider.tickMarkPosition = .below
-        slider.isContinuous = true
-        slider.doubleValue = Double(countryOrder.firstIndex(of: selected) ?? 0)
-        slider.identifier = NSUserInterfaceItemIdentifier(key)
-        slider.target = self
-        slider.action = #selector(countrySliderChanged(_:))
-        container.addSubview(slider)
-        controlRefs[key] = slider
+        let segFrame = NSRect(x: menuPad, y: 3, width: menuInnerWidth, height: 22)
+        let seg = NSSegmentedControl(frame: segFrame)
+        seg.segmentStyle = .rounded
+        seg.segmentCount = countryOrder.count
+        seg.trackingMode = .selectOne
+        seg.font = NSFont.systemFont(ofSize: 10)
+        let segWidth = segFrame.width / CGFloat(countryOrder.count)
+        for (i, code) in countryOrder.enumerated() {
+            seg.setLabel(code, forSegment: i)
+            seg.setWidth(segWidth, forSegment: i)
+        }
+        seg.selectedSegment = countryOrder.firstIndex(of: selected) ?? 0
+        seg.identifier = NSUserInterfaceItemIdentifier(key)
+        seg.target = self
+        seg.action = #selector(countryChanged(_:))
+        container.addSubview(seg)
+        controlRefs[key] = seg
+
+        return wrap(container)
     }
 
+    /// Solo aparece cuando los dos países difieren: si naciste y vives en el
+    /// mismo sitio, la edad de mudanza no entra en el cálculo (el peso de
+    /// migración es 0), así que enseñar el control sería ofrecer una palanca
+    /// que no está conectada a nada.
     private func moveAgeRow() -> NSMenuItem {
         let container = rowContainer(height: 40)
-        let lbl = label(L("Moved at age"))
+        let lbl = label(L("Since age"))
         lbl.frame = NSRect(x: menuPad, y: 20, width: 220, height: 16)
         container.addSubview(lbl)
 
@@ -686,33 +761,43 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
         return wrap(container)
     }
 
+    /// Seis interruptores: cuántas unidades de la cuenta atrás se ven, más el
+    /// porcentaje y la fecha de muerte. A dos líneas -etiqueta arriba, control
+    /// a todo el ancho abajo- porque seis segmentos no caben en media fila.
     private func displayTogglesRow() -> NSMenuItem {
-        let container = rowContainer(height: 30)
+        let container = rowContainer(height: 48)
         let lbl = label(L("Show in menu bar"))
-        lbl.frame = NSRect(x: menuPad, y: 6, width: 150, height: 18)
+        lbl.frame = NSRect(x: menuPad, y: 28, width: menuInnerWidth, height: 16)
         container.addSubview(lbl)
 
-        let segFrame = NSRect(x: menuWidth - menuPad - 130, y: 3, width: 130, height: 24)
+        let segFrame = NSRect(x: menuPad, y: 3, width: menuInnerWidth, height: 24)
         let seg = NSSegmentedControl(frame: segFrame)
         seg.segmentStyle = .rounded
-        seg.segmentCount = 3
+        seg.segmentCount = 6
         seg.trackingMode = .selectAny
         seg.font = NSFont.systemFont(ofSize: 11)
-        // H/M/S: iniciales de horas/minutos/segundos, iguales en inglés y en
-        // español (hora, minuto, segundo), así que no hace falta localizarlas.
-        let labels = ["H", "M", "S"]
-        for i in 0..<3 {
+        // D/H/M/S: iniciales de días/horas/minutos/segundos, iguales en inglés
+        // y en español (día, hora, minuto, segundo). El % tampoco cambia. Solo
+        // la fecha necesita traducción.
+        let labels = ["D", "H", "M", "S", "%", L("toggle.date")]
+        for i in 0..<labels.count {
             seg.setLabel(labels[i], forSegment: i)
-            seg.setWidth(segFrame.width / 3, forSegment: i)
+            seg.setWidth(segFrame.width / CGFloat(labels.count), forSegment: i)
         }
-        seg.setSelected(profile.showHours, forSegment: 0)
-        seg.setSelected(profile.showMinutes, forSegment: 1)
-        seg.setSelected(profile.showSeconds, forSegment: 2)
         seg.target = self
         seg.action = #selector(displayTogglesChanged(_:))
         container.addSubview(seg)
         displayToggle = seg
+        syncDisplayToggle()
         return wrap(container)
+    }
+
+    private func syncDisplayToggle() {
+        let flags = [profile.showDays, profile.showHours, profile.showMinutes,
+                     profile.showSeconds, profile.showPercent, profile.showDeathDate]
+        for (i, on) in flags.enumerated() {
+            displayToggle?.setSelected(on, forSegment: i)
+        }
     }
 
     // MARK: - Acciones
@@ -724,9 +809,12 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
             currentCountry: "WLD",
             moveAge: 0,
             factors: defaultFactors,
+            showDays: true,
             showHours: true,
             showMinutes: true,
-            showSeconds: true
+            showSeconds: true,
+            showPercent: true,
+            showDeathDate: false
         )
         saveProfile()
         syncControlsToProfile()
@@ -737,20 +825,23 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
     /// mostrado de cada control ya existente.
     private func syncControlsToProfile() {
         let comps = utcCalendar().dateComponents([.day, .month, .year], from: profile.birthDate)
-        for (key, value) in [("birthDay", comps.day), ("birthMonth", comps.month), ("birthYear", comps.year)] {
-            guard let value else { continue }
+        let month = comps.month ?? 1
+        let year = comps.year ?? 1990
+        (controlRefs["birthDay"] as? NSStepper)?.maxValue = Double(daysInMonth(month: month, year: year))
+        for (key, value) in [("birthDay", comps.day ?? 1), ("birthMonth", month), ("birthYear", year)] {
             (controlRefs[key] as? NSStepper)?.integerValue = value
-            valueLabels[key]?.stringValue = String(value)
+            valueLabels[key]?.stringValue = key == "birthMonth" ? monthName(value) : String(value)
         }
 
         for key in ["birthCountry", "currentCountry"] {
             let code = key == "birthCountry" ? profile.birthCountry : profile.currentCountry
-            (controlRefs[key] as? NSSlider)?.doubleValue = Double(countryOrder.firstIndex(of: code) ?? 0)
+            (controlRefs[key] as? NSSegmentedControl)?.selectedSegment = countryOrder.firstIndex(of: code) ?? 0
             valueLabels[key]?.stringValue = countryName(code)
         }
 
         (controlRefs["moveAge"] as? NSSlider)?.doubleValue = profile.moveAge
         valueLabels["moveAge"]?.stringValue = String(Int(profile.moveAge))
+        updateMoveAgeVisibility()
 
         for (key, _) in segmentedFactors {
             guard let seg = controlRefs[key] as? NSSegmentedControl else { continue }
@@ -769,11 +860,12 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
             valueLabels[key]?.stringValue = optionLabel(key, options[idx].value)
         }
 
-        displayToggle?.setSelected(profile.showHours, forSegment: 0)
-        displayToggle?.setSelected(profile.showMinutes, forSegment: 1)
-        displayToggle?.setSelected(profile.showSeconds, forSegment: 2)
-
+        syncDisplayToggle()
         refreshHeader()
+    }
+
+    private func updateMoveAgeVisibility() {
+        moveAgeItem?.isHidden = profile.birthCountry == profile.currentCountry
     }
 
     @objc private func quit() {
@@ -781,12 +873,23 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     @objc private func birthDatePartChanged(_ sender: NSStepper) {
-        guard let key = sender.identifier?.rawValue else { return }
-        valueLabels[key]?.stringValue = String(sender.integerValue)
-
-        let day = (controlRefs["birthDay"] as? NSStepper)?.integerValue ?? 1
+        _ = sender  // los tres steppers se leen juntos desde controlRefs
         let month = (controlRefs["birthMonth"] as? NSStepper)?.integerValue ?? 1
         let year = (controlRefs["birthYear"] as? NSStepper)?.integerValue ?? 1990
+
+        // Al cambiar de mes o de año el tope de días cambia con él, así que se
+        // reajusta el stepper del día y, si el día elegido ya no existe en ese
+        // mes, se recorta a la baja en vez de dejar que la fecha se desplace.
+        let maxDay = daysInMonth(month: month, year: year)
+        let dayStepper = controlRefs["birthDay"] as? NSStepper
+        dayStepper?.maxValue = Double(maxDay)
+        let day = min(dayStepper?.integerValue ?? 1, maxDay)
+        dayStepper?.integerValue = day
+
+        valueLabels["birthDay"]?.stringValue = String(day)
+        valueLabels["birthMonth"]?.stringValue = monthName(month)
+        valueLabels["birthYear"]?.stringValue = String(year)
+
         var comps = DateComponents()
         comps.day = day
         comps.month = month
@@ -797,9 +900,9 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
         refreshHeader()
     }
 
-    @objc private func countrySliderChanged(_ sender: NSSlider) {
+    @objc private func countryChanged(_ sender: NSSegmentedControl) {
         guard let key = sender.identifier?.rawValue else { return }
-        let idx = Int(sender.doubleValue.rounded())
+        let idx = sender.selectedSegment
         guard countryOrder.indices.contains(idx) else { return }
         let code = countryOrder[idx]
         if key == "birthCountry" {
@@ -809,6 +912,7 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         valueLabels[key]?.stringValue = countryName(code)
         saveProfile()
+        updateMoveAgeVisibility()
         refreshHeader()
     }
 
@@ -841,9 +945,12 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     @objc private func displayTogglesChanged(_ sender: NSSegmentedControl) {
-        profile.showHours = sender.isSelected(forSegment: 0)
-        profile.showMinutes = sender.isSelected(forSegment: 1)
-        profile.showSeconds = sender.isSelected(forSegment: 2)
+        profile.showDays = sender.isSelected(forSegment: 0)
+        profile.showHours = sender.isSelected(forSegment: 1)
+        profile.showMinutes = sender.isSelected(forSegment: 2)
+        profile.showSeconds = sender.isSelected(forSegment: 3)
+        profile.showPercent = sender.isSelected(forSegment: 4)
+        profile.showDeathDate = sender.isSelected(forSegment: 5)
         saveProfile()
         refreshHeader()
     }

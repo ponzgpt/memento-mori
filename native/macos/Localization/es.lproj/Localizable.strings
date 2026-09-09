@@ -6,11 +6,14 @@
 "Profile" = "Perfil";
 "Lifestyle" = "Estilo de vida";
 
-/* Campos de perfil */
-"Birth date" = "Fecha de nacimiento";
-"Born" = "Nacido en";
+/* Campos de perfil. Las cuatro filas se leen como una frase, en este orden:
+   "Nació el 15 de noviembre de 1990 / Nació en ESP / Vive en GBR / Desde los
+   28". Los nombres de los meses no están aquí: los pone el propio sistema con
+   standaloneMonthSymbols, ya traducidos. */
+"Born on" = "Nació el";
+"Born in" = "Nació en";
 "Living in" = "Vive en";
-"Moved at age" = "Se mudó a los";
+"Since age" = "Desde los";
 
 /* Etiquetas de los campos de estilo de vida */
 "Sex" = "Sexo";
@@ -59,6 +62,10 @@
 "Japan" = "Japón";
 "India" = "India";
 "Brazil" = "Brasil";
+
+/* Interruptores de lo que se ve en la barra. D/H/M/S y % no necesitan
+   traducción; solo el segmento de la fecha de muerte. */
+"toggle.date" = "Fecha";
 
 /* Acciones del menú */
 "Show in menu bar" = "Mostrar en la barra";
