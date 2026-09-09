@@ -23,7 +23,12 @@ for (const id of new Set(storyIds)) {
 
 assert.match(html, /id="profile-form"/);
 assert.match(html, /id="birth-date"[^>]+type="date"/);
-assert.match(html, /id="country"/);
+assert.match(html, /id="birth-country"/);
+assert.match(html, /id="current-country"/);
+assert.match(html, /id="move-age"/);
+for (const key of ["sex", "sleep", "exercise", "drinking", "smoking", "health"]) {
+  assert.match(html, new RegExp(`id="factor-${key}"`));
+}
 assert.match(main, /validateBirthDate/);
 assert.match(main, /calculateEstimate/);
 
@@ -70,5 +75,10 @@ assert.doesNotMatch(copiedSummary[1], /birthDate|birth-date/);
 assert.match(requirements, /Add no backend, database, authentication, payment/);
 assert.doesNotMatch(html, /<script[^>]+https?:\/\//);
 assert.doesNotMatch(html, /analytics|tracking|pixel/i);
+
+// La web es la demo, el widget es el producto: la página tiene que apuntar
+// al repositorio para que quien pruebe la web pueda instalarlo.
+assert.match(html, /id="descargar"/);
+assert.match(html, /github\.com\/ponzgpt\/memento-mori/);
 
 console.log("feature stories passed");

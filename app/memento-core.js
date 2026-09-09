@@ -15,6 +15,20 @@ export const BASELINES = {
 export const SOURCE_NOTE =
   "World Bank WDI SP.DYN.LE00.IN, 2024 values, API last updated 2026-04-08. This is a population-period statistic, not an individual prediction.";
 
+// Same six factors, same values, same defaults as the native widget
+// (native/macos/MementoMoriMenuBar.swift, factorOptions/defaultFactors): the
+// web app is a demo of the exact same model, not a separate one. No "skip" —
+// every factor has a real default, matching the widget's decision to ask for
+// a real answer rather than let people dodge one.
+export const DEFAULT_FACTORS = {
+  sex: "male",
+  sleep: "stable",
+  exercise: "moderate",
+  drinking: "light",
+  smoking: "never",
+  health: "none"
+};
+
 export const DEFAULT_PROFILE = {
   birthDate: "1990-01-01",
   country: "WLD",
@@ -22,17 +36,16 @@ export const DEFAULT_PROFILE = {
   currentCountry: "WLD",
   moveAge: 0,
   skin: "system-light",
-  sex: "skip",
-  sleep: "skip",
-  exercise: "skip",
-  drinking: "skip",
-  smoking: "skip",
-  health: "skip"
+  ...DEFAULT_FACTORS
 };
 
 export const WEB_DEFAULT_PROFILE = {
   birthDate: "",
-  country: "WLD"
+  country: "WLD",
+  birthCountry: "WLD",
+  currentCountry: "WLD",
+  moveAge: 0,
+  ...DEFAULT_FACTORS
 };
 
 export const PERSPECTIVE_MARGIN_YEARS = 7;
@@ -41,36 +54,38 @@ export const FACTOR_KEYS = ["sex", "sleep", "exercise", "drinking", "smoking", "
 
 export const CUSTOM_OFFSETS = {
   sex: {
-    female: { years: 3.1, label: "Female life tables tend to run higher" },
     male: { years: -2.4, label: "Male life tables tend to run lower" },
-    skip: { years: 0, label: "Skipped" }
+    female: { years: 3.1, label: "Female life tables tend to run higher" }
   },
   sleep: {
     stable: { years: 1, label: "Stable sleep adjustment" },
-    irregular: { years: -1.2, label: "Irregular sleep adjustment" },
-    skip: { years: 0, label: "Skipped" }
+    irregular: { years: -1.2, label: "Irregular sleep adjustment" }
   },
   exercise: {
-    regular: { years: 2, label: "Regular exercise adjustment" },
-    low: { years: -2, label: "Low exercise adjustment" },
-    skip: { years: 0, label: "Skipped" }
+    sedentary: { years: -2.5, label: "Sedentary exercise adjustment" },
+    light: { years: -0.6, label: "Light exercise adjustment" },
+    moderate: { years: 0.8, label: "Moderate exercise adjustment" },
+    regular: { years: 2.0, label: "Regular exercise adjustment" },
+    athletic: { years: 3.4, label: "Athletic exercise adjustment" }
   },
   drinking: {
-    low: { years: 0.4, label: "Low alcohol adjustment" },
-    high: { years: -2.2, label: "High alcohol adjustment" },
-    skip: { years: 0, label: "Skipped" }
+    none: { years: 0.6, label: "No alcohol adjustment" },
+    light: { years: 0.3, label: "Light alcohol adjustment" },
+    moderate: { years: -0.9, label: "Moderate alcohol adjustment" },
+    frequent: { years: -2.1, label: "Frequent alcohol adjustment" },
+    heavy: { years: -3.8, label: "Heavy alcohol adjustment" }
   },
   smoking: {
-    none: { years: 1.2, label: "No smoking adjustment" },
+    never: { years: 1.2, label: "Never smoked adjustment" },
     former: { years: 0.4, label: "Former smoker adjustment" },
-    current: { years: -4.5, label: "Current smoking risk adjustment" },
-    skip: { years: 0, label: "Skipped" }
+    occasional: { years: -1.6, label: "Occasional smoking adjustment" },
+    regular: { years: -3.3, label: "Regular smoking adjustment" },
+    heavy: { years: -5.6, label: "Heavy smoking adjustment" }
   },
   health: {
     none: { years: 1, label: "No known managed condition adjustment" },
     managed: { years: -1, label: "Managed condition adjustment" },
-    serious: { years: -4, label: "Serious condition adjustment" },
-    skip: { years: 0, label: "Skipped" }
+    serious: { years: -4, label: "Serious condition adjustment" }
   }
 };
 
@@ -169,8 +184,8 @@ export function buildResidenceBaseline(profile, ageYears = 0) {
 
 export function calculateCustomOffset(profile) {
   const details = FACTOR_KEYS.map((key) => {
-    const value = profile[key] || "skip";
-    const entry = CUSTOM_OFFSETS[key][value] || CUSTOM_OFFSETS[key].skip;
+    const value = profile[key] || DEFAULT_FACTORS[key];
+    const entry = CUSTOM_OFFSETS[key][value] || CUSTOM_OFFSETS[key][DEFAULT_FACTORS[key]];
     return { key, value, years: entry.years, label: entry.label };
   });
 

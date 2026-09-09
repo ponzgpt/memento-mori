@@ -93,9 +93,8 @@ For signed native releases, add platform-specific smoke tests:
 
 - Install on a clean account.
 - Launch the tray/menu/widget surface.
-- Confirm the countdown includes seconds.
-- Toggle bone/ash and onyx.
-- Open and edit the settings panel.
+- Confirm the countdown includes seconds and that the display toggles (days/hours/minutes/seconds/percent/death date) change what the bar shows.
+- Edit Profile and Lifestyle from the contextual menu itself — there is no separate settings window to open.
 - Confirm profile data stays local.
 - Uninstall and confirm installed files are removed.
 - Verify checksums against `SHA256SUMS`.

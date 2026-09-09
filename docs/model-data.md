@@ -1,6 +1,6 @@
 # Model Data
 
-This file lists the deterministic values used by the local calculation model in the 1.0.0 release.
+This file lists the deterministic values used by the local calculation model, shared by the web app and the native widget.
 
 The values are intentionally small enough to audit by reading the source. They are not a clinical model, an actuarial model, an insurance score, or medical advice.
 
@@ -35,24 +35,34 @@ If the current residence is the same as the birth country, the move age is inval
 
 ## Local Offsets
 
-Selected rows add fixed local offsets to the selected population baseline. Unselected rows are `skip` and add `0`.
+Every factor requires a real answer -- there is no "skip" or neutral option, in the web app or the widget. First-run defaults are marked below; they are the typical answer on each scale, not necessarily the best one.
 
-| Row | Value | Years | Label |
-| --- | --- | ---: | --- |
-| sex | female | 3.1 | Female life tables tend to run higher |
-| sex | male | -2.4 | Male life tables tend to run lower |
-| sleep | stable | 1 | Stable sleep adjustment |
-| sleep | irregular | -1.2 | Irregular sleep adjustment |
-| exercise | regular | 2 | Regular exercise adjustment |
-| exercise | low | -2 | Low exercise adjustment |
-| drinking | low | 0.4 | Low alcohol adjustment |
-| drinking | high | -2.2 | High alcohol adjustment |
-| smoking | none | 1.2 | No smoking adjustment |
-| smoking | former | 0.4 | Former smoker adjustment |
-| smoking | current | -4.5 | Current smoking risk adjustment |
-| health | none | 1 | No known managed condition adjustment |
-| health | managed | -1 | Managed condition adjustment |
-| health | serious | -4 | Serious condition adjustment |
+| Row | Value | Years | Label | Default |
+| --- | --- | ---: | --- | :---: |
+| sex | male | -2.4 | Male life tables tend to run lower | ✓ |
+| sex | female | 3.1 | Female life tables tend to run higher | |
+| sleep | stable | 1 | Stable sleep adjustment | ✓ |
+| sleep | irregular | -1.2 | Irregular sleep adjustment | |
+| exercise | sedentary | -2.5 | Sedentary exercise adjustment | |
+| exercise | light | -0.6 | Light exercise adjustment | |
+| exercise | moderate | 0.8 | Moderate exercise adjustment | ✓ |
+| exercise | regular | 2.0 | Regular exercise adjustment | |
+| exercise | athletic | 3.4 | Athletic exercise adjustment | |
+| drinking | none | 0.6 | No alcohol adjustment | |
+| drinking | light | 0.3 | Light alcohol adjustment | ✓ |
+| drinking | moderate | -0.9 | Moderate alcohol adjustment | |
+| drinking | frequent | -2.1 | Frequent alcohol adjustment | |
+| drinking | heavy | -3.8 | Heavy alcohol adjustment | |
+| smoking | never | 1.2 | Never smoked adjustment | ✓ |
+| smoking | former | 0.4 | Former smoker adjustment | |
+| smoking | occasional | -1.6 | Occasional smoking adjustment | |
+| smoking | regular | -3.3 | Regular smoking adjustment | |
+| smoking | heavy | -5.6 | Heavy smoking adjustment | |
+| health | none | 1 | No known managed condition adjustment | ✓ |
+| health | managed | -1 | Managed condition adjustment | |
+| health | serious | -4 | Serious condition adjustment | |
+
+These values are identical in `app/memento-core.js` (`CUSTOM_OFFSETS`) and `native/macos/MementoMoriMenuBar.swift` (`factorOptions`) -- the two implementations are kept numerically in sync by hand, checked by `tests/memento-core.test.mjs` on the web side.
 
 ## Clamp
 

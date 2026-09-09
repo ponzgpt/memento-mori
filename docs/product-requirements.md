@@ -1,12 +1,12 @@
 # Web Product Requirements
 
-Decision date: 2026-08-01.
+Decision date: 2026-08-01. Superseded 2026-09-09: the native menu-bar/Waybar widget is the primary product; this document now covers the web app's role as its online demo, not a competing product.
 
 ## Product job
 
 Memento Mori turns an abstract fact -- life is finite -- into a private, understandable perspective that helps a person decide what deserves attention today.
 
-The web app is not a gallery of operating-system widgets. It is the primary product. A visitor should be able to enter two pieces of context, understand the estimate, see their time at human scale, and write one concrete intention without creating an account.
+The widget -- native menu bar on macOS and Windows, Waybar on Linux -- is the primary product: it lives in the OS the user already looks at, with no tab to keep open. The web app is its demo and download funnel: a visitor enters the same context the widget asks for, sees the exact same model compute their estimate, and can then install the widget to get the same result without the browser. It is not a lesser or parallel calculation -- see `docs/model-data.md` for the shared model both surfaces run.
 
 ## User problem
 
@@ -14,18 +14,21 @@ People know time is limited but experience that limit as an abstraction. The res
 
 ## Primary flow
 
-1. Enter birth date and country context.
+1. Enter birth date, country context, and the same six lifestyle factors the widget asks for.
 2. Receive a clearly labelled population-based horizon and a broad uncertainty range.
 3. See time lived and remaining as years, weeks, days, and a life grid.
 4. Write one intention for today.
 5. Return later on the same device and find the profile and intention preserved locally.
+6. Optionally install the native widget so the same estimate lives in the OS instead of a browser tab.
 
 ## Functional requirements
 
 - Spanish-first, responsive, keyboard-accessible single-page web app.
 - Birth date validation: required, real calendar date, not in the future, plausible age.
-- Country baseline selected from the documented World Bank WDI snapshot.
+- Birth country and, optionally, a different current country plus the age moved, selected from the documented World Bank WDI snapshot -- same fields, same blend formula as the widget.
+- The same six lifestyle factors as the widget (sex, sleep, exercise, drinking, smoking, health), same values, same defaults -- see `docs/model-data.md`.
 - Central horizon date plus an explicit `+/- 7 years` perspective range.
+- A visible path to install the native widget for each supported platform.
 - Remaining years, weeks, and days calculated from the same deterministic core.
 - Life progress displayed numerically and as an accessible year grid.
 - A daily intention can be saved, edited, completed, or cleared.
@@ -44,7 +47,7 @@ People know time is limited but experience that limit as an abstraction. The res
 
 ## Technical constraints
 
-- Reuse the small calculation core where it remains honest; remove unsupported lifestyle offsets from the web flow.
+- `app/memento-core.js` (web, JavaScript) and `native/macos/MementoMoriMenuBar.swift` (widget, Swift) cannot literally share code across languages, so they carry the population baselines and the six lifestyle-factor tables as two independent, hand-kept-identical copies. A change to one model's values is not done until the other is updated to match -- `tests/memento-core.test.mjs` pins the web side's numbers, so a silent drift fails the test suite rather than the user's trust.
 - Keep the deployed app static and client-only because the required state is device-local.
 - Preserve the existing Docker/nginx path and VPS reverse proxy so the public URL remains stable.
 - Add no backend, database, authentication, payment, or third-party runtime dependency without a user need.

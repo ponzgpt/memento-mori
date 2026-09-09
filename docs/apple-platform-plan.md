@@ -31,11 +31,13 @@ The Apple version should follow the same product discipline as the Linux widget:
 
 ## Design Rules
 
-- Widgets must be glanceable: `MM`, countdown, and integrated progress only.
-- The setup panel is a single page: birth date, birth country, living country, since age, and checkbox rows.
-- Reflection popups show only the phrase.
-- Built-in skins stay limited to `system-light` and `system-dark`.
-- OS bars and contextual menus should match the selected skin while preserving platform-specific shapes and workflows.
-- Contextual menus expose one palette toggle: bone and ash with a minimal skull icon, and onyx with a minimal half-burnt candle icon.
-- Logo imagery should avoid skull-and-crossbones. Use a quiet bone-hourglass emblem inspired by classical memento mori motifs such as hourglasses, candles, books, still-life skull studies, and wilting flowers.
-- Cross-platform previews should cover Linux, Windows, macOS, iOS app icon, and iOS widgets.
+These follow the shipped macOS menu-bar app (`native/macos/MementoMoriMenuBar.swift`); the iOS app should carry the same rules over to WidgetKit, not invent its own.
+
+- Widgets must be glanceable: the skull glyph plus a countdown, with percent and death date as opt-in additions — see Display below.
+- No separate settings window. Every control (profile, lifestyle, display toggles) lives inside the same contextual menu the countdown appears in.
+- The menu bar reads as one sentence: fecha de nacimiento, país de nacimiento, país de residencia, y desde qué edad — not four unrelated settings.
+- Reflection quotes shown on menu open are text only, no ornamentation.
+- No skin or palette selector. One emblem, tinted automatically by the OS's own light/dark appearance (`NSImage.isTemplate`), not chosen by the user.
+- The emblem is a minimal skull: cranium, jaw, eye sockets, nose, one tooth notch — no skull-and-crossbones, no candle, no hourglass icon. The canonical geometry lives in `native/macos/MementoMoriMenuBar.swift` (`skullImage`) and is mirrored in `assets/skull.svg` for other platforms' exports.
+- Display is user-controlled per unit: days, hours, minutes, seconds, percent elapsed, and death date each toggle independently in the bar; the open menu always shows all of them regardless of the toggles, since toggles govern the bar only.
+- Cross-platform previews should cover Linux, Windows, macOS, iOS app icon, and iOS widgets, all rendering the same skull glyph.

@@ -632,6 +632,59 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // Banco Mundial -que es la fuente del dato- y el nombre completo del
     // seleccionado se lee a la derecha de la etiqueta.
 
+    // makeSegmentedControl y makeSlider concentran la configuración que
+    // countryRow/segmentedFactorRow y moveAgeRow/sliderFactorRow repetían
+    // cada una por su lado (estilo, reparto de ancho, identifier,
+    // target/action, alta en controlRefs): antes cualquier fila nueva tenía
+    // que copiar ese bloque entero para no olvidarse de una línea.
+
+    @discardableResult
+    private func makeSegmentedControl(frame: NSRect, labels: [String], selectedIndex: Int,
+                                      fontSize: CGFloat, key: String, action: Selector,
+                                      container: NSView) -> NSSegmentedControl {
+        let seg = NSSegmentedControl(frame: frame)
+        seg.segmentStyle = .rounded
+        seg.segmentCount = labels.count
+        seg.trackingMode = .selectOne
+        seg.font = NSFont.systemFont(ofSize: fontSize)
+        let segWidth = frame.width / CGFloat(labels.count)
+        for (i, text) in labels.enumerated() {
+            seg.setLabel(text, forSegment: i)
+            seg.setWidth(segWidth, forSegment: i)
+        }
+        if labels.indices.contains(selectedIndex) {
+            seg.selectedSegment = selectedIndex
+        }
+        seg.identifier = NSUserInterfaceItemIdentifier(key)
+        seg.target = self
+        seg.action = action
+        container.addSubview(seg)
+        controlRefs[key] = seg
+        return seg
+    }
+
+    @discardableResult
+    private func makeSlider(frame: NSRect, minValue: Double, maxValue: Double, value: Double,
+                            tickMarks: Int? = nil, key: String, action: Selector,
+                            container: NSView) -> NSSlider {
+        let slider = NSSlider(frame: frame)
+        slider.minValue = minValue
+        slider.maxValue = maxValue
+        slider.isContinuous = true
+        slider.doubleValue = value
+        if let tickMarks {
+            slider.numberOfTickMarks = tickMarks
+            slider.allowsTickMarkValuesOnly = true
+            slider.tickMarkPosition = .below
+        }
+        slider.identifier = NSUserInterfaceItemIdentifier(key)
+        slider.target = self
+        slider.action = action
+        container.addSubview(slider)
+        controlRefs[key] = slider
+        return slider
+    }
+
     private func countryRow(labelKey: String, key: String, selected: String) -> NSMenuItem {
         let container = rowContainer(height: 46)
 
@@ -647,23 +700,9 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
         container.addSubview(valueLabel)
         valueLabels[key] = valueLabel
 
-        let segFrame = NSRect(x: menuPad, y: 3, width: menuInnerWidth, height: 22)
-        let seg = NSSegmentedControl(frame: segFrame)
-        seg.segmentStyle = .rounded
-        seg.segmentCount = countryOrder.count
-        seg.trackingMode = .selectOne
-        seg.font = NSFont.systemFont(ofSize: 10)
-        let segWidth = segFrame.width / CGFloat(countryOrder.count)
-        for (i, code) in countryOrder.enumerated() {
-            seg.setLabel(code, forSegment: i)
-            seg.setWidth(segWidth, forSegment: i)
-        }
-        seg.selectedSegment = countryOrder.firstIndex(of: selected) ?? 0
-        seg.identifier = NSUserInterfaceItemIdentifier(key)
-        seg.target = self
-        seg.action = #selector(countryChanged(_:))
-        container.addSubview(seg)
-        controlRefs[key] = seg
+        makeSegmentedControl(frame: NSRect(x: menuPad, y: 3, width: menuInnerWidth, height: 22),
+                             labels: countryOrder, selectedIndex: countryOrder.firstIndex(of: selected) ?? 0,
+                             fontSize: 10, key: key, action: #selector(countryChanged(_:)), container: container)
 
         return wrap(container)
     }
@@ -684,16 +723,9 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
         container.addSubview(valueLabel)
         valueLabels["moveAge"] = valueLabel
 
-        let slider = NSSlider(frame: NSRect(x: menuPad, y: 2, width: menuInnerWidth, height: 18))
-        slider.minValue = 0
-        slider.maxValue = 90
-        slider.isContinuous = true
-        slider.doubleValue = profile.moveAge
-        slider.identifier = NSUserInterfaceItemIdentifier("moveAge")
-        slider.target = self
-        slider.action = #selector(moveAgeSliderChanged(_:))
-        container.addSubview(slider)
-        controlRefs["moveAge"] = slider
+        makeSlider(frame: NSRect(x: menuPad, y: 2, width: menuInnerWidth, height: 18),
+                  minValue: 0, maxValue: 90, value: profile.moveAge,
+                  key: "moveAge", action: #selector(moveAgeSliderChanged(_:)), container: container)
 
         return wrap(container)
     }
@@ -705,26 +737,12 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
         lbl.frame = NSRect(x: menuPad, y: 6, width: 90, height: 18)
         container.addSubview(lbl)
 
-        let segFrame = NSRect(x: menuPad + 90, y: 3, width: menuInnerWidth - 90, height: 24)
-        let seg = NSSegmentedControl(frame: segFrame)
-        seg.segmentStyle = .rounded
-        seg.segmentCount = options.count
-        seg.trackingMode = .selectOne
-        seg.font = NSFont.systemFont(ofSize: 11)
-        let segWidth = segFrame.width / CGFloat(options.count)
-        for (i, opt) in options.enumerated() {
-            seg.setLabel(optionLabel(key, opt.value), forSegment: i)
-            seg.setWidth(segWidth, forSegment: i)
-        }
         let selected = profile.factors[key] ?? defaultFactors[key]
-        if let idx = options.firstIndex(where: { $0.value == selected }) {
-            seg.selectedSegment = idx
-        }
-        seg.identifier = NSUserInterfaceItemIdentifier(key)
-        seg.target = self
-        seg.action = #selector(segmentedFactorChanged(_:))
-        container.addSubview(seg)
-        controlRefs[key] = seg
+        let selectedIdx = options.firstIndex(where: { $0.value == selected }) ?? 0
+        makeSegmentedControl(frame: NSRect(x: menuPad + 90, y: 3, width: menuInnerWidth - 90, height: 24),
+                             labels: options.map { optionLabel(key, $0.value) }, selectedIndex: selectedIdx,
+                             fontSize: 11, key: key, action: #selector(segmentedFactorChanged(_:)),
+                             container: container)
         return wrap(container)
     }
 
@@ -744,19 +762,10 @@ final class MementoApp: NSObject, NSApplicationDelegate, NSMenuDelegate {
         container.addSubview(valueLabel)
         valueLabels[key] = valueLabel
 
-        let slider = NSSlider(frame: NSRect(x: menuPad, y: 4, width: menuInnerWidth, height: 20))
-        slider.minValue = 0
-        slider.maxValue = Double(options.count - 1)
-        slider.numberOfTickMarks = options.count
-        slider.allowsTickMarkValuesOnly = true
-        slider.tickMarkPosition = .below
-        slider.isContinuous = true
-        slider.doubleValue = Double(selectedIdx)
-        slider.identifier = NSUserInterfaceItemIdentifier(key)
-        slider.target = self
-        slider.action = #selector(sliderFactorChanged(_:))
-        container.addSubview(slider)
-        controlRefs[key] = slider
+        makeSlider(frame: NSRect(x: menuPad, y: 4, width: menuInnerWidth, height: 20),
+                  minValue: 0, maxValue: Double(options.count - 1), value: Double(selectedIdx),
+                  tickMarks: options.count, key: key, action: #selector(sliderFactorChanged(_:)),
+                  container: container)
 
         return wrap(container)
     }

@@ -4,7 +4,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
-const textFiles = [];
+const allFiles = [];
 
 function walk(directory) {
   for (const entry of readdirSync(directory)) {
@@ -14,14 +14,26 @@ function walk(directory) {
     const path = join(directory, entry);
     if (statSync(path).isDirectory()) {
       walk(path);
-    } else if (!/\.(png|jpg|jpeg|gif|webp|woff2?)$/i.test(entry)) {
-      textFiles.push(path);
+    } else {
+      allFiles.push(path);
     }
   }
 }
 
+// Binario si aparece un byte NUL en los primeros 8000 bytes: el mismo
+// heurístico que usa git. Una lista de extensiones se queda corta en cuanto
+// aparece un formato nuevo (.ico rompió esto una vez); comprobar el
+// contenido en vez de la extensión no depende de mantener esa lista.
+function isBinary(path) {
+  const buffer = readFileSync(path);
+  return buffer.subarray(0, 8000).includes(0);
+}
+
 walk(root);
-for (const path of textFiles) {
+for (const path of allFiles) {
+  if (isBinary(path)) {
+    continue;
+  }
   const content = readFileSync(path, "utf8");
   const invalid = Array.from(content).find((character) => {
     const code = character.codePointAt(0);
@@ -41,7 +53,9 @@ assert.match(html, new RegExp(`main\\.js\\?v=${pkg.version.replaceAll(".", "\\."
 assert.equal((html.match(/<h1/g) || []).length, 1, "the page needs one h1");
 assert.doesNotMatch(html, /<svg\b/i, "the final web app should not contain inline SVG artwork");
 assert.doesNotMatch(`${html}\n${main}`, /component workbench|preview harness|teleprompter/i);
-assert.doesNotMatch(`${html}\n${main}`, /lifestyle offset|smoking|drinking|health condition/i);
+// El widget es el producto principal; la web es su demo online y usa
+// deliberadamente el mismo modelo, factores de estilo de vida incluidos
+// (ver docs/product-requirements.md). Ya no se prohíben aquí.
 assert.match(html, /og\.png/);
 assert.match(main, /PROFILE_STORAGE_KEY/);
 assert.match(main, /INTENTION_STORAGE_KEY/);

@@ -29,6 +29,7 @@
         <a href="#calculadora">Calcular</a>
         <a href="#perspectiva">Perspectiva</a>
         <a href="#metodo">Método</a>
+        <a href="#descargar">Descargar</a>
       </nav>
     </header>
 
@@ -42,7 +43,7 @@
           </p>
           <div class="hero-actions">
             <a class="button primary" href="#calculadora">Ver mi horizonte</a>
-            <a class="text-link" href="#metodo">Cómo se calcula</a>
+            <a class="text-link" href="#descargar">Llevarlo a la barra de menús</a>
           </div>
           <p class="privacy-note"><span aria-hidden="true">●</span> Sin cuenta, sin anuncios y sin enviar tus datos.</p>
         </div>
@@ -62,7 +63,7 @@
       <section class="calculator-section" id="calculadora" aria-labelledby="calculator-title">
         <div class="section-heading">
           <p class="eyebrow">01 · Sitúa el horizonte</p>
-          <h2 id="calculator-title">Dos datos. Una perspectiva.</h2>
+          <h2 id="calculator-title">Tu contexto. Una perspectiva.</h2>
           <p>Usamos una referencia poblacional amplia. El resultado es deliberadamente aproximado y se presenta con un rango, no como una predicción individual.</p>
         </div>
 
@@ -81,9 +82,75 @@
             <p class="field-help" id="birth-help">Se utiliza únicamente para situar el tiempo vivido.</p>
             <p class="field-error" id="birth-error" role="alert" hidden></p>
 
-            <label for="country">País de referencia</label>
-            <select id="country" name="country" required aria-describedby="country-help"></select>
-            <p class="field-help" id="country-help">Referencia de esperanza de vida poblacional publicada por World Bank WDI.</p>
+            <label for="birth-country">País de nacimiento</label>
+            <select id="birth-country" name="birthCountry" required aria-describedby="birth-country-help"></select>
+            <p class="field-help" id="birth-country-help">Referencia de esperanza de vida poblacional publicada por World Bank WDI.</p>
+
+            <label class="checkbox-row" for="moved-country">
+              <input id="moved-country" name="movedCountry" type="checkbox">
+              He vivido en más de un país
+            </label>
+
+            <div data-move-fields hidden>
+              <label for="current-country">País de residencia actual</label>
+              <select id="current-country" name="currentCountry" aria-describedby="current-country-help"></select>
+              <p class="field-help" id="current-country-help">La referencia se mezcla gradualmente hacia este país a partir de la edad de mudanza.</p>
+
+              <label for="move-age">Desde qué edad</label>
+              <input id="move-age" name="moveAge" type="number" min="0" max="90" step="1" value="0">
+              <p class="field-help" id="move-age-help">Edad a la que empezaste a vivir en el país de residencia actual.</p>
+            </div>
+
+            <fieldset class="lifestyle-fields">
+              <legend>Estilo de vida</legend>
+              <p class="field-help">Los mismos seis factores que usa el widget de escritorio, con los mismos valores.</p>
+
+              <label for="factor-sex">Sexo</label>
+              <select id="factor-sex" name="sex" data-factor="sex" required>
+                <option value="male">Hombre</option>
+                <option value="female">Mujer</option>
+              </select>
+
+              <label for="factor-sleep">Sueño</label>
+              <select id="factor-sleep" name="sleep" data-factor="sleep" required>
+                <option value="stable">Estable</option>
+                <option value="irregular">Irregular</option>
+              </select>
+
+              <label for="factor-exercise">Ejercicio</label>
+              <select id="factor-exercise" name="exercise" data-factor="exercise" required>
+                <option value="sedentary">Sedentario</option>
+                <option value="light">Ligero</option>
+                <option value="moderate">Moderado</option>
+                <option value="regular">Regular</option>
+                <option value="athletic">Atlético</option>
+              </select>
+
+              <label for="factor-drinking">Alcohol</label>
+              <select id="factor-drinking" name="drinking" data-factor="drinking" required>
+                <option value="none">Nada</option>
+                <option value="light">Ligero</option>
+                <option value="moderate">Moderado</option>
+                <option value="frequent">Frecuente</option>
+                <option value="heavy">Alto</option>
+              </select>
+
+              <label for="factor-smoking">Tabaco</label>
+              <select id="factor-smoking" name="smoking" data-factor="smoking" required>
+                <option value="never">Nunca</option>
+                <option value="former">Ex-fumador</option>
+                <option value="occasional">Ocasional</option>
+                <option value="regular">Habitual</option>
+                <option value="heavy">Intensivo</option>
+              </select>
+
+              <label for="factor-health">Salud</label>
+              <select id="factor-health" name="health" data-factor="health" required>
+                <option value="none">Bien</option>
+                <option value="managed">Controlada</option>
+                <option value="serious">Grave</option>
+              </select>
+            </fieldset>
 
             <button class="button primary full" type="submit">Calcular mi perspectiva</button>
             <button class="button quiet full" type="button" data-reset hidden>Borrar mis datos</button>
@@ -201,7 +268,7 @@
           <article>
             <span>02</span>
             <h3>Cálculo transparente</h3>
-            <p>Fecha de nacimiento + referencia del país = horizonte central. Añadimos ±7 años para evitar presentar una certeza inexistente.</p>
+            <p>Fecha de nacimiento + referencia del país + seis factores de estilo de vida = horizonte central. Añadimos ±7 años para evitar presentar una certeza inexistente.</p>
           </article>
           <article>
             <span>03</span>
@@ -214,6 +281,37 @@
             <p>No es una predicción individual ni consejo médico, actuarial, de seguros, legal o de salud mental.</p>
           </article>
         </div>
+      </section>
+
+      <section class="download-section" id="descargar" aria-labelledby="download-title">
+        <div class="section-heading">
+          <p class="eyebrow">04 · Llévalo contigo</p>
+          <h2 id="download-title">Esta página es la demo. El widget es el producto.</h2>
+          <p>Aquí pruebas el mismo modelo con tus propios datos. Instalado, vive en tu barra de menús o Waybar y cuenta en segundo plano sin depender de tener esta pestaña abierta.</p>
+        </div>
+
+        <div class="method-grid">
+          <article>
+            <span>macOS</span>
+            <h3>Barra de menús</h3>
+            <p>Instalación desde el código fuente, sin firma ni notarización todavía.</p>
+            <a class="text-link" href="https://github.com/ponzgpt/memento-mori#macos" rel="noreferrer">Ver instrucciones</a>
+          </article>
+          <article>
+            <span>Windows</span>
+            <h3>Bandeja del sistema</h3>
+            <p>Acceso directo en el menú de inicio, instalado con PowerShell.</p>
+            <a class="text-link" href="https://github.com/ponzgpt/memento-mori#windows-11" rel="noreferrer">Ver instrucciones</a>
+          </article>
+          <article>
+            <span>Linux</span>
+            <h3>Módulo Waybar</h3>
+            <p>Script Python y estilo de ejemplo para tu barra.</p>
+            <a class="text-link" href="https://github.com/ponzgpt/memento-mori#linux" rel="noreferrer">Ver instrucciones</a>
+          </article>
+        </div>
+
+        <p class="privacy-note"><a class="button quiet" href="https://github.com/ponzgpt/memento-mori" rel="noreferrer">Código fuente en GitHub</a></p>
       </section>
 
       <section class="closing-section" aria-labelledby="closing-title">

@@ -1,6 +1,7 @@
 import {
   BASELINES,
-  DEFAULT_PROFILE,
+  DEFAULT_FACTORS,
+  FACTOR_KEYS,
   WEB_DEFAULT_PROFILE,
   calculateEstimate,
   clamp,
@@ -36,7 +37,12 @@ const elements = {
   profileForm: required("#profile-form"),
   birthDate: required("#birth-date"),
   birthError: required("#birth-error"),
-  country: required("#country"),
+  birthCountry: required("#birth-country"),
+  movedCountry: required("#moved-country"),
+  moveFields: required("[data-move-fields]"),
+  currentCountry: required("#current-country"),
+  moveAge: required("#move-age"),
+  factors: Object.fromEntries(FACTOR_KEYS.map((key) => [key, required(`#factor-${key}`)])),
   reset: required("[data-reset]"),
   emptyResult: required("[data-empty-result]"),
   result: required("[data-result]"),
@@ -138,23 +144,39 @@ function showToast(message) {
 }
 
 function hydrateCountries() {
-  elements.country.replaceChildren();
-  for (const [code, baseline] of Object.entries(BASELINES)) {
-    const option = document.createElement("option");
-    option.value = code;
-    option.textContent = `${COUNTRY_LABELS[code] || baseline.label} · ${baseline.years.toFixed(1)} años`;
-    elements.country.append(option);
+  for (const select of [elements.birthCountry, elements.currentCountry]) {
+    select.replaceChildren();
+    for (const [code, baseline] of Object.entries(BASELINES)) {
+      const option = document.createElement("option");
+      option.value = code;
+      option.textContent = `${COUNTRY_LABELS[code] || baseline.label} · ${baseline.years.toFixed(1)} años`;
+      select.append(option);
+    }
   }
 }
 
+// El país de residencia y la edad de mudanza solo importan si de verdad
+// difieren del país de nacimiento; ocultarlos por defecto evita ofrecer una
+// palanca que no está conectada a nada (misma decisión que en el widget).
+function updateMoveFieldsVisibility() {
+  elements.moveFields.hidden = !elements.movedCountry.checked;
+}
+
 function profileForEstimate() {
-  const country = elements.country.value || WEB_DEFAULT_PROFILE.country;
+  const birthCountry = elements.birthCountry.value || WEB_DEFAULT_PROFILE.birthCountry;
+  const movedCountry = elements.movedCountry.checked;
+  const currentCountry = movedCountry ? elements.currentCountry.value || birthCountry : birthCountry;
+  const moveAge = movedCountry ? Number.parseFloat(elements.moveAge.value) || 0 : 0;
+  const factors = Object.fromEntries(
+    FACTOR_KEYS.map((key) => [key, elements.factors[key].value || DEFAULT_FACTORS[key]])
+  );
   return {
-    ...DEFAULT_PROFILE,
     birthDate: elements.birthDate.value,
-    country,
-    birthCountry: country,
-    currentCountry: country
+    country: birthCountry,
+    birthCountry,
+    currentCountry,
+    moveAge,
+    ...factors
   };
 }
 
@@ -249,10 +271,7 @@ function calculateAndRender({ persist = true, announce = false } = {}) {
   const estimate = calculateEstimate(profile, now);
   renderEstimate(estimate, now);
   if (persist) {
-    writeStorage(PROFILE_STORAGE_KEY, {
-      birthDate: profile.birthDate,
-      country: profile.country
-    });
+    writeStorage(PROFILE_STORAGE_KEY, profile);
   }
   if (announce) {
     showToast("Perspectiva calculada y guardada en este dispositivo.");
@@ -274,13 +293,31 @@ function renderIntention(value) {
   );
 }
 
+function applyProfileToForm(storedProfile) {
+  elements.birthDate.value = typeof storedProfile.birthDate === "string" ? storedProfile.birthDate : "";
+  elements.birthCountry.value = BASELINES[storedProfile.birthCountry]
+    ? storedProfile.birthCountry
+    : WEB_DEFAULT_PROFILE.birthCountry;
+  const movedCountry = Boolean(
+    storedProfile.currentCountry && storedProfile.currentCountry !== storedProfile.birthCountry
+  );
+  elements.movedCountry.checked = movedCountry;
+  elements.currentCountry.value = BASELINES[storedProfile.currentCountry]
+    ? storedProfile.currentCountry
+    : elements.birthCountry.value;
+  elements.moveAge.value = String(Number.parseFloat(storedProfile.moveAge) || 0);
+  updateMoveFieldsVisibility();
+  for (const key of FACTOR_KEYS) {
+    elements.factors[key].value = storedProfile[key] || DEFAULT_FACTORS[key];
+  }
+}
+
 function loadInitialState() {
   hydrateCountries();
   const storedProfile = readStorage(PROFILE_STORAGE_KEY, WEB_DEFAULT_PROFILE);
   const storedIntention = readStorage(INTENTION_STORAGE_KEY, { text: "", completed: false });
   elements.birthDate.max = toInputDate(new Date());
-  elements.birthDate.value = typeof storedProfile.birthDate === "string" ? storedProfile.birthDate : "";
-  elements.country.value = BASELINES[storedProfile.country] ? storedProfile.country : WEB_DEFAULT_PROFILE.country;
+  applyProfileToForm(storedProfile);
   updateStorageStatus();
   renderIntention(storedIntention);
 
@@ -302,6 +339,8 @@ elements.birthDate.addEventListener("input", () => {
   }
 });
 
+elements.movedCountry.addEventListener("change", updateMoveFieldsVisibility);
+
 elements.reset.addEventListener("click", () => {
   const confirmed = window.confirm("¿Borrar tu fecha, país e intención guardados en este dispositivo?");
   if (!confirmed) {
@@ -309,8 +348,7 @@ elements.reset.addEventListener("click", () => {
   }
   removeStorage(PROFILE_STORAGE_KEY);
   removeStorage(INTENTION_STORAGE_KEY);
-  elements.birthDate.value = "";
-  elements.country.value = WEB_DEFAULT_PROFILE.country;
+  applyProfileToForm(WEB_DEFAULT_PROFILE);
   elements.birthError.hidden = true;
   elements.birthDate.setAttribute("aria-invalid", "false");
   renderIntention({ text: "", completed: false });

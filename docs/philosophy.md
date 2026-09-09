@@ -10,9 +10,9 @@ The tone should stay dry, not cruel. The app can be acidic because the subject i
 
 Design rules:
 
-- Keep the tray widget quiet. The status bar is expensive real estate.
-- Let the full panel carry the art. The tray should whisper; the panel can raise an eyebrow.
-- Use classical motifs without costume drama: bone, ash, onyx, candlelight, hourglass geometry.
+- Keep the tray widget quiet. The status bar is expensive real estate; one skull glyph and a countdown, nothing else, unless the user opts into more.
+- The contextual menu carries everything else — profile, lifestyle, and what the bar shows — so there is nowhere else to go looking for a setting.
+- One motif, held to plainly: a minimal skull. Not costume drama, not a rotating cast of candles and hourglasses.
 - Prefer exact utility over mystical wellness copy.
 - Keep all estimates visibly approximate. The model is a mirror, not an oracle.
 

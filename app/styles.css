@@ -516,6 +516,32 @@ h1 em {
   border-color: var(--gold);
 }
 
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 23px;
+}
+
+.profile-card input[type="checkbox"] {
+  width: auto;
+  min-height: auto;
+}
+
+.lifestyle-fields {
+  border: 0;
+  padding: 0;
+  margin: 0 0 6px;
+}
+
+.lifestyle-fields legend {
+  padding: 0;
+  margin-bottom: 9px;
+  color: var(--ink-strong);
+  font-size: 14px;
+  font-weight: 720;
+}
+
 .field-help,
 .field-error {
   margin: 7px 0 23px;
