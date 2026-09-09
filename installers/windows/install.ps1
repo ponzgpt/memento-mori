@@ -27,6 +27,7 @@ Copy-Item -Recurse -Force (Join-Path $RepoRoot "docs") (Join-Path $InstallRoot "
 Copy-Item -Force (Join-Path $RepoRoot "README.md") (Join-Path $InstallRoot "README.md")
 Copy-Item -Force (Join-Path $RepoRoot "LICENSE") (Join-Path $InstallRoot "LICENSE")
 Copy-Item -Force (Join-Path $RepoRoot "package.json") (Join-Path $InstallRoot "package.json")
+Copy-Item -Force (Join-Path $RepoRoot "assets\windows\memento-mori.ico") (Join-Path $InstallRoot "memento-mori.ico")
 
 $Launcher = Join-Path $InstallRoot "MementoMori.ps1"
 @'
@@ -47,7 +48,7 @@ $Shortcut = $Shell.CreateShortcut($ShortcutPath)
 $Shortcut.TargetPath = "powershell.exe"
 $Shortcut.Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$Launcher`""
 $Shortcut.WorkingDirectory = $InstallRoot
-$Shortcut.IconLocation = "$env:SystemRoot\System32\shell32.dll,44"
+$Shortcut.IconLocation = (Join-Path $InstallRoot "memento-mori.ico")
 $Shortcut.Save()
 
 Write-Host "Memento Mori installed for Windows."

@@ -1,0 +1,24 @@
+<!--
+  Emblema canónico del proyecto. viewBox 0 0 80 100 (relación 0.8:1, igual que
+  el NSImage de native/macos/MementoMoriMenuBar.swift — mismas proporciones,
+  con el eje Y invertido porque SVG cuenta desde arriba y el NSImage sin
+  "flipped" cuenta desde abajo; las coordenadas de abajo son la conversión
+  directa de esa geometría, verificada término a término).
+
+  Sirve de fuente para exportar el .ico de Windows y cualquier otro raster.
+  Si se retoca la geometría en el Swift, hay que retocarla aquí también para
+  que las tres plataformas sigan dibujando lo mismo.
+-->
+<svg viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg">
+  <mask id="skull-cutouts">
+    <rect width="80" height="100" fill="white" />
+    <circle cx="20.8" cy="38" r="12" fill="black" />
+    <circle cx="59.2" cy="38" r="12" fill="black" />
+    <polygon points="40,50 30,66 50,66" fill="black" />
+    <rect x="37.6" y="78" width="6.4" height="22" fill="black" />
+  </mask>
+  <g mask="url(#skull-cutouts)">
+    <rect x="0" y="0" width="80" height="72" rx="37" ry="36" fill="currentColor" />
+    <rect x="17.6" y="64" width="44.8" height="34" rx="11" ry="10" fill="currentColor" />
+  </g>
+</svg>
