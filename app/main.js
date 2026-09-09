@@ -5,6 +5,7 @@ import {
   WEB_DEFAULT_PROFILE,
   calculateEstimate,
   clamp,
+  formatDuration,
   getPerspectiveRange,
   validateBirthDate
 } from "./memento-core.js?v=2.0.0-r2";
@@ -312,6 +313,33 @@ function applyProfileToForm(storedProfile) {
   }
 }
 
+// El "1992-06-19" es el mismo nacimiento de ejemplo con el que arranca el
+// widget nativo en su primera instalación (defaultBirthDate en
+// MementoMoriMenuBar.swift): la vista previa no es una cifra inventada para
+// la web, es literalmente lo primero que vería alguien tras instalarlo.
+function startPreviewCountdown() {
+  const chips = document.querySelectorAll("[data-preview-countdown]");
+  if (!chips.length) {
+    return;
+  }
+  const previewProfile = {
+    birthDate: "1992-06-19",
+    birthCountry: "WLD",
+    currentCountry: "WLD",
+    moveAge: 0,
+    ...DEFAULT_FACTORS
+  };
+  const tick = () => {
+    const estimate = calculateEstimate(previewProfile, new Date());
+    const text = formatDuration(estimate.remainingMs, "full");
+    for (const chip of chips) {
+      chip.textContent = text;
+    }
+  };
+  tick();
+  window.setInterval(tick, 1000);
+}
+
 function loadInitialState() {
   hydrateCountries();
   const storedProfile = readStorage(PROFILE_STORAGE_KEY, WEB_DEFAULT_PROFILE);
@@ -411,3 +439,4 @@ elements.copy.addEventListener("click", async () => {
 });
 
 loadInitialState();
+startPreviewCountdown();

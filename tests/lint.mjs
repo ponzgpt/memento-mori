@@ -51,7 +51,15 @@ assert.match(html, /<title>Memento Mori · Tu tiempo en perspectiva<\/title>/);
 assert.match(html, new RegExp(`styles\\.css\\?v=${pkg.version.replaceAll(".", "\\.")}`));
 assert.match(html, new RegExp(`main\\.js\\?v=${pkg.version.replaceAll(".", "\\.")}`));
 assert.equal((html.match(/<h1/g) || []).length, 1, "the page needs one h1");
-assert.doesNotMatch(html, /<svg\b/i, "the final web app should not contain inline SVG artwork");
+// La web ya no es "texto sin arte": ahora enseña el mismo emblema que la
+// barra de menús, para que se reconozca como el mismo producto. Lo que
+// guardamos aquí no es "cero SVG" sino "solo ese glifo canónico" -la misma
+// geometría que assets/skull.svg y skullImage() en Swift-, no una librería de
+// iconos que se cuele con el tiempo.
+const svgCount = (html.match(/<svg\b/gi) || []).length;
+assert.equal(svgCount, 3, "expected exactly the three platform-preview skull glyphs, no other inline SVG");
+const skullMarkers = (html.match(/cx="20\.8" cy="38" r="12"/g) || []).length;
+assert.equal(skullMarkers, svgCount, "every inline <svg> must be the canonical skull glyph, not other artwork");
 assert.doesNotMatch(`${html}\n${main}`, /component workbench|preview harness|teleprompter/i);
 // El widget es el producto principal; la web es su demo online y usa
 // deliberadamente el mismo modelo, factores de estilo de vida incluidos

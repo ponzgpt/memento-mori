@@ -43,12 +43,75 @@
           </p>
           <div class="hero-actions">
             <a class="button primary" href="#calculadora">Ver mi horizonte</a>
-            <a class="text-link" href="#descargar">Llevarlo a la barra de menús</a>
+            <a class="button quiet" href="#descargar">Llevarlo a mi barra de menús</a>
           </div>
           <p class="privacy-note"><span aria-hidden="true">●</span> Sin cuenta, sin anuncios y sin enviar tus datos.</p>
         </div>
 
         <aside class="hero-object" aria-label="Principio de la aplicación">
+          <div class="widget-preview" role="img" aria-label="Vista previa: el mismo widget calculando una cuenta atrás de ejemplo en la barra de macOS, la bandeja de Windows y Waybar de Linux.">
+            <div class="widget-chip" aria-hidden="true">
+              <span class="chip-os">macOS</span>
+              <span class="chip-bar chip-bar--macos">
+                <svg class="chip-skull" viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg">
+                  <mask id="chip-skull-macos">
+                    <rect width="80" height="100" fill="white" />
+                    <circle cx="20.8" cy="38" r="12" fill="black" />
+                    <circle cx="59.2" cy="38" r="12" fill="black" />
+                    <polygon points="40,50 30,66 50,66" fill="black" />
+                    <rect x="37.6" y="78" width="6.4" height="22" fill="black" />
+                  </mask>
+                  <g mask="url(#chip-skull-macos)">
+                    <rect x="0" y="0" width="80" height="72" rx="37" ry="36" fill="currentColor" />
+                    <rect x="17.6" y="64" width="44.8" height="34" rx="11" ry="10" fill="currentColor" />
+                  </g>
+                </svg>
+                <span class="chip-countdown" data-preview-countdown>—</span>
+              </span>
+            </div>
+
+            <div class="widget-chip" aria-hidden="true">
+              <span class="chip-os">Windows</span>
+              <span class="chip-bar chip-bar--windows">
+                <svg class="chip-skull" viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg">
+                  <mask id="chip-skull-windows">
+                    <rect width="80" height="100" fill="white" />
+                    <circle cx="20.8" cy="38" r="12" fill="black" />
+                    <circle cx="59.2" cy="38" r="12" fill="black" />
+                    <polygon points="40,50 30,66 50,66" fill="black" />
+                    <rect x="37.6" y="78" width="6.4" height="22" fill="black" />
+                  </mask>
+                  <g mask="url(#chip-skull-windows)">
+                    <rect x="0" y="0" width="80" height="72" rx="37" ry="36" fill="currentColor" />
+                    <rect x="17.6" y="64" width="44.8" height="34" rx="11" ry="10" fill="currentColor" />
+                  </g>
+                </svg>
+                <span class="chip-countdown" data-preview-countdown>—</span>
+              </span>
+            </div>
+
+            <div class="widget-chip" aria-hidden="true">
+              <span class="chip-os">Linux · Waybar</span>
+              <span class="chip-bar chip-bar--waybar">
+                <svg class="chip-skull" viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg">
+                  <mask id="chip-skull-waybar">
+                    <rect width="80" height="100" fill="white" />
+                    <circle cx="20.8" cy="38" r="12" fill="black" />
+                    <circle cx="59.2" cy="38" r="12" fill="black" />
+                    <polygon points="40,50 30,66 50,66" fill="black" />
+                    <rect x="37.6" y="78" width="6.4" height="22" fill="black" />
+                  </mask>
+                  <g mask="url(#chip-skull-waybar)">
+                    <rect x="0" y="0" width="80" height="72" rx="37" ry="36" fill="currentColor" />
+                    <rect x="17.6" y="64" width="44.8" height="34" rx="11" ry="10" fill="currentColor" />
+                  </g>
+                </svg>
+                <span class="chip-countdown" data-preview-countdown>—</span>
+              </span>
+            </div>
+          </div>
+          <p class="preview-caption">Vista previa ilustrativa: el mismo cálculo, actualizándose en vivo, con un perfil de ejemplo — no es una captura de cada sistema operativo.</p>
+
           <div class="orb" aria-hidden="true">
             <span class="orb-line"></span>
             <span class="orb-grain"></span>

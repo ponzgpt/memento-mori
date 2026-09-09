@@ -323,6 +323,87 @@ h1 em {
   justify-items: center;
 }
 
+.widget-preview {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 330px;
+}
+
+.widget-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 10px 16px;
+  background: linear-gradient(145deg, rgba(33, 30, 24, 0.82), rgba(17, 16, 13, 0.92));
+}
+
+.chip-os {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.chip-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 999px;
+  padding: 5px 12px;
+  color: var(--ink-strong);
+  font-family: var(--serif);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
+
+.chip-bar--macos {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line-strong);
+}
+
+.chip-bar--windows {
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line-strong);
+}
+
+.chip-bar--waybar {
+  border-radius: 8px;
+  background: rgba(195, 155, 91, 0.1);
+  border: 1px solid rgba(195, 155, 91, 0.28);
+}
+
+.chip-skull {
+  width: 11px;
+  height: auto;
+  color: var(--gold-soft);
+  animation: chip-breathe 3.2s ease-in-out infinite;
+}
+
+@keyframes chip-breathe {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+
+.preview-caption {
+  max-width: 330px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip-skull {
+    animation: none;
+  }
+}
+
 .orb {
   position: relative;
   width: min(330px, 74vw);
