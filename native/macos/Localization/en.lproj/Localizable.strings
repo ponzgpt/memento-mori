@@ -1,0 +1,73 @@
+/* Memento Mori widget — English (base language). */
+
+/* Section headers */
+"Profile" = "Profile";
+"Lifestyle" = "Lifestyle";
+
+/* Profile fields */
+"Birth date" = "Birth date";
+"Born" = "Born";
+"Living in" = "Living in";
+"Moved at age" = "Moved at age";
+
+/* Lifestyle field labels */
+"Sex" = "Sex";
+"Sleep" = "Sleep";
+"Health" = "Health";
+"Exercise" = "Exercise";
+"Drinking" = "Drinking";
+"Smoking" = "Smoking";
+
+/* Lifestyle option labels, keyed "<factor>.<value>" so the same English word
+   in two factors (e.g. "Regular" for exercise vs. smoking) can translate
+   differently depending on context. */
+"sex.male" = "M";
+"sex.female" = "F";
+"sleep.stable" = "Stable";
+"sleep.irregular" = "Irregular";
+"exercise.sedentary" = "Sedentary";
+"exercise.light" = "Light";
+"exercise.moderate" = "Moderate";
+"exercise.regular" = "Regular";
+"exercise.athletic" = "Athletic";
+"drinking.none" = "None";
+"drinking.light" = "Light";
+"drinking.moderate" = "Moderate";
+"drinking.frequent" = "Frequent";
+"drinking.heavy" = "Heavy";
+"smoking.never" = "Never";
+"smoking.former" = "Former";
+"smoking.occasional" = "Occasional";
+"smoking.regular" = "Regular";
+"smoking.heavy" = "Heavy";
+"health.none" = "OK";
+"health.managed" = "Managed";
+"health.serious" = "Serious";
+
+/* Countdown unit suffix for years; d/h/m/s are the same in Spanish. */
+"unit.year" = "y";
+
+/* Country / baseline names — the keys are the canonical English names
+   already used internally, so they double as the lookup key. */
+"World average" = "World average";
+"United States" = "United States";
+"United Kingdom" = "United Kingdom";
+"Germany" = "Germany";
+"Spain" = "Spain";
+"Japan" = "Japan";
+"India" = "India";
+"Brazil" = "Brazil";
+
+/* Menu actions */
+"Show in menu bar" = "Show in menu bar";
+"Reset defaults" = "Reset defaults";
+"Quit Memento Mori" = "Quit Memento Mori";
+
+/* Reflection quotes, shown at random when the menu opens. Two pools: the
+   ordinary hours, and a separate one for late night (22:00–05:00). */
+"quote.regular.0" = "Unless the plan is to become excellent at postponing your life.";
+"quote.regular.1" = "Make the bed. Tiny empire, low taxes, immediate regime change.";
+"quote.regular.2" = "You are not owed a calmer season. Adorable theory, though.";
+"quote.regular.3" = "The obstacle is probably not fate. Check the task you are avoiding.";
+"quote.late.0" = "If it is late enough to doomscroll, teeth remain a bold option.";
+"quote.late.1" = "Tomorrow's self has reviewed your leadership and left notes.";

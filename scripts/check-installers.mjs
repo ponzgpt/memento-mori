@@ -75,6 +75,19 @@ assert.match(macInstall, /APP_BUNDLE="\$\{HOME\}\/Applications\/\$\{APP_NAME\}\.
 assert.match(macInstall, /cp -R "\$\{ROOT_DIR\}\/native"/);
 assert.match(macInstall, /cp -R "\$\{ROOT_DIR\}\/docs"/);
 assert.match(macInstall, /swiftc "\$\{ROOT_DIR\}\/native\/macos\/MementoMoriMenuBar\.swift"/);
+// Los .strings tienen que llegar a Contents/Resources/<lang>.lproj dentro del
+// bundle -no basta con que vivan en el repo- o NSLocalizedString no los
+// encuentra en tiempo de ejecución.
+assert.match(macInstall, /cp -R "\$\{ROOT_DIR\}\/native\/macos\/Localization\/en\.lproj" "\$\{CONTENTS\}\/Resources\/en\.lproj"/);
+assert.match(macInstall, /cp -R "\$\{ROOT_DIR\}\/native\/macos\/Localization\/es\.lproj" "\$\{CONTENTS\}\/Resources\/es\.lproj"/);
+assert.match(macInstall, /CFBundleLocalizations/);
+for (const lang of ["en", "es"]) {
+  assert.equal(
+    existsSync(join(root, `native/macos/Localization/${lang}.lproj/Localizable.strings`)),
+    true,
+    `native/macos/Localization/${lang}.lproj/Localizable.strings is missing`
+  );
+}
 assert.doesNotMatch(macInstall, /node scripts\/serve\.mjs/);
 assert.doesNotMatch(macInstall, /open "http:\/\/127\.0\.0\.1/);
 assert.doesNotMatch(macInstall, /curl|wget|Invoke-WebRequest|analytics|telemetry/i);
@@ -82,12 +95,47 @@ assert.doesNotMatch(macInstall, /curl|wget|Invoke-WebRequest|analytics|telemetry
 const macSource = read("native/macos/MementoMoriMenuBar.swift");
 assert.match(macSource, /NSStatusBar\.system\.statusItem/);
 assert.match(macSource, /NSMenu/);
-assert.match(macSource, /Settings/);
+// Los ajustes viven dentro del propio menú desplegable (sliders y segmented
+// controls embebidos vía NSMenuItem.view), no en una ventana aparte: ya no
+// hay una palabra "Settings" que buscar, así que se comprueba la sustancia.
+assert.match(macSource, /NSSlider/);
+assert.match(macSource, /NSStepper/);
 assert.match(macSource, /UserDefaults/);
 // The menu bar app imports AppKit, so it only compiles on macOS. Linux CI has
 // swiftc but no AppKit, and would fail here on a file it cannot build anyway.
 if (process.platform === "darwin" && available("swiftc", ["--version"])) {
   run("swiftc", ["native/macos/MementoMoriMenuBar.swift", "-o", "/tmp/memento-mori-menubar-check"]);
+}
+
+// Toda clave que L(...) pueda pedir en tiempo de ejecución debe existir en
+// los dos idiomas, con las mismas claves en ambos ficheros. Si un traductor
+// futuro añade una clave a uno y se olvida del otro, NSLocalizedString
+// devuelve la propia clave en pantalla en vez de fallar de forma ruidosa —
+// por eso esto se comprueba aquí y no se confía en verlo a simple vista.
+function stringsKeys(text) {
+  return new Set([...text.matchAll(/^"((?:[^"\\]|\\.)*)"\s*=/gm)].map(([, k]) => k));
+}
+const enStrings = read("native/macos/Localization/en.lproj/Localizable.strings");
+const esStrings = read("native/macos/Localization/es.lproj/Localizable.strings");
+const enKeys = stringsKeys(enStrings);
+const esKeys = stringsKeys(esStrings);
+assert.ok(enKeys.size > 0, "en.lproj/Localizable.strings has no keys");
+for (const key of enKeys) {
+  assert.ok(esKeys.has(key), `es.lproj/Localizable.strings is missing "${key}"`);
+}
+for (const key of esKeys) {
+  assert.ok(enKeys.has(key), `en.lproj/Localizable.strings is missing "${key}"`);
+}
+
+// Toda clave de la forma L("literal") en el código debe existir en el fichero
+// en inglés. Las claves dinámicas (factor.valor, quote.grupo.índice) no se
+// pueden extraer por regex del código con garantías, así que solo se
+// comprueban aquí las literales -que son las que más fácil se desincronizan
+// al renombrar algo a mano.
+const literalKeys = [...macSource.matchAll(/\bL\("([^"$\\]+)"\)/g)].map(([, k]) => k);
+assert.ok(literalKeys.length > 0, "no L(\"...\") calls found to check");
+for (const key of literalKeys) {
+  assert.ok(enKeys.has(key), `MementoMoriMenuBar.swift calls L("${key}") but en.lproj is missing that key`);
 }
 
 assert.match(macUninstall, /rm -rf "\$\{APP_BUNDLE\}" "\$\{APP_SUPPORT\}"/);

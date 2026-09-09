@@ -1,0 +1,76 @@
+/* Memento Mori widget — español. Las claves son el texto en inglés (o una
+   clave "factor.valor" / "quote.grupo.índice") tal como aparecen en el
+   código; este fichero solo aporta la traducción. */
+
+/* Encabezados de sección */
+"Profile" = "Perfil";
+"Lifestyle" = "Estilo de vida";
+
+/* Campos de perfil */
+"Birth date" = "Fecha de nacimiento";
+"Born" = "Nacido en";
+"Living in" = "Vive en";
+"Moved at age" = "Se mudó a los";
+
+/* Etiquetas de los campos de estilo de vida */
+"Sex" = "Sexo";
+"Sleep" = "Sueño";
+"Health" = "Salud";
+"Exercise" = "Ejercicio";
+"Drinking" = "Alcohol";
+"Smoking" = "Tabaco";
+
+/* Opciones de estilo de vida, con clave "<factor>.<valor>": la misma palabra
+   inglesa en dos factores (p. ej. "Regular" en ejercicio frente a tabaco)
+   puede traducirse distinto según el contexto. */
+"sex.male" = "H";
+"sex.female" = "M";
+"sleep.stable" = "Estable";
+"sleep.irregular" = "Irregular";
+"exercise.sedentary" = "Sedentario";
+"exercise.light" = "Ligero";
+"exercise.moderate" = "Moderado";
+"exercise.regular" = "Regular";
+"exercise.athletic" = "Atlético";
+"drinking.none" = "Nada";
+"drinking.light" = "Ligero";
+"drinking.moderate" = "Moderado";
+"drinking.frequent" = "Frecuente";
+"drinking.heavy" = "Alto";
+"smoking.never" = "Nunca";
+"smoking.former" = "Ex-fumador";
+"smoking.occasional" = "Ocasional";
+"smoking.regular" = "Habitual";
+"smoking.heavy" = "Intensivo";
+"health.none" = "Bien";
+"health.managed" = "Controlada";
+"health.serious" = "Grave";
+
+/* Sufijo de años en la cuenta atrás; d/h/m/s coinciden con el español
+   (día/hora/minuto/segundo), así que no hace falta traducirlos aparte. */
+"unit.year" = "a";
+
+/* Países / referencias de esperanza de vida */
+"World average" = "Media mundial";
+"United States" = "Estados Unidos";
+"United Kingdom" = "Reino Unido";
+"Germany" = "Alemania";
+"Spain" = "España";
+"Japan" = "Japón";
+"India" = "India";
+"Brazil" = "Brasil";
+
+/* Acciones del menú */
+"Show in menu bar" = "Mostrar en la barra";
+"Reset defaults" = "Restablecer valores";
+"Quit Memento Mori" = "Salir de Memento Mori";
+
+/* Frases, elegidas al azar cada vez que se abre el menú. Dos grupos: horario
+   normal y uno aparte para la madrugada (22:00–05:00). No son traducciones
+   literales, sino equivalentes que conservan el mismo tono seco. */
+"quote.regular.0" = "A menos que el plan sea llegar a ser un experto en posponer tu vida.";
+"quote.regular.1" = "Haz la cama. Un imperio diminuto, impuestos bajos, cambio de régimen inmediato.";
+"quote.regular.2" = "Nadie te debe una temporada más tranquila. Bonita teoría, eso sí.";
+"quote.regular.3" = "El obstáculo probablemente no es el destino. Revisa qué tarea estás evitando.";
+"quote.late.0" = "Si es tan tarde como para hacer doomscrolling, lavarte los dientes sigue siendo una opción atrevida.";
+"quote.late.1" = "Tu yo de mañana ha revisado tu liderazgo y ha dejado notas.";

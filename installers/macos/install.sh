@@ -30,6 +30,10 @@ cp "${ROOT_DIR}/package.json" "${APP_SUPPORT}/package.json"
 
 swiftc "${ROOT_DIR}/native/macos/MementoMoriMenuBar.swift" -o "${EXECUTABLE}"
 
+rm -rf "${CONTENTS}/Resources/en.lproj" "${CONTENTS}/Resources/es.lproj"
+cp -R "${ROOT_DIR}/native/macos/Localization/en.lproj" "${CONTENTS}/Resources/en.lproj"
+cp -R "${ROOT_DIR}/native/macos/Localization/es.lproj" "${CONTENTS}/Resources/es.lproj"
+
 cat > "${CONTENTS}/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -45,6 +49,13 @@ cat > "${CONTENTS}/Info.plist" <<PLIST
   <string>APPL</string>
   <key>CFBundleShortVersionString</key>
   <string>${APP_VERSION}</string>
+  <key>CFBundleDevelopmentRegion</key>
+  <string>en</string>
+  <key>CFBundleLocalizations</key>
+  <array>
+    <string>en</string>
+    <string>es</string>
+  </array>
   <key>LSUIElement</key>
   <true/>
 </dict>

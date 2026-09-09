@@ -58,6 +58,8 @@ const artifacts = [
       "app/styles.css",
       "app/og.png",
       "native/macos/MementoMoriMenuBar.swift",
+      "native/macos/Localization/en.lproj/Localizable.strings",
+      "native/macos/Localization/es.lproj/Localizable.strings",
       "assets/skull.svg",
       "assets/windows/memento-mori.ico",
       "installers/macos/install.sh",
