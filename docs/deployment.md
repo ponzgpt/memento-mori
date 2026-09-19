@@ -1,5 +1,7 @@
 # Production Deployment Runbook
 
+**Deploy:** `./scripts/deploy.sh` runs `npm run verify`, builds `memento-mori-racks:<sha>` on the VPS, updates the Swarm service with a `/healthz` health check, writes the Traefik route and waits for `https://memento.technoir.cloud/healthz`. The steps below are what it does, for understanding and manual recovery.
+
 Canonical URL: <https://memento.technoir.cloud/>
 
 Deployment target: existing Hostinger VPS, Docker Swarm service `memento-mori-racks`, shared `dokploy-network`, and Traefik-managed HTTPS.

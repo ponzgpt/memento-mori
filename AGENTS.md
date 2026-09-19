@@ -4,7 +4,7 @@ Life-expectancy perspective web app (Spanish UI) with a native macOS companion a
 ## Commands
 - Check (before every commit and deploy): `npm run verify`
 - Dev: `npm run serve`
-- Deploy: `docs/deployment.md`
+- Deploy: `./scripts/deploy.sh` (see `docs/deployment.md`)
 
 ## Non-negotiables
 1. The web core in `app/` stays zero-dependency with no build step.
